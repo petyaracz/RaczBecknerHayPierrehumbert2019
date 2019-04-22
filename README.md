@@ -20,22 +20,22 @@ Our letter to reviewers is [here](https://docs.google.com/document/d/1psklCvgpPM
 - convergence_paper_esp_test2_predictions -- Esp data (post-test, w/ predictions)
 - transcription_matcher -- differences between A&H and Celex transcription
 
-## Functions
+### Functions
 
 - grabdata -- pulls in data
 - grabfunctions -- GCM written in R, with lookup table
 
-## Models
+### Models
 
-### GCM
+#### GCM
 
 GCM with lookup table, in R. See gcm.Rmd
 
-### MGL
+#### MGL
 
 MGL rules for our data plus helper scripts. For MGL, visit Adam Albright's [page](http://www.mit.edu/~albright/mgl/).
 
-### Paper
+#### Paper
 
 Regression models reported in paper and in appendix. See convergence_paper_models.Rmd
 
