@@ -8,6 +8,8 @@ These are the results of the Spring 2019 revision. The GCM weights are what's di
 
 The paper is [here](https://www.overleaf.com/project/59b9a96f509e650540d6fcc7).
 
+Our letter to reviewers is [here](https://docs.google.com/document/d/1psklCvgpPMUy8ZVMmU4yIOwKEk0sVDtgIpiNRJ-9mZg/edit).
+
 ## Contents
 
 ### Data
