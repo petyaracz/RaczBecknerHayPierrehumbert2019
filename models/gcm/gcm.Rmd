@@ -1,0 +1,675 @@
+---
+title: "GCM with Lookup Tables"
+author: "Peter Racz"
+date: "21/04/2019"
+output: html_document
+---
+
+```{r echo = F, message = F, warning = F}
+knitr::opts_chunk$set(fig.width=10, fig.height=10, fig.path='Figs/', eval=FALSE, echo=TRUE, warning = FALSE, message=FALSE, tidy=TRUE)
+
+setwd('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/gcm')
+```
+
+This is the Generalised Context Model [GCM] code for the paper "Morphological convergence as on-line lexical analogy" [from now on: ESP paper]. 
+
+This md goes through the logic of creating the datasets with the various GCM metrics. But the files pulled in by the grabdata function are in fact the outputs of this md. Beware.
+
+The GCM uses distances between pairs of words and sums them over different domains (e.g. a word's distance to words in class A and class B).
+
+We use two types of distance, edit distance (Levenshtein distance) and word-aligned natural-class based distance [from Adam Albright](http://web.mit.edu/albright/www/software/Alignment.zip). 
+
+Adam's perl script finds the best alignment between two words:
+
+| s | p | r | I | N |
+|:-:|:-:|:-:|:-:|:-:|
+| - | - | r | I | N |
+
+And then uses overlapping natural classes (from Frisch, Pierrehumbert and Broe 2004) to calculate distance between the two strings.
+
+It is not very fast, and we have a lot of comparisons to make. Instead of computing these online every time the GCM is fit, I create a **lookup table** of every combination of target and test items for our experiments and then match values from this table for each model fit using basically glorified sql.
+
+The lookup table looks like this:
+
+| target word | training word | distance |
+|:-----------:|:-------------:|:--------:|
+| target1     | training1     | dist val |
+| target1     | training2     | dist val |
+| target2     | training1     | dist val |
+| ...         |               |          |
+
+It's long.
+
+```{r }
+source('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/functions/grabfunctions.R')
+
+source('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/functions/grabdata.R')
+
+lookup = read_csv('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/gcm/feature_distance_lookup_tidy.txt')
+
+```
+
+## 1. Creating the lookup tables
+
+We create all combinations of forms. This is test words x test words / training words. We write the combinations into a file.
+
+```{r create_lookup_table1, eval=F}
+
+# test words
+test = baseline.verbs$disc
+# training words: verbs in celex in moder classes
+training1 = celex %>% 
+  filter(!is.na(moder)) %>% 
+  select(ahpa) %>% # using Albright and Hayes' transcription
+  pull
+# training words: other regular verbs (monsyllabic)
+c2 = celex %>% 
+  filter(
+    category == 'regular',
+    is.na(moder),
+    !is.na(ahpa)
+    ) %>% 
+  mutate(
+    nchar = nchar(ahpa),
+    vowels = str_extract_all(ahpa, '[euVoEIi2U{Q34@a6}]'),
+    nvowels = map(vowels, ~ length(.))
+  ) %>% 
+  select(-vowels) %>% 
+  unnest()
+
+training2 = c2 %>% 
+  filter(
+    nvowels == 1
+    ) %>% 
+  select(ahpa) %>% 
+  distinct() %>% 
+  pull
+
+c3 = celex %>% 
+  filter(
+    category == 'irregular',
+    is.na(moder),
+    !is.na(ahpa)
+    ) %>% 
+  mutate(
+    nchar = nchar(ahpa),
+    vowels = str_extract_all(ahpa, '[euVoEIi2U{Q34@a6}]'),
+    nvowels = map(vowels, ~ length(.))
+  ) %>% 
+  select(-vowels) %>% 
+  unnest() %>% 
+  filter(word != 'forsake', nvowels == 1) # a survivor
+
+training3 = c3$ahpa
+
+training = c(training1, training2, training3, test)
+
+all_combinations = expand.grid(test, training) %>% 
+  distinct() %>% 
+  filter(Var1 != Var2)
+
+write_delim(all_combinations, 'all_combinations.txt', delim = '\t', col_names = F)
+# this takes about twelve hours on my hardware:
+# system('bash alignment_runner_ideal.sh > all_combinations_out.txt')
+
+
+```
+
+We grab the combinations and create a lookup table.
+
+```{r create_lookup_table2, eval=F}
+# of course, what I do above is not what I did in practice. in practice, I fit four different sets of words because I was in the process of figuring out what's going on and what I need. The first set had word pairs repeat several times because of a join. Etc.
+# see pocketgcm_create_lookup_table.R
+
+# I'm not sharing these files, but you can see the code here to get an idea.
+
+# batch 1
+distances1 = read_csv('~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/out.txt', col_names = F)
+names(distances1) = 'feature.distance'
+
+pairs1 = read_delim('~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/everybody.txt', '\t', col_names = F)
+names(pairs1) = c('target', 'training')
+
+nrow(pairs1)==nrow(distances1)
+
+lookup1 = cbind(distances1, pairs1)
+lookup1 = lookup1 %>% distinct() # I made a mistake in setting up the first batch. luckily, I made it for both distances and pairs
+names(lookup1)
+
+# batch 2
+distances2 = read_csv('~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/out2.txt', col_names = F)
+names(distances2) = 'feature.distance'
+
+pairs2 = read_delim('~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/everybody2.txt', '\t', col_names = F)
+names(pairs2) = c('target', 'training')
+
+nrow(pairs2)==nrow(distances2)
+
+lookup2 = cbind(distances2, pairs2)
+names(lookup2)
+
+# batch 3
+distances3 = read_csv('~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/out3.txt', col_names = F)
+names(distances3) = 'feature.distance'
+
+pairs3 = read_delim('~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/everybody3.txt', '\t', col_names = F)
+names(pairs3) = c('target', 'training')
+
+nrow(pairs3)==nrow(distances3)
+
+lookup3 = cbind(distances3, pairs3)
+names(lookup3)
+
+# batch 4
+distances4 = read_csv('~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/out4.txt', col_names = F)
+names(distances4) = 'feature.distance'
+
+pairs4 = read_delim('~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/everybody4.txt', '\t', col_names = F)
+names(pairs4) = c('target', 'training')
+
+nrow(pairs4)==nrow(distances4)
+
+lookup4 = cbind(distances4, pairs4)
+
+lookups_raw = rbind(lookup1,lookup2,lookup3, lookup4)
+lookups_raw %>% head
+
+write_csv(lookups_raw, 'feature_distance_lookup_raw.txt')
+
+```
+
+Verbs are categorised according to their phonological schema. We call these categories "Moder" classes, both to honour Carol Lynn Moder who largely influenced them and because I have old code with slightly different categories and I want backwards compatibility.
+
+I'm putting the moder class definitions here for posterity. Note that this bit does not interact with anything else in the code.
+
+```{r moder_class_definitions, eval=F}
+c$moder = NA
+# DROVE
+c$moder = ifelse(
+  c$monosyl==T
+  & c$class == 'irregular'
+  & str_detect(c$present, "[i2][zvdltnk]$") # including "steal"
+  & str_detect(c$past, "5[zvdltnk]$"),
+    'DROVE', c$moder)
+# SANG
+c$moder = ifelse(
+  c$monosyl==T
+  & c$class == 'irregular'
+  & str_detect(c$present, "I(m|N|Nk)$")
+  & str_detect(c$past, "\\{(m|N|Nk)$"),
+    'SANG', c$moder)
+# BURNT    
+c$moder = ifelse(
+  c$monosyl==T
+  & c$class == 'irregular'
+  & str_detect(c$present, "[3EI][nl]$")
+  & str_detect(c$past, "[3EI][nl]t$"),
+    'BURNT', c$moder)
+# KEPT
+c$moder = ifelse(
+  c$monosyl==T
+  & c$class == 'irregular'
+  & str_detect(c$present, "i[lpmn]$")
+  & str_detect(c$past, 'E[lpmn]t$'),
+    'KEPT', c$moder)
+```
+
+
+We add a couple things to the lookup table, including the Moder category.
+
+
+```{r create_lookup_table3, eval=F}
+
+lookup = read_csv('feature_distance_lookup_raw.txt')
+
+# we add raw, uncompromised edit distance
+lookup$edit.distance = stringdist::stringdist(lookup$target, lookup$training, method = 'lv')
+
+# then, we match up training forms with their verb categories (drove/sang/kept/burnt) and gcm categories (regular/irregular), paying attention to using the A&H transcription
+
+celex2 = celex %>% 
+  # filter(!(is.na(moder) & category == 'irregular')) %>%
+  filter(!is.na(ahpa)) %>% # celex has more rows than albright & hayes celex. we want the latter.
+  mutate( # we want monosyllabic
+    nchar = nchar(ahpa),
+    vowels = str_extract_all(ahpa, '[euVoEIi2U{Q34@a6}]'),
+    nvowels = map(vowels, ~ length(.))
+  ) %>% 
+  select(-vowels) %>% 
+  unnest()
+
+celex2 = celex2 %>% 
+  filter(nvowels == 1) %>%  
+  select(
+    moder, 
+    ahpa,
+    category
+    ) %>% 
+  rename(
+    training = ahpa,
+    moder.training = moder,
+    category.training = category
+    )
+
+# this is now the following monosyllabic words in the a&H celex:
+# - irregular and regular verbs in sang/kept/burnt/drove
+# - regular verbs not in a moder class
+# - irregular verbs not in a moder class
+
+# some verbs are in celex as both regular and irregular. these verbs are in the lookup only once.
+# so we expect the lookup to get longer after the join.
+lookup = left_join(lookup, celex2, by = 'training')
+# lookup[lookup$training == 'rIN',] # see?
+
+# there are 256 extra rows here, one for each target, that we get rid of for now.
+lookup = lookup %>%
+  filter(!is.na(training))
+
+# lookup %>% 
+  # filter(is.na(moder.training)) %>% View
+
+# then, we match up test forms with their categories.
+
+bv2 = baseline.verbs %>% 
+  select(disc, moder) %>% 
+  rename(
+    target = disc,
+    moder.target = moder
+  )
+
+lookup = left_join(lookup, bv2, by = 'target')
+
+# a couple things got in here twice, these are mostly regular verbs from celex.
+# nrow(lookup)
+# nrow(distinct(lookup))
+# grr = lookup[duplicated(lookup),] %>% select(training, category.training, moder.training) %>% distinct()
+
+lookup = lookup %>% distinct()
+
+# we need to flag if a training verb is from celex (relevant for baseline) or we made it up (relevant for esp)
+target.verbs = unique(lookup$target)
+lookup$training.type = ifelse(lookup$training %in% target.verbs, 'esp', 'baseline')
+
+# now we need moder.training for test verbs AS training verbs
+
+# then, we match up test forms AS training forms with their categories.
+
+bv3 = baseline.verbs %>% 
+  select(disc, moder) %>% 
+  rename(
+    training = disc,
+    moder.training = moder
+  )
+
+lookup_baseline = lookup[lookup$training.type == 'baseline',]
+lookup_esp = lookup[lookup$training.type == 'esp',]
+# nrow(lookup) == (nrow(lookup_baseline) + nrow(lookup_esp))
+lookup_esp$moder.training = NULL
+lookup_esp = left_join(lookup_esp, bv3, by = 'training')
+# nrow(lookup) == (nrow(lookup_baseline) + nrow(lookup_esp))
+
+# grr = lookup_baseline[lookup_baseline$target == 'blIm',]
+# grr %>% count(moder.training, category.training)
+# View(grr)
+lookup_baseline = lookup_baseline[!(is.na(lookup_baseline$moder.training) & is.na(lookup_baseline$category.training)),]
+# grr = lookup_baseline[lookup_baseline$target == 'blIm',]
+# grr %>% count(moder.training, category.training) # sounds about right
+# View(grr)
+# grr = lookup_esp[lookup_esp$target == 'blIm',]
+# grr %>% count(moder.training, category.training) # sounds about right too
+
+lookup = rbind(lookup_baseline, lookup_esp)
+# let's check one target
+# grr = lookup[lookup$target == 'brip',]
+# View(grr)
+# burnt/drove/kept/sang: irregular/ regular celex + target. regular non-moder verbs from celex.
+
+write_csv(lookup, 'feature_distance_lookup_tidy.txt')
+```
+
+Our lookup table has been made. Let's hope it's not the way Joe Pesci was made in Goodfellas.
+
+## 2a. Replicating the Baseline-GCM in the paper. 
+
+Training sets are regular / irregular. They consist of verbs in Celex that match the Moder class of the target. Note that one verb can be in both the training and the test sets if it's listed as both a regular and an irregular in Celex. 
+
+```{r baseline_gcm1, eval=F}
+# training sets
+# SANG & 13 & 8 \\
+# BURNT & 43 & 6\\
+# KEPT & 34 & 12\\
+# DROVE & 93 & 15\\
+
+baseline.gcm.paper = baselineGCMpaperSetup(lookup = lookup)
+
+# baseline.gcm.paper[baseline.gcm.paper$target == 'drin',] %>% arrange(category.training) %>% View
+# baseline.gcm.paper[baseline.gcm.paper$target == 'brip',] %>% count(moder.training, category.training)
+# baseline.gcm.paper[baseline.gcm.paper$target == 'biv',] %>% arrange(category.training) %>% View
+# looks about right.
+
+baseline.gcm.paper = doGCM(restricted.set = baseline.gcm.paper, gcm.id = 'baseline_gcm_wf_lookup_moder', var_s = 0.3, var_p = 1)
+
+```
+
+## 2b. Refitting the Baseline-GCM in the paper using a larger regular set.
+
+Reviewer points out that we are tilting the field in the GCM's favour by restricting its training set to verbs that basically look exactly like the verb schemata we are interested in. One of their alternative suggestions is to keep Moder classes but include *all* regular verbs in the regular category.
+
+We implement this below with one restriction: verbs have to be monosyllabic. (Irregular verbs in the set already are. Polysyllabic regular verbs will be very far away from the targets in any case.)
+
+```{r baseline_gcm2, eval=F}
+# training sets
+# SANG & 13 & 1221 \\
+# BURNT & 43 & 1219\\
+# KEPT & 34 & 1225\\
+# DROVE & 93 & 1228\\
+
+# lookup[is.na(lookup$category.training),] %>% 
+#   select(training) %>% 
+#   distinct() %>% 
+#   View
+
+baseline.gcm.reviewer = baselineGCMreviewerSetup(lookup)
+
+# baseline.gcm.reviewer[baseline.gcm.reviewer$target == 'brip',] %>% count(category.training)  
+# baseline.gcm.reviewer[baseline.gcm.reviewer$target == 'zEl',] %>% count(category.training)      
+# checks out
+
+baseline.gcm.reviewer = doGCM(restricted.set = baseline.gcm.reviewer, gcm.id = 'baseline_gcm_wf_lookup_reviewer', var_s = 0.3, var_p = 1)
+
+```
+
+Let's check results.
+
+```{r check_baselines, eval=F}
+baseline.verbs = left_join(baseline.verbs, baseline.gcm.paper, by = 'disc')
+baseline.verbs = left_join(baseline.verbs, baseline.gcm.reviewer, by = 'disc')
+
+# celex_gcm_nof is the edit-distance gcm. 
+# it's not implemented here but you could tweak doGCM() to use edit rather than feature distance.
+# celex_gcm_wf is from an old run. there are some issues with transcriptions. but you see it is very similar in accuracy.
+with(baseline.verbs, cor(reg.av, celex_gcm_nof)) # .558
+with(baseline.verbs, cor(reg.av, celex_gcm_wf)) # .545
+with(baseline.verbs, cor(reg.av, baseline_gcm_wf_lookup_moder)) # .531
+with(baseline.verbs, cor(reg.av, baseline_gcm_wf_lookup_reviewer)) # .455
+
+```
+
+## 2c. Tuning s for the reviewer GCM
+
+We suspect that the drop in accuracy stems from the fact that there are loads more verbs in the regular category now. 
+
+We tune the s parameter and use two measures: pearson's rho with baseline averages and index of concordance with individual responses (regular/irregular). We could also fit hierarchical generalised linear models and compare their goodness of fit; but it would take longer.
+
+```{r tune_s_baseline, eval=F}
+
+baseline.verbs = baseline %>% 
+  group_by(
+    word, 
+    disc
+    ) %>% 
+  summarise(
+    reg.av = mean(regular)
+  )
+
+# r.val1 = tuneS(lookup = lookup, baseline.verbs = baseline.verbs, var_s = 0.3)
+# checks out
+
+var_s_range = c(seq(0.1, 0.9, 0.1), 0.95, 0.99)
+
+r.vals = map(
+  var_s_range, ~ tuneS(lookup = lookup, var_s = ., var_p = 1) %>% 
+    getR(baseline.verbs = baseline.verbs)
+  )
+
+r.vals %>% unlist
+
+C.vals = map(
+  var_s_range, ~ tuneS(lookup = lookup, var_s = ., var_p = 1) %>% 
+    getC(baseline = baseline)
+  )
+
+C.vals %>% unlist
+
+
+# s = .9 wins based on two metrics. s = .95/.99 seems too high for me, with diminishing returns.
+
+```
+
+We tune *s* way up then, and see what it does to the ESP experiment.
+
+## 2d. We file the baseline value
+
+```{r fit_baseline, eval=F}
+from.lexicon = baselineGCMreviewerSetup(lookup = lookup)
+
+baseline.gcm.reviewer = doGCM(restricted.set = from.lexicon, gcm.id = 'baseline_gcm_wf_lookup_reviewer', var_s = 0.9, var_p = 1)
+
+# nrow(baseline)
+baseline = left_join(baseline, baseline.gcm.reviewer, by = 'disc')
+# nrow(baseline)
+baseline.verbs = left_join(baseline.verbs, baseline.gcm.reviewer, by = 'disc')
+with(baseline.verbs, cor(reg.av, baseline_gcm_wf_lookup_reviewer)) # .61
+
+```
+
+## 3a. Fitting the reviewer GCM (I hope this catches on) on the ESP experiment
+
+We now have a GCM that's trained on irregular and regular verbs in the target verb's moder class, as well as miscellaneous regular verbs. We tuned it.
+
+We loop through the participants of the esp experiment. For each participant, we filter the lookup table to only contain target forms from test2 and training forms from celex (following the reviewer GCM setup) and esp robot answers with appropriate regular / irregular categories.
+
+```{r esp_fit, eval=F}
+
+my.participant_ids = unique(espdata$participant_id)
+
+my.esp.gcms = map(my.participant_ids, ~ runGuyLookup(espdata = espdata, lookup = lookup, my.participant_id = ., gcm.id = 'esp_gcm_lookup', var_s = 0.9, var_p = 1))
+
+my.esp.gcm.df = do.call('rbind', my.esp.gcms)
+
+# my.esp.gcms2 = map(my.participant_ids, ~ runGuyLookup(espdata = espdata, lookup = lookup, my.participant_id = ., gcm.id = 'esp_gcm_lookup', var_s = 0.3, var_p = 1))
+# 
+# my.esp.gcm.df2 = do.call('rbind', my.esp.gcms2)
+test2 = left_join(test2, my.esp.gcm.df, by = c('disc', 'participant_id'))
+
+```
+
+## 3b. Checking accuracy
+
+```{r eval=F}
+
+
+# my.esp.gcm.df2 = my.esp.gcm.df2 %>% 
+  # rename(esp_gcm_lookup2 = esp_gcm_lookup)
+# test2$esp_gcm_lookup2 = NULL
+# test2 = left_join(test2, my.esp.gcm.df2, by = c('disc', 'participant_id'))
+
+# esp_gcm_wf had similar issues as celex_gcm_wf: transcriptions were off here and there. you see that the new esp_gcm, where these are resolved, does better.
+with(test2, Hmisc::somers2(esp_gcm_wf,resp_post_reg)['C']) # .62
+with(test2, Hmisc::somers2(esp_gcm_lookup,resp_post_reg)['C']) # .68
+# with(test2, Hmisc::somers2(esp_gcm_lookup2,resp_post_reg)['C']) # .62
+
+test2sum = test2 %>% 
+  group_by(
+    participant_id,
+    reg_rate,
+    lex_typicality
+  ) %>% 
+  summarise(
+    mean.resp = mean(na.omit(resp_post_reg)),
+    mean.gcm = mean(esp_gcm_lookup)
+  )
+
+ggplot(test2sum, aes(mean.resp, mean.gcm, colour = lex_typicality)) +
+  geom_point() +
+  stat_smooth(method = 'lm') +
+  facet_wrap(~ reg_rate)
+
+
+
+```
+
+## 4. Time to tidy and save datasets.
+
+```{r eval=F}
+# you don't want to run this, the data pulled in by grabdata are its outputs: it will complain about columns missing.
+
+baseline = baseline %>% 
+  rename(
+    baseline_mgl_features = celex_mgl_wf, # we didn't change the Minimal Generalisation Learner so we keep its predictions
+    baseline_mgl_edits = celex_mgl_nof, #...also from its edit-distance run.
+    baseline_gcm_edits = celex_gcm_nof,
+    baseline_gcm_features = baseline_gcm_wf_lookup_reviewer
+  ) %>% 
+  select(
+    -celex_gcm_wf
+  )
+
+write_csv(baseline, 'convergence_paper_baseline_data.txt')
+
+espdata = espdata %>% # we had a heap of various gcm fits. we don't keep them. we only want the ones we report in the paper.
+  select(
+    -verb_baseline_gcm3_reg,
+    -verb_baseline_gcm2_reg,
+    -verb_baseline_gcm_reg,
+    -verb_esp_gcm_reg,
+    -verb_esp_mgl_reg
+  )
+
+write_csv(espdata, 'convergence_paper_esp_data.txt')
+
+test2 = test2 %>% 
+  select(
+    # -esp_gcm_lookup2,
+    -celex_mgl_wf,
+    -celex_mgl_nof,
+    -celex_gcm_wf,
+    -celex_gcm_nof,
+    -esp_gcm_wf
+  ) %>% 
+  rename(
+    individual_gcm_edits = esp_gcm_nof,
+    individual_gcm_features = esp_gcm_lookup,
+    individual_mgl_edits = esp_mgl_nof,
+    individual_mgl_features = esp_mgl_wf
+  )
+
+bsum = baseline %>% 
+  select(
+    disc,
+    baseline_gcm_edits,
+    baseline_mgl_edits,
+    baseline_gcm_features,
+    baseline_mgl_features
+    ) %>% 
+  distinct()
+
+test2 = left_join(test2, bsum, by = 'disc')
+
+write_csv(test2, 'convergence_paper_esp_test2_predictions.txt')
+
+```
+
+## 5. Check the reviewer critique of moder classes on baseline data
+
+Reviewer points out that the moder classes are inconsistent and makes suggestions.
+
+- KEPT class: "Why are {l,p,n,m} members included, but {v} is excluded?" (see [d]: not added because irregular past tense has to end in [t])
+- SANG class: "A similar question could be asked about the SANG class, which includes I->ae before a nasal, but excludes I->ae before other C's (sit~sat) and other V->ae (run-ran)."
+- DROVE class: "But then why are rise~rose and weave~wove unified, to the exclusion of choose~chose and break~broke, which also have [oʊ] in the past?  (And, potentially, also wear~wore, which is transcribed as [ɔ] in CELEX, correctly reflecting British English, but seems very close to an 'o-past' in American English.)"
+
+We update moder classes based on these suggestions and refit the model to see if this changes the fit.
+
+```{r moder_class_definitions2, eval=F}
+
+reviewer2Moder = function(celex){
+
+celex = celex %>% 
+  mutate(
+    moder = case_when(
+      str_detect(ahpa, '[e]') ~ 'DROVE',
+      word == 'run' ~ 'SANG',
+      word == 'leave' ~ 'KEPT',
+      T ~ moder
+      )
+  )
+
+return(celex)
+}
+
+# celex %>% filter(str_detect(ahpa, 'e')) %>% View
+# celex %>% filter(str_detect(ahpa, 'n$')) %>% View
+# celex %>% filter(str_detect(ahpa, 'iv$')) %>% View
+
+```
+
+And now we go through the baseline data again.
+
+```{r definitions_testing, eval=F}
+celex2 = celex %>% 
+  reviewer2Moder()
+
+celex2 = celex2 %>% 
+  select(ahpa, moder) %>% 
+  rename(
+    training = ahpa,
+    moder.training = moder
+  ) %>% 
+  filter(!is.na(training))
+
+lookup_a = lookup %>% filter(training %in% celex2$training)
+lookup_b = lookup %>% filter(!training %in% celex2$training)
+# nrow(lookup) == nrow(lookup_a) + nrow(lookup_b)
+lookup_a = lookup_a %>% 
+  select(
+    -moder.training
+  ) #%>% 
+  
+lookup_a = left_join(lookup_a, celex2, by = 'training')
+lookup2 = rbind(lookup_a, lookup_b)
+
+bgcm2 = baselineGCMreviewerSetup(lookup2)
+
+# bgcm2[bgcm2$target == 'brin',] %>% View
+# bgcm2[bgcm2$target == 'brin',] %>% count(moder.training, category.training) # ya
+
+bgcm2 = doGCM(restricted.set = bgcm2, gcm.id = 'rev2gcm', var_s = 0.9, var_p = 1)
+
+baseline$rev2gcm = NULL
+baseline = left_join(baseline, bgcm2, by = 'disc')
+
+with(baseline, Hmisc::somers2(baseline_gcm_features,regular)['C']) # .58
+with(baseline, Hmisc::somers2(rev2gcm,regular)['C']) # .59
+
+baseline.verbs = left_join(baseline.verbs, bgcm2, by = 'disc')
+with(baseline.verbs, cor(reg.av, baseline_gcm_wf_lookup_reviewer)) # .61
+with(baseline.verbs, cor(reg.av, rev2gcm)) # .69
+
+```
+
+There is a numeric improvement, more so in pearson's rho than in C. Is it robust? We fit two mixed models, one with weights from the GCM based on the reported moder classes, one with weights from a GCM based on the updated classes. We try to predict trial responses, grouped under participants. We scale the two predictors. We don't want to have the two predictors in one model, as they are very collinear.
+
+```{r definitions_testing2, eval=F}
+library(itsadug)
+
+str(baseline %>% select(regular, baseline_gcm_features, rev2gcm, subject))
+baseline$reg.resp = as.numeric(baseline$regular)
+baseline$subject = as.factor(baseline$subject)
+
+baseline = baseline %>% 
+  mutate(
+    c.baseline_gcm_features = scales::rescale(baseline_gcm_features),
+    c.rev2gcm = scales::rescale(rev2gcm)
+  )
+
+fit1 = bam(reg.resp ~ c.baseline_gcm_features + s(subject, bs = 're'), data = baseline, family = binomial, method = 'ML')
+
+fit2 = bam(reg.resp ~ c.rev2gcm + s(subject, bs = 're'), data = baseline, family = binomial, method = 'ML')
+
+compareML(fit1, fit2)
+
+# small difference in ML scores.
+
+```
+
+The difference in model ML scores is small, so I assume that m2 does not provide a significantly better fit on the baseline data than m1. This is not to say that critiques of the consistency of the moder classes are invalid, but it suggests that these might not make a major difference.

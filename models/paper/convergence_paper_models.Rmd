@@ -1,0 +1,428 @@
+---
+title: "Stats for the convergence paper"
+author: "Peter Racz"
+date: "21/04/2019"
+output: html_document
+---
+
+```{r echo = F, message = F, warning = F}
+knitr::opts_chunk$set(fig.width=10, fig.height=10, fig.path='Figs/', eval=FALSE, echo=TRUE, warning = FALSE, message=FALSE, tidy=TRUE) # eval = FALSE and how
+
+library(brms)
+library(lme4)
+library(tidyverse)
+options(mc.cores=parallel::detectCores())
+# options(mc.cores=1)
+Sys.setenv(TZ="Europe/Rome") # a szivemben örök tavasz van
+
+setwd('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper')
+```
+
+These are the models and stats for the convergence paper, going through it by section number.
+
+```{r }
+source('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/functions/grabdata.R')
+
+```
+
+## Section 4.2
+
+```{r }
+baseline %>% group_by(word) %>% summarise(regular = mean(regular)) %>% filter(word == 'splive') 
+```
+
+## Section 4.3
+
+```{r }
+espdata %>% select(participant_id,lex_typicality,reg_rate) %>% unique %>% group_by(lex_typicality,reg_rate) %>% summarise(n = n()) 
+```
+
+## Section 5
+
+Fits on what people are doing across conditions in test2. No algorithmic learning here.
+
+Our weapon of choice is typially lme4. But it won't converge with full random effects structure. So we turn to brms.
+
+```{r }
+test2$lex_typicality = factor(test2$lex_typicality, levels = c('typical', 'random', 'atypical'))
+test2$reg_rate = factor(test2$reg_rate, levels = c('-40%', 'nc', '+40%'))
+test2$baseline_av_z = scales::rescale(test2$baseline_av)
+test2$pre_reg_av_z = scales::rescale(test2$pre_reg_av)
+
+fit1 = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + reg_rate +
+    (1 | participant_id) + 
+    (1 | word), 
+  data = test2, 
+  family = bernoulli, 
+  control=list(adapt_delta=0.99, stepsize = 0.01, max_treedepth =15))
+
+fit1 = add_criterion(fit1, criterion = 'loo')
+
+save(fit1, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/bayes_fit1.rda')
+
+#####################################################
+
+fit2 = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + reg_rate +
+    (1 + baseline_av_z | participant_id) + 
+    (1 | word), 
+  data = test2, 
+  family = bernoulli, 
+  control=list(adapt_delta=0.99, stepsize = 0.01, max_treedepth =15))
+
+fit2 = add_criterion(fit2, criterion = 'loo')
+
+save(fit2, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/bayes_fit2.rda')
+
+#####################################################
+
+fit3 = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + reg_rate +
+    (1 + baseline_av_z | participant_id) + 
+    (1 + pre_reg_av_z | word), 
+  data = test2, 
+  family = bernoulli, 
+  control=list(adapt_delta=0.99, stepsize = 0.01, max_treedepth =15))
+
+fit3 = add_criterion(fit3, criterion = 'loo')
+
+# fit3b = add_criterion(fit3b, criterion = 'loo')
+
+save(fit3, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/bayes_fit3.rda')
+
+#####################################################
+
+fit4 = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + reg_rate +
+    (1 + baseline_av_z | participant_id) + 
+    (1 + pre_reg_av_z + lex_typicality + reg_rate | word), 
+  data = test2, 
+  family = bernoulli, 
+  control=list(adapt_delta=0.99, stepsize = 0.01, max_treedepth =15))
+
+fit4 = add_criterion(fit4, criterion = 'loo')
+
+save(fit4, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/bayes_fit4.rda')
+
+#####################################################
+
+loo.comparisons = loo_compare(fit1,fit2,fit3,fit4)
+save(loo.comparisons, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/loo_comparisons.rda')
+
+options(mc.cores=1)
+
+
+#####################################################
+```
+
+```{r }
+
+load('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/bayes_fit3.rda')
+bayes_factor()
+
+load('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/loo_comparisons.rda')
+loo.comparisons
+
+# https://arxiv.org/abs/1507.04544 s5.2
+```
+
+We definitely want some random slopes (fit1 is worse than the rest). Other than that, the various constellations do not improve the model's expected log pointwise predictive density.
+
+It looks like the model reported in the paper does not ignore too much relevant variation in the random effects.
+
+## Bayes factors!
+
+```{r eval=F}
+# random vs atypical
+
+test2b = test2 %>% 
+  filter(
+    lex_typicality != 'typical'
+  )
+
+fit3b = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + reg_rate +
+    (1 + baseline_av_z | participant_id) + 
+    (1 + pre_reg_av_z | word), 
+  data = test2b, 
+  family = bernoulli, 
+  control=list(adapt_delta=0.99, stepsize = 0.01, max_treedepth =15), save_all_pars = T)
+
+fit3c = brm(resp_post_reg ~ 1 + baseline_av_z + pre_reg_av_z + reg_rate +
+    (1 + baseline_av_z | participant_id) + 
+    (1 + pre_reg_av_z | word), 
+  data = test2b, 
+  family = bernoulli, 
+  control=list(adapt_delta=0.99, stepsize = 0.01, max_treedepth =15), save_all_pars = T)
+
+save(fit3b, file = 'fit3b.rda')
+save(fit3c, file = 'fit3c.rda')
+
+```
+
+```{r }
+load('fit3b.rda')
+load('fit3c.rda')
+
+bf = bayes_factor(fit3c, fit3b)
+bf$bf
+# time to ask for help.
+```
+
+## Section 6
+
+```{r }
+baseline$r.baseline_gcm_features = scales::rescale(baseline$baseline_gcm_features, to = c(0,1))
+baseline$r.baseline_mgl_features = scales::rescale(baseline$baseline_mgl_features, to = c(0,1))
+  
+baseline %>% select(word,r.baseline_gcm_features,baseline_gcm_edits) %>% filter(word == 'splive') %>% unique
+baseline %>% select(word,r.baseline_mgl_features,baseline_mgl_edits) %>% filter(word == 'splive') %>% unique
+
+```
+
+## Section 6.3
+
+```{r }
+# don't want to load Hmisc, messes with select()
+with(baseline, Hmisc::somers2(baseline_gcm_features,regular)['C']) # .581
+
+with(baseline, Hmisc::somers2(baseline_mgl_features,regular)['C']) # .586
+```
+
+## jumping to Appendix E!
+
+We scale gcm and mgl scores for the regression models. We residualise to see if the baseline gcm and mgl explain variation not explained by the other one.
+
+```{r eval=F}
+
+baseline = baseline %>% 
+  mutate(
+    c.baseline_gcm_features = scales::rescale(baseline_gcm_features),
+    c.baseline_mgl_features = scales::rescale(baseline_mgl_features)
+  )
+
+baseline_sum = baseline %>% 
+  select(word,baseline_gcm_features,c.baseline_gcm_features,baseline_mgl_features,c.baseline_mgl_features) %>% 
+  unique
+
+with(baseline_sum, cor(baseline_gcm_features,baseline_mgl_features))
+with(baseline_sum, cor(c.baseline_gcm_features,c.baseline_mgl_features))
+
+m1 <- lm(c.baseline_gcm_features ~ c.baseline_mgl_features, data = baseline_sum)
+m2 <- lm(c.baseline_mgl_features ~ c.baseline_gcm_features, data = baseline_sum)
+
+summary(m1)
+summary(m2)
+
+baseline_sum$gcm_residual <- residuals(m1)
+baseline_sum$mgl_residual <- residuals(m2)
+
+baseline_sum = baseline_sum %>% 
+  select(gcm_residual,mgl_residual,word)
+
+baseline2 = left_join(baseline,baseline_sum, by = 'word')
+
+m3 = glmer(regular ~ c.baseline_mgl_features + gcm_residual + (1 | subject) + (1|word), data = baseline2, family = binomial (link = logit), control=glmerControl(optimizer="bobyqa"))
+
+save(m3, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m3.rda')
+
+m4 = glmer(regular ~ c.baseline_gcm_features + mgl_residual + (1 | subject) + (1|word), data = baseline2, family = binomial (link = logit), control=glmerControl(optimizer="bobyqa"))
+
+save(m4, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m4.rda')
+```
+
+```{r }
+
+load('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m4.rda')
+load('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m3.rda')
+
+summary(m3)
+#                         Estimate Std. Error z value Pr(>|z|)    
+# (Intercept)             -0.44918    0.11202  -4.010 6.08e-05 ***
+# c.baseline_mgl_features  1.27846    0.07525  16.989  < 2e-16 ***
+# gcm_residual             1.37767    0.17171   8.023 1.03e-15 ***
+summary(m4)
+#                         Estimate Std. Error z value Pr(>|z|)    
+# (Intercept)             -1.12780    0.14259  -7.909 2.58e-15 ***
+# c.baseline_gcm_features  2.29014    0.15126  15.140  < 2e-16 ***
+# mgl_residual             0.95005    0.08549  11.113  < 2e-16 ***
+```
+
+They do. The abstract generalisations and the word-based comparisons explain non-overlapping domains of variation in participant responses.
+
+## Section 6.4
+
+## jumping to Appendix F; Table 12
+
+```{r }
+
+with(baseline, Hmisc::somers2(baseline_gcm_features,regular)['C']) # .58
+with(baseline, Hmisc::somers2(baseline_mgl_features,regular)['C']) # .59
+
+with(test2, Hmisc::somers2(baseline_gcm_features,resp_post_reg)['C']) # .6
+with(test2, Hmisc::somers2(individual_gcm_features,resp_post_reg)['C']) # .68
+
+with(test2, Hmisc::somers2(baseline_mgl_features,resp_post_reg)['C']) # .61
+with(test2, Hmisc::somers2(individual_mgl_features,resp_post_reg)['C']) # .55
+```
+
+## jumping to Appendix F.2
+
+Now we check, for GCM/MGL, if the individual model explains variation beyond the baseline model in the esp test2.
+
+```{r eval=F}
+test2 = test2 %>% 
+  mutate(
+    c.baseline_gcm_features = scales::rescale(baseline_gcm_features),
+    c.baseline_mgl_features = scales::rescale(baseline_mgl_features),
+    c.individual_gcm_features = scales::rescale(individual_gcm_features),
+    c.individual_mgl_features = scales::rescale(individual_mgl_features),
+  )
+
+test2$gcm_wf_score_diff <- test2$c.individual_gcm_features - test2$c.baseline_gcm_features
+test2$mgl_wf_score_diff <- test2$c.individual_mgl_features - test2$c.baseline_mgl_features
+
+m5 <- glmer(resp_post_reg ~ c.baseline_gcm_features + gcm_wf_score_diff + pre_reg_av + (1 + c.baseline_gcm_features + gcm_wf_score_diff | participant_id) + (1 | word), data = test2, family = binomial (link = logit), control=glmerControl(optimizer="bobyqa"))
+save(m5, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m5.rda')
+
+m6 <- glmer(resp_post_reg ~ c.baseline_mgl_features + mgl_wf_score_diff + pre_reg_av + (1 + c.baseline_mgl_features + mgl_wf_score_diff | participant_id) + (1 | word), data = test2, family = binomial (link = logit), control=glmerControl(optimizer="bobyqa"))
+save(m6, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m6.rda')
+
+# Third
+
+m7 <- glmer(resp_post_reg ~ c.individual_gcm_features + c.baseline_mgl_features + pre_reg_av + (1 + c.individual_gcm_features + c.baseline_mgl_features | participant_id) + (1 | word), data = test2, family = binomial (link = logit), control=glmerControl(optimizer="bobyqa"))
+save(m7, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m7.rda')
+
+```
+
+```{r }
+load('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m5.rda')
+load('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m6.rda')
+load('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m7.rda')
+
+summary(m5)
+#                  Estimate Std. Error z value Pr(>|z|)    
+# (Intercept)              -5.5677     0.3724 -14.949  < 2e-16 ***
+# c.baseline_gcm_features   4.3687     0.4249  10.281  < 2e-16 ***
+# gcm_wf_score_diff         2.6117     0.4696   5.562 2.67e-08 ***
+# pre_reg_av                5.2887     0.6022   8.782  < 2e-16 ***
+summary(m6)
+#                        Estimate Std. Error z value Pr(>|z|)    
+# (Intercept)              -5.0641     0.3374 -15.010   <2e-16 ***
+# c.baseline_mgl_features   2.0335     0.2079   9.782   <2e-16 ***
+# mgl_wf_score_diff         0.2085     0.1723   1.210    0.226    
+# pre_reg_av                7.4492     0.5996  12.425   <2e-16 ***
+summary(m7)
+#                      Estimate Std. Error z value Pr(>|z|)    
+# (Intercept)                -5.6326     0.3364 -16.743  < 2e-16 ***
+# c.individual_gcm_features   2.7857     0.3776   7.378 1.61e-13 ***
+# c.baseline_mgl_features     1.5998     0.1709   9.361  < 2e-16 ***
+# pre_reg_av                  5.4374     0.5842   9.307  < 2e-16 ***
+summary(m7)$coef %>% round(3) %>% xtable
+# vif.mer(m7)
+summary(rePCA(m7))
+
+
+
+test2 %>% select(word,moder,verb_baseline_mgl_reg) %>% filter(moder == 'KEPT' & verb_baseline_mgl_reg == 1) %>% unique %>% arrange(word) %>% select(word) %>% pull %>% length
+# 28, not 57
+```
+
+It looks like the best model has the predictions of the individual gcm and the baseline mgl. 
+
+## Marginal and conditional r squared for the two models
+
+```{r eval=F}
+load('esp_fit.rda')
+formula(fit)
+MuMIn::r.squaredGLMM(fit) # 0.27 0.45
+MuMIn::r.squaredGLMM(m7) # 0.22 0.47 
+test2$m7.pred = predict(m7, type = 'response')
+with(test2, Hmisc::somers2(m7.pred, resp_post_reg)) # .84
+```
+
+## Figure 4
+
+```{r }
+# baseline, post-test, type
+# type: means, gcm, mgl
+b1 = baseline %>% 
+  group_by(
+    word,
+    baseline_gcm_features,
+    baseline_mgl_features
+    ) %>% 
+  summarise(reg.av = mean(regular)) %>% 
+  ungroup()
+
+b1 = b1 %>% 
+  mutate(
+    baseline_gcm_features = scales::rescale(baseline_gcm_features, to = c(0,1)),
+    baseline_mgl_features = scales::rescale(baseline_mgl_features, to = c(0,1)),
+    reg.av = scales::rescale(reg.av, to = c(0,1))
+  )
+
+t2 = test2 %>% 
+  group_by(
+    word, 
+    lex_typicality
+  ) %>% 
+  summarise(
+    post.reg.av = mean(resp_post_reg),
+    individual_gcm_features = mean(individual_gcm_features),
+    individual_mgl_features = mean(individual_mgl_features),
+  ) %>% 
+  ungroup() %>% 
+  mutate(
+    individual_gcm_features = scales::rescale(individual_gcm_features, to = c(0,1)),
+    individual_mgl_features = scales::rescale(individual_mgl_features, to = c(0,1)),
+    post.reg.av = scales::rescale(post.reg.av, to = c(0,1))
+  )
+  
+
+t3 = t2 %>% left_join(b1, by = 'word') %>% 
+  rename(
+    individual.mgl = individual_mgl_features,
+    individual.gcm = individual_gcm_features,
+    baseline.mgl = baseline_mgl_features,
+    baseline.gcm = baseline_gcm_features
+  )
+
+t3la = t3 %>% 
+  select(
+    word,
+    lex_typicality,
+    baseline.gcm,
+    baseline.mgl,
+    reg.av
+  ) %>% 
+  rename(
+    GCM = baseline.gcm,
+    MGL = baseline.mgl,
+    participants = reg.av
+  ) %>% 
+  gather(type, baseline.averages, -word, -lex_typicality)
+
+t3lb = t3 %>% 
+  select(
+    word,
+    lex_typicality,
+    individual.gcm,
+    individual.mgl,
+    post.reg.av
+  ) %>% 
+  rename(
+    GCM = individual.gcm,
+    MGL = individual.mgl,
+    participants = post.reg.av
+  ) %>% 
+  gather(type, individual.averages, -word, -lex_typicality)
+
+t4 = full_join(t3la,t3lb, by = c("word", "lex_typicality", "type"))
+
+t4$type = factor(t4$type, levels = c('participants', 'GCM', 'MGL'))
+
+ggplot(t4, aes(x = baseline.averages, y = individual.averages, colour = lex_typicality, shape = lex_typicality)) +
+  guides(size = F) +
+  geom_point() +
+  geom_smooth(se = F, method = 'loess', formula = 'y ~ x') +
+  facet_wrap( ~ type)
+ggsave('interactionplot.pdf', device = cairo_pdf, width = 12.5, height = 4)
+
+```
