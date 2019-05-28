@@ -15,13 +15,14 @@ options(mc.cores=parallel::detectCores())
 # options(mc.cores=1)
 Sys.setenv(TZ="Europe/Rome") # a szivemben örök tavasz van
 
-setwd('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper')
+try(setwd('../../models/paper'))
+try(setwd('~/Github/RaczBecknerHayPierrehumbert2019/models/paper'))
 ```
 
 These are the models and stats for the convergence paper, going through it by section number.
 
 ```{r }
-source('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/functions/grabdata.R')
+source('../../functions/grabdata.R')
 
 ```
 
@@ -58,7 +59,7 @@ fit1 = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + r
 
 fit1 = add_criterion(fit1, criterion = 'loo')
 
-save(fit1, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/bayes_fit1.rda')
+save(fit1, file = '../../models/paper/bayes_fit1.rda')
 
 #####################################################
 
@@ -71,7 +72,7 @@ fit2 = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + r
 
 fit2 = add_criterion(fit2, criterion = 'loo')
 
-save(fit2, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/bayes_fit2.rda')
+save(fit2, file = '../../models/paper/bayes_fit2.rda')
 
 #####################################################
 
@@ -86,7 +87,7 @@ fit3 = add_criterion(fit3, criterion = 'loo')
 
 # fit3b = add_criterion(fit3b, criterion = 'loo')
 
-save(fit3, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/bayes_fit3.rda')
+save(fit3, file = '../../models/paper/bayes_fit3.rda')
 
 #####################################################
 
@@ -99,12 +100,12 @@ fit4 = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + r
 
 fit4 = add_criterion(fit4, criterion = 'loo')
 
-save(fit4, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/bayes_fit4.rda')
+save(fit4, file = '../../models/paper/bayes_fit4.rda')
 
 #####################################################
 
 loo.comparisons = loo_compare(fit1,fit2,fit3,fit4)
-save(loo.comparisons, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/loo_comparisons.rda')
+save(loo.comparisons, file = '../../models/paper/loo_comparisons.rda')
 
 options(mc.cores=1)
 
@@ -114,10 +115,10 @@ options(mc.cores=1)
 
 ```{r }
 
-load('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/bayes_fit3.rda')
+load('../../models/paper/bayes_fit3.rda')
 bayes_factor()
 
-load('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/loo_comparisons.rda')
+load('../../models/paper/loo_comparisons.rda')
 loo.comparisons
 
 # https://arxiv.org/abs/1507.04544 s5.2
@@ -220,17 +221,17 @@ baseline2 = left_join(baseline,baseline_sum, by = 'word')
 
 m3 = glmer(regular ~ c.baseline_mgl_features + gcm_residual + (1 | subject) + (1|word), data = baseline2, family = binomial (link = logit), control=glmerControl(optimizer="bobyqa"))
 
-save(m3, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m3.rda')
+save(m3, file = '../../models/paper/m3.rda')
 
 m4 = glmer(regular ~ c.baseline_gcm_features + mgl_residual + (1 | subject) + (1|word), data = baseline2, family = binomial (link = logit), control=glmerControl(optimizer="bobyqa"))
 
-save(m4, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m4.rda')
+save(m4, file = '../../models/paper/m4.rda')
 ```
 
 ```{r }
 
-load('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m4.rda')
-load('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m3.rda')
+load('../../models/paper/m4.rda')
+load('../../models/paper/m3.rda')
 
 summary(m3)
 #                         Estimate Std. Error z value Pr(>|z|)    
@@ -279,22 +280,22 @@ test2$gcm_wf_score_diff <- test2$c.individual_gcm_features - test2$c.baseline_gc
 test2$mgl_wf_score_diff <- test2$c.individual_mgl_features - test2$c.baseline_mgl_features
 
 m5 <- glmer(resp_post_reg ~ c.baseline_gcm_features + gcm_wf_score_diff + pre_reg_av + (1 + c.baseline_gcm_features + gcm_wf_score_diff | participant_id) + (1 | word), data = test2, family = binomial (link = logit), control=glmerControl(optimizer="bobyqa"))
-save(m5, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m5.rda')
+save(m5, file = '../../models/paper/m5.rda')
 
 m6 <- glmer(resp_post_reg ~ c.baseline_mgl_features + mgl_wf_score_diff + pre_reg_av + (1 + c.baseline_mgl_features + mgl_wf_score_diff | participant_id) + (1 | word), data = test2, family = binomial (link = logit), control=glmerControl(optimizer="bobyqa"))
-save(m6, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m6.rda')
+save(m6, file = '../../models/paper/m6.rda')
 
 # Third
 
 m7 <- glmer(resp_post_reg ~ c.individual_gcm_features + c.baseline_mgl_features + pre_reg_av + (1 + c.individual_gcm_features + c.baseline_mgl_features | participant_id) + (1 | word), data = test2, family = binomial (link = logit), control=glmerControl(optimizer="bobyqa"))
-save(m7, file = '~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m7.rda')
+save(m7, file = '../../models/paper/m7.rda')
 
 ```
 
 ```{r }
-load('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m5.rda')
-load('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m6.rda')
-load('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m7.rda')
+load('../../models/paper/m5.rda')
+load('../../models/paper/m6.rda')
+load('../../models/paper/m7.rda')
 
 summary(m5)
 #                  Estimate Std. Error z value Pr(>|z|)    
@@ -358,10 +359,18 @@ b1 = b1 %>%
     reg.av = scales::rescale(reg.av, to = c(0,1))
   )
 
-t2 = test2 %>% 
+t2 = test2 %>%
+  mutate(lex_typicality2 = 
+           case_when(
+             lex_typicality == 'atypical' ~ 'reversed',
+             lex_typicality == 'typical' ~ 'typical',
+             lex_typicality == 'random' ~ 'random',
+           ),
+         lex_typicality2 = factor(lex_typicality2, levels = c('typical', 'reversed', 'random'))
+         ) %>% 
   group_by(
     word, 
-    lex_typicality
+    lex_typicality2
   ) %>% 
   summarise(
     post.reg.av = mean(resp_post_reg),
@@ -387,7 +396,7 @@ t3 = t2 %>% left_join(b1, by = 'word') %>%
 t3la = t3 %>% 
   select(
     word,
-    lex_typicality,
+    lex_typicality2,
     baseline.gcm,
     baseline.mgl,
     reg.av
@@ -397,12 +406,12 @@ t3la = t3 %>%
     MGL = baseline.mgl,
     participants = reg.av
   ) %>% 
-  gather(type, baseline.averages, -word, -lex_typicality)
+  gather(type, baseline.averages, -word, -lex_typicality2)
 
 t3lb = t3 %>% 
   select(
     word,
-    lex_typicality,
+    lex_typicality2,
     individual.gcm,
     individual.mgl,
     post.reg.av
@@ -412,17 +421,22 @@ t3lb = t3 %>%
     MGL = individual.mgl,
     participants = post.reg.av
   ) %>% 
-  gather(type, individual.averages, -word, -lex_typicality)
+  gather(type, individual.averages, -word, -lex_typicality2)
 
-t4 = full_join(t3la,t3lb, by = c("word", "lex_typicality", "type"))
+t4 = full_join(t3la,t3lb, by = c("word", "lex_typicality2", "type"))
 
 t4$type = factor(t4$type, levels = c('participants', 'GCM', 'MGL'))
 
-ggplot(t4, aes(x = baseline.averages, y = individual.averages, colour = lex_typicality, shape = lex_typicality)) +
+ggplot(t4, aes(x = baseline.averages, y = individual.averages, colour = lex_typicality2, shape = lex_typicality2)) +
   guides(size = F) +
   geom_point() +
   geom_smooth(se = F, method = 'loess', formula = 'y ~ x') +
-  facet_wrap( ~ type)
-ggsave('interactionplot.pdf', device = cairo_pdf, width = 12.5, height = 4)
+  facet_wrap( ~ type) +
+  scale_shape_discrete(name="Lexical\ntypicality") +
+  scale_colour_discrete(name="Lexical\ntypicality") +
+  xlab('verb baseline average') +
+  ylab('verb ESP average')
+# ggsave('interactionplot.pdf', device = cairo_pdf, width = 12.5, height = 4)
+ggsave('fig4_2019.pdf', width = 12.5, height = 4)
 
 ```
