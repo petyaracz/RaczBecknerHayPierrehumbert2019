@@ -46,7 +46,7 @@ Our weapon of choice is typially lme4. But it won't converge with full random ef
 
 ```{r }
 test2$lex_typicality = factor(test2$lex_typicality, levels = c('typical', 'random', 'atypical'))
-test2$reg_rate = factor(test2$reg_rate, levels = c('-40%', 'nc', '+40%'))
+test2$reg_rate = factor(test2$reg_rate, levels = c('nc', '-40%', '+40%'))
 test2$baseline_av_z = scales::rescale(test2$baseline_av)
 test2$pre_reg_av_z = scales::rescale(test2$pre_reg_av)
 
@@ -115,11 +115,25 @@ options(mc.cores=1)
 
 ```{r }
 
-load('../../models/paper/bayes_fit3.rda')
+load('models/paper/bayes_fit3.rda')
 bayes_factor()
 
 load('../../models/paper/loo_comparisons.rda')
 loo.comparisons
+
+# the frequentist fit reported in the paper
+# watch out for factor levels
+# lex typ: typical - random - reversed
+# reg shift: nc - -40% - +40%
+lme.fit2 = glmer(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + reg_rate +
+    (1 + baseline_av_z | participant_id) + 
+    (1  | word), 
+  data = test2, 
+  family = binomial (link = logit),
+  control=glmerControl(optimizer="bobyqa")
+)
+summary(lme.fit2)
+# not the same as model in paper.
 
 # https://arxiv.org/abs/1507.04544 s5.2
 ```
