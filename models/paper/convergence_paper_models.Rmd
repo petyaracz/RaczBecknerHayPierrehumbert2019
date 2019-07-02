@@ -10,19 +10,20 @@ knitr::opts_chunk$set(fig.width=10, fig.height=10, fig.path='Figs/', eval=FALSE,
 
 library(brms)
 library(lme4)
+library(merTools)
 library(tidyverse)
 options(mc.cores=parallel::detectCores())
 # options(mc.cores=1)
 Sys.setenv(TZ="Europe/Rome") # a szivemben örök tavasz van
 
-try(setwd('../../models/paper'))
-try(setwd('~/Github/RaczBecknerHayPierrehumbert2019/models/paper'))
+try(setwd('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019'))
+try(setwd('~/Github/RaczBecknerHayPierrehumbert2019'))
 ```
 
 These are the models and stats for the convergence paper, going through it by section number.
 
 ```{r }
-source('../../functions/grabdata.R')
+source('functions/grabdata.R')
 
 ```
 
@@ -49,6 +50,9 @@ test2$lex_typicality = factor(test2$lex_typicality, levels = c('typical', 'rando
 test2$reg_rate = factor(test2$reg_rate, levels = c('nc', '-40%', '+40%'))
 test2$baseline_av_z = scales::rescale(test2$baseline_av)
 test2$pre_reg_av_z = scales::rescale(test2$pre_reg_av)
+test2$baseline_av_c = test2$baseline_av - mean(test2$baseline_av)
+test2$pre_reg_av_c = test2$pre_reg_av - mean(test2$pre_reg_av)
+
 
 fit1 = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + reg_rate +
     (1 | participant_id) + 
@@ -120,22 +124,6 @@ bayes_factor()
 
 load('../../models/paper/loo_comparisons.rda')
 loo.comparisons
-
-# the frequentist fit reported in the paper
-# watch out for factor levels
-# lex typ: typical - random - reversed
-# reg shift: nc - -40% - +40%
-lme.fit2 = glmer(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + reg_rate +
-    (1 + baseline_av_z | participant_id) + 
-    (1  | word), 
-  data = test2, 
-  family = binomial (link = logit),
-  control=glmerControl(optimizer="bobyqa")
-)
-summary(lme.fit2)
-# not the same as model in paper.
-
-# https://arxiv.org/abs/1507.04544 s5.2
 ```
 
 We definitely want some random slopes (fit1 is worse than the rest). Other than that, the various constellations do not improve the model's expected log pointwise predictive density.
@@ -152,33 +140,74 @@ test2b = test2 %>%
     lex_typicality != 'typical'
   )
 
-fit3b = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + reg_rate +
-    (1 + baseline_av_z | participant_id) + 
-    (1 + pre_reg_av_z | word), 
+fit_power1 = glmer(resp_post_reg ~ 1 + baseline_av_c * lex_typicality + pre_reg_av_c + reg_rate +
+    (1 + baseline_av_c | participant_id) + 
+    (1 | word), 
   data = test2b, 
-  family = bernoulli, 
-  control=list(adapt_delta=0.99, stepsize = 0.01, max_treedepth =15), save_all_pars = T)
+  family = binomial ( link = logit ),
+  control=glmerControl(optimizer="bobyqa")
+  )
 
-fit3c = brm(resp_post_reg ~ 1 + baseline_av_z + pre_reg_av_z + reg_rate +
-    (1 + baseline_av_z | participant_id) + 
-    (1 + pre_reg_av_z | word), 
+fit_power2 = glmer(resp_post_reg ~ 1 + baseline_av_c + lex_typicality + pre_reg_av_c + reg_rate +
+    (1 + baseline_av_c | participant_id) + 
+    (1 | word), 
   data = test2b, 
-  family = bernoulli, 
-  control=list(adapt_delta=0.99, stepsize = 0.01, max_treedepth =15), save_all_pars = T)
+  family = binomial ( link = logit ),
+  control=glmerControl(optimizer="bobyqa")
+  )
 
-save(fit3b, file = 'fit3b.rda')
-save(fit3c, file = 'fit3c.rda')
+# summary(fit_power1)
+# summary(fit_power2)
+
+exp((BIC(fit_power2) - BIC(fit_power1))/2)
+# 0.01179529
+# we favour the null model
 
 ```
+
+The lme4 fit reported in the paper is here.
 
 ```{r }
-load('fit3b.rda')
-load('fit3c.rda')
+# the frequentist fit reported in the paper
+# watch out for factor levels
+# lex typ: typical - random - reversed
+# reg shift: nc - -40% - +40%
+lme.fit2 = glmer(resp_post_reg ~ 1 + baseline_av_c * lex_typicality + pre_reg_av_c + reg_rate +
+    (1 + baseline_av_c | participant_id) + 
+    (1  | word), 
+  data = test2, 
+  family = binomial (link = logit),
+  control=glmerControl(optimizer="bobyqa")
+)
+summary(lme.fit2)$coef %>% 
+  xtable
 
-bf = bayes_factor(fit3c, fit3b)
-bf$bf
-# time to ask for help.
+# https://arxiv.org/abs/1507.04544 s5.2
 ```
+
+Let's have a few estimates for CI-s.
+
+```{r }
+lme.fit2.preds = predictInterval(merMod = lme.fit2, level = 0.95, n.sims = 1000, stat = 'median', type = 'probability')
+
+test2c = cbind(test2,lme.fit2.preds) 
+test2c %>%   
+  group_by(
+    reg_rate
+  ) %>% 
+  summarise(
+    fit = mean(fit),
+    upr = mean(upr),
+    lwr = mean(lwr)
+  ) %>% 
+  ggplot(aes(x = reg_rate, y = fit)) +
+  geom_point() +
+  geom_linerange(aes(ymin = lwr, ymax = upr))
+
+confint(lme.fit2, method = 'Wald', level = 0.95)
+effects::allEffects(lme.fit2)
+```
+
 
 ## Section 6
 
