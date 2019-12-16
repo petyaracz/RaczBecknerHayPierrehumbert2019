@@ -23,7 +23,46 @@ try(setwd('~/Github/RaczBecknerHayPierrehumbert2019'))
 These are the models and stats for the convergence paper, going through it by section number.
 
 ```{r }
-source('functions/grabdata.R')
+# source('functions/grabdata.R')
+
+celex = read_csv('data/celex_verbs_with_categories_csv_fixed_moder.txt')
+
+celex = celex %>% 
+  select(
+    present.o,
+    present,
+    moder,
+    regular
+  ) %>% 
+  rename(
+    word = present.o,
+    disc.old = present
+  ) %>%
+  mutate(
+    category = case_when(
+      regular == 'Y' ~ 'regular',
+      regular == 'N' ~ 'irregular'
+    )
+  )  %>% 
+  filter(!is.na(category))
+
+# fixing transcription
+
+transcription.matcher = read_csv('data/transcription_matcher.txt')
+
+celex = left_join(celex, transcription.matcher)
+
+celex[celex$disc == 'riN',]
+
+# test set
+baseline = read_csv('data/convergence_paper_baseline_data.txt')
+
+baseline.verbs = read_csv('data/baseline_verbs.txt')
+# esp data
+espdata = read_csv('data/convergence_paper_esp_data.txt')
+
+# esp only post-test with gcm weights
+test2 = read_csv('data/convergence_paper_esp_test2_predictions.txt')
 
 ```
 
@@ -171,16 +210,25 @@ The lme4 fit reported in the paper is here.
 # the frequentist fit reported in the paper
 # watch out for factor levels
 # lex typ: typical - random - reversed
-# reg shift: nc - -40% - +40%
-lme.fit2 = glmer(resp_post_reg ~ 1 + baseline_av_c * lex_typicality + pre_reg_av_c + reg_rate +
+# reg rate: nc - -40% - +40%
+test2$lexical_typicality = test2$lex_typicality
+test2$regularisation_rate = ifelse(
+  as.character(test2$reg_rate) == 'nc', 'no change',
+  as.character(test2$reg_rate)
+  )
+test2$regularisation_rate = factor(test2$regularisation_rate, levels = c('no change', '-40%', '+40%'))
+
+lme.fit2 = glmer(resp_post_reg ~ 1 + baseline_av_c * lexical_typicality + pre_reg_av_c + regularisation_rate +
     (1 + baseline_av_c | participant_id) + 
     (1  | word), 
   data = test2, 
   family = binomial (link = logit),
   control=glmerControl(optimizer="bobyqa")
 )
-summary(lme.fit2)$coef %>% 
-  xtable
+summary(lme.fit2)$coef 
+
+plot(effects::effect('regularisation_rate', lme.fit2), main = '', xlab = 'regularisation shift', ylab = 'regular response in post-test')
+plot(effects::effect('baseline_av_c:lexical_typicality', lme.fit2), multiline = T, lines=list(lty=c(1,2,3)), main = '', xlab = 'verb baseline mean', ylab = 'regular response in post-test')
 
 # https://arxiv.org/abs/1507.04544 s5.2
 ```
@@ -206,6 +254,64 @@ test2c %>%
 
 confint(lme.fit2, method = 'Wald', level = 0.95)
 effects::allEffects(lme.fit2)
+
+test2 %>% 
+  mutate(
+    reg_rate2 = factor(reg_rate, levels = c('-40%', 'nc', '+40%'))
+  ) %>% 
+  ggplot(aes(x = reg_rate2, y = post_reg_av, fill = reg_rate2)) +
+  geom_jitter(aes(colour = reg_rate2), width = 0.3) +
+    geom_violin(aes(alpha = 0.5)) +
+    geom_boxplot(width = 0.2) +
+    # stat_summary(fun.y=mean, geom="point", shape=16, size=4) +
+    scale_fill_brewer(palette="Set2") +
+    scale_colour_brewer(palette="Set2") +
+    theme(
+      text = element_text(size=30), 
+      # axis.text.x = element_text(angle=90, vjust=0.5), 
+      # axis.title.x=element_blank(), 
+      legend.position = 'none'
+      ) +
+    xlab('bot regularisation shift') +
+    ylab('participant post-test mean regularisation') +
+    scale_x_discrete(labels=c('-40%', 'no change', '+40%'))
+ggsave('reg_shift_av.pdf', width = 9, height = 6)  
+
+test2 %>% 
+  group_by(
+    word,
+    baseline_av,
+    lex_typicality
+  ) %>% 
+  summarise(
+    mean = mean(resp_post_reg)
+  ) %>% 
+  ggplot(aes(x = baseline_av, y = mean, colour = lex_typicality, label = word)) +
+  geom_label() +
+  geom_smooth(method = 'lm', se = F) +
+  scale_colour_brewer(palette="Dark2") +
+    theme(
+      text = element_text(size=30), 
+      # axis.text.x = element_text(angle=90, vjust=0.5), 
+      # axis.title.x=element_blank(), 
+      legend.position = 'none'
+      ) +
+    xlab('verb baseline mean regularisation') +
+    ylab('verb post-test mean regularisation')
+ggsave('lex_typ_av.pdf', width = 9, height = 9)  
+
+sum1 = confint(lme.fit2, method = 'Wald') %>% data.frame
+sum2 = summary(lme.fit2)$coef %>% data.frame
+sum1$Term = rownames(sum1)
+sum2$Term = rownames(sum2)
+sum3 = left_join(sum2, sum1) %>% 
+  rename(`Std error` = Std..Error,
+    `z value` = z.value,
+    `2.5%` = X2.5..,
+    `97.5%` = X97.5..
+    )
+sum3 %>% dplyr::select(Term, Estimate, `Std error`, `z value`, `2.5%`, `97.5%`) %>% knitr::kable(digits = 2)
+
 ```
 
 
@@ -437,7 +543,7 @@ t3 = t2 %>% left_join(b1, by = 'word') %>%
   )
 
 t3la = t3 %>% 
-  select(
+  dplyr::select(
     word,
     lex_typicality2,
     baseline.gcm,
@@ -452,7 +558,7 @@ t3la = t3 %>%
   gather(type, baseline.averages, -word, -lex_typicality2)
 
 t3lb = t3 %>% 
-  select(
+  dplyr::select(
     word,
     lex_typicality2,
     individual.gcm,
@@ -470,15 +576,16 @@ t4 = full_join(t3la,t3lb, by = c("word", "lex_typicality2", "type"))
 
 t4$type = factor(t4$type, levels = c('participants', 'GCM', 'MGL'))
 
-ggplot(t4, aes(x = baseline.averages, y = individual.averages, colour = lex_typicality2, shape = lex_typicality2)) +
+ggplot(t4, aes(x = baseline.averages, y = individual.averages, colour = lex_typicality2, shape = lex_typicality2, linetype = lex_typicality2)) +
   guides(size = F) +
   geom_point() +
   geom_smooth(se = F, method = 'loess', formula = 'y ~ x') +
   facet_wrap( ~ type) +
   scale_shape_discrete(name="Lexical\ntypicality") +
-  scale_colour_discrete(name="Lexical\ntypicality") +
-  xlab('verb baseline average') +
-  ylab('verb ESP average')
+  # scale_colour_discrete(name="Lexical\ntypicality") +
+  xlab('verb baseline regularization') +
+  ylab('verb ESP regularization') +
+  scale_colour_brewer(palette = 'Set2', name="Lexical\ntypicality")
 # ggsave('interactionplot.pdf', device = cairo_pdf, width = 12.5, height = 4)
 ggsave('fig4_2019.pdf', width = 12.5, height = 4)
 

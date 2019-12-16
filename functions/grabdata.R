@@ -1,6 +1,5 @@
-try(setwd('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019'))
 try(setwd('~/Github/RaczBecknerHayPierrehumbert2019'))
-
+# try(setwd('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019'))
 
 # training set
 
@@ -37,7 +36,7 @@ celex[celex$disc == 'riN',]
 # test set
 baseline = read_csv('data/convergence_paper_baseline_data.txt')
 
-
+baseline.verbs = read_csv('data/baseline_verbs.txt')
 # esp data
 espdata = read_csv('data/convergence_paper_esp_data.txt')
 

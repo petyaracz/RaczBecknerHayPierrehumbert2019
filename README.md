@@ -22,7 +22,6 @@ Our letter to reviewers is [here](https://docs.google.com/document/d/1psklCvgpPM
 
 ### Functions
 
-- grabdata -- pulls in data
 - grabfunctions -- GCM written in R, with lookup table
 
 ### Models

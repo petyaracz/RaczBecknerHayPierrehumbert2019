@@ -256,6 +256,8 @@ celex2 = celex2 %>%
 # - regular verbs not in a moder class
 # - irregular verbs not in a moder class
 
+celex2 %>% filter(is.na(moder.training), category.training == 'regular')
+
 # some verbs are in celex as both regular and irregular. these verbs are in the lookup only once.
 # so we expect the lookup to get longer after the join.
 lookup = left_join(lookup, celex2, by = 'training')
@@ -327,7 +329,7 @@ lookup = rbind(lookup_baseline, lookup_esp)
 write_csv(lookup, 'feature_distance_lookup_tidy.txt')
 ```
 
-Our lookup table has been made. Let's hope it's not the way Joe Pesci was made in Goodfellas.
+Our lookup table has been made.
 
 ## 2a. Replicating the Baseline-GCM in the paper. 
 
@@ -453,7 +455,7 @@ with(baseline.verbs, cor(reg.av, baseline_gcm_wf_lookup_reviewer)) # .61
 
 ```
 
-## 3a. Fitting the reviewer GCM (I hope this catches on) on the ESP experiment
+## 3a. Fitting the reviewer GCM on the ESP experiment
 
 We now have a GCM that's trained on irregular and regular verbs in the target verb's moder class, as well as miscellaneous regular verbs. We tuned it.
 
