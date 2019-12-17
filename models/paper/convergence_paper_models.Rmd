@@ -64,6 +64,26 @@ espdata = read_csv('data/convergence_paper_esp_data.txt')
 # esp only post-test with gcm weights
 test2 = read_csv('data/convergence_paper_esp_test2_predictions.txt')
 
+# moving factors round
+test2$lex_typicality = factor(test2$lex_typicality, levels = c('typical', 'random', 'atypical'))
+test2$reg_rate = factor(test2$reg_rate, levels = c('nc', '-40%', '+40%'))
+test2$baseline_av_z = scales::rescale(test2$baseline_av)
+test2$pre_reg_av_z = scales::rescale(test2$pre_reg_av)
+test2$baseline_av_c = test2$baseline_av - mean(test2$baseline_av)
+test2$pre_reg_av_c = test2$pre_reg_av - mean(test2$pre_reg_av)
+
+# lex typ: typical - random - reversed
+# reg rate: nc - -40% - +40%
+test2$lexical_typicality = test2$lex_typicality
+test2$regularisation_rate = ifelse(
+  as.character(test2$reg_rate) == 'nc', 'no change',
+  as.character(test2$reg_rate)
+  )
+test2$regularisation_rate = factor(test2$regularisation_rate, levels = c('no change', '-40%', '+40%'))
+
+
+
+
 ```
 
 ## Section 4.2
@@ -85,14 +105,6 @@ Fits on what people are doing across conditions in test2. No algorithmic learnin
 Our weapon of choice is typially lme4. But it won't converge with full random effects structure. So we turn to brms.
 
 ```{r }
-test2$lex_typicality = factor(test2$lex_typicality, levels = c('typical', 'random', 'atypical'))
-test2$reg_rate = factor(test2$reg_rate, levels = c('nc', '-40%', '+40%'))
-test2$baseline_av_z = scales::rescale(test2$baseline_av)
-test2$pre_reg_av_z = scales::rescale(test2$pre_reg_av)
-test2$baseline_av_c = test2$baseline_av - mean(test2$baseline_av)
-test2$pre_reg_av_c = test2$pre_reg_av - mean(test2$pre_reg_av)
-
-
 fit1 = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + reg_rate +
     (1 | participant_id) + 
     (1 | word), 
@@ -209,16 +221,12 @@ The lme4 fit reported in the paper is here.
 ```{r }
 # the frequentist fit reported in the paper
 # watch out for factor levels
-# lex typ: typical - random - reversed
-# reg rate: nc - -40% - +40%
-test2$lexical_typicality = test2$lex_typicality
-test2$regularisation_rate = ifelse(
-  as.character(test2$reg_rate) == 'nc', 'no change',
-  as.character(test2$reg_rate)
-  )
-test2$regularisation_rate = factor(test2$regularisation_rate, levels = c('no change', '-40%', '+40%'))
+test2$verb_baseline_average = test2$baseline_av_c
+test2$bot_lexical_typicality = test2$lexical_typicality
+test2$participant_prereg_average = test2$pre_reg_av_c
+test2$bot_regularisation_rate = test2$regularisation_rate
 
-lme.fit2 = glmer(resp_post_reg ~ 1 + baseline_av_c * lexical_typicality + pre_reg_av_c + regularisation_rate +
+lme.fit2 = glmer(resp_post_reg ~ 1 + verb_baseline_average * bot_lexical_typicality + participant_prereg_average + bot_regularisation_rate +
     (1 + baseline_av_c | participant_id) + 
     (1  | word), 
   data = test2, 
@@ -227,13 +235,55 @@ lme.fit2 = glmer(resp_post_reg ~ 1 + baseline_av_c * lexical_typicality + pre_re
 )
 summary(lme.fit2)$coef 
 
-plot(effects::effect('regularisation_rate', lme.fit2), main = '', xlab = 'regularisation shift', ylab = 'regular response in post-test')
-plot(effects::effect('baseline_av_c:lexical_typicality', lme.fit2), multiline = T, lines=list(lty=c(1,2,3)), main = '', xlab = 'verb baseline mean', ylab = 'regular response in post-test')
+plot(effects::effect('bot_regularisation_rate', lme.fit2), main = '', xlab = 'regularisation shift', ylab = 'regular response in post-test')
+plot(effects::effect('verb_baseline_average:bot_lexical_typicality', lme.fit2), multiline = T, lines=list(lty=c(1,2,3)), main = '', xlab = 'verb baseline mean', ylab = 'regular response in post-test')
 
 # https://arxiv.org/abs/1507.04544 s5.2
 ```
 
-Let's have a few estimates for CI-s.
+Here is a simple confint plot using Wald estimates.
+
+```{r }
+t1 = broom::tidy(lme.fit2)
+
+# we get some wald confidence intervals
+
+confints = confint(lme.fit2, method = 'Wald') %>% broom::tidy()
+confints = confints[-1,]
+names(confints) = c('term', '2.5%', '97.5%')
+t1 = inner_join(t1, confints) %>% 
+  dplyr::select(-p.value,-group)
+
+t1 %>% 
+  mutate(
+    row_id = 9:1, # watch this
+  ) %>% 
+  mutate(
+    term2 = 
+    case_when(
+      term == 'verb_baseline_average' ~ 'verb baseline average',
+      term == 'bot_lexical_typicalityrandom' ~ 'bot lexical typicality = random',
+      term == 'bot_lexical_typicalityatypical' ~ 'bot lexical typicality = atypical',
+      term == 'participant_prereg_average' ~ 'participant prereg average',
+      term == 'bot_regularisation_rate-40%' ~ 'bot regularisation rate = -40%',
+      term == 'bot_regularisation_rate+40%' ~ 'bot regularisation rate = +40%',
+      term == 'verb_baseline_average:bot_lexical_typicalityrandom' ~ 'verb baseline average : bot lexical typicality = random',
+      term == 'verb_baseline_average:bot_lexical_typicalityatypical' ~ 'verb baseline average : bot lexical typicality = atypical',
+      term == '(Intercept)' ~ 'Intercept'
+      )
+    ) %>% 
+  ggplot(aes(x = term2 %>% reorder(row_id), y = estimate)) +
+  geom_point() +
+  geom_linerange(aes(x = term2, ymin = `2.5%`, ymax = `97.5%`)) +
+  geom_hline(aes(yintercept = 0), linetype = 'dashed') +
+  xlab('') +
+  coord_flip() +
+  ggtitle('Estimates and 95% confidence intervals in model for test results')
+ggsave('terms_figure.pdf', width = 9, height = 5)
+
+```
+
+Let's have a few predicted intervals.
 
 ```{r }
 lme.fit2.preds = predictInterval(merMod = lme.fit2, level = 0.95, n.sims = 1000, stat = 'median', type = 'probability')
@@ -251,9 +301,6 @@ test2c %>%
   ggplot(aes(x = reg_rate, y = fit)) +
   geom_point() +
   geom_linerange(aes(ymin = lwr, ymax = upr))
-
-confint(lme.fit2, method = 'Wald', level = 0.95)
-effects::allEffects(lme.fit2)
 
 test2 %>% 
   mutate(
