@@ -632,6 +632,7 @@ ggplot(t4, aes(x = baseline.averages, y = individual.averages, colour = lex_typi
   # scale_colour_discrete(name="Lexical\ntypicality") +
   xlab('verb baseline regularization') +
   ylab('verb ESP regularization') +
+  guides(linetype = F) +
   scale_colour_brewer(palette = 'Set2', name="Lexical\ntypicality")
 # ggsave('interactionplot.pdf', device = cairo_pdf, width = 12.5, height = 4)
 ggsave('fig4_2019.pdf', width = 12.5, height = 4)
