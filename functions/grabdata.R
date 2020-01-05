@@ -1,8 +1,9 @@
 try(setwd('~/Github/RaczBecknerHayPierrehumbert2019'))
 # try(setwd('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019'))
 
+######################################################################
 # training set
-
+######################################################################
 
 celex = read_csv('data/celex_verbs_with_categories_csv_fixed_moder.txt')
 
@@ -31,9 +32,12 @@ transcription.matcher = read_csv('data/transcription_matcher.txt')
 
 celex = left_join(celex, transcription.matcher)
 
-celex[celex$disc == 'riN',]
+# celex[celex$disc == 'riN',]
 
+######################################################################
 # test set
+######################################################################
+
 baseline = read_csv('data/convergence_paper_baseline_data.txt')
 
 baseline.verbs = read_csv('data/baseline_verbs.txt')

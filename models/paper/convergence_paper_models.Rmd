@@ -16,72 +16,15 @@ options(mc.cores=parallel::detectCores())
 # options(mc.cores=1)
 Sys.setenv(TZ="Europe/Rome") # a szivemben örök tavasz van
 
-try(setwd('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019'))
 try(setwd('~/Github/RaczBecknerHayPierrehumbert2019'))
 ```
 
 These are the models and stats for the convergence paper, going through it by section number.
 
+
+
 ```{r }
-# source('functions/grabdata.R')
-
-celex = read_csv('data/celex_verbs_with_categories_csv_fixed_moder.txt')
-
-celex = celex %>% 
-  select(
-    present.o,
-    present,
-    moder,
-    regular
-  ) %>% 
-  rename(
-    word = present.o,
-    disc.old = present
-  ) %>%
-  mutate(
-    category = case_when(
-      regular == 'Y' ~ 'regular',
-      regular == 'N' ~ 'irregular'
-    )
-  )  %>% 
-  filter(!is.na(category))
-
-# fixing transcription
-
-transcription.matcher = read_csv('data/transcription_matcher.txt')
-
-celex = left_join(celex, transcription.matcher)
-
-celex[celex$disc == 'riN',]
-
-# test set
-baseline = read_csv('data/convergence_paper_baseline_data.txt')
-
-baseline.verbs = read_csv('data/baseline_verbs.txt')
-# esp data
-espdata = read_csv('data/convergence_paper_esp_data.txt')
-
-# esp only post-test with gcm weights
-test2 = read_csv('data/convergence_paper_esp_test2_predictions.txt')
-
-# moving factors round
-test2$lex_typicality = factor(test2$lex_typicality, levels = c('typical', 'random', 'atypical'))
-test2$reg_rate = factor(test2$reg_rate, levels = c('nc', '-40%', '+40%'))
-test2$baseline_av_z = scales::rescale(test2$baseline_av)
-test2$pre_reg_av_z = scales::rescale(test2$pre_reg_av)
-test2$baseline_av_c = test2$baseline_av - mean(test2$baseline_av)
-test2$pre_reg_av_c = test2$pre_reg_av - mean(test2$pre_reg_av)
-
-# lex typ: typical - random - reversed
-# reg rate: nc - -40% - +40%
-test2$lexical_typicality = test2$lex_typicality
-test2$regularisation_rate = ifelse(
-  as.character(test2$reg_rate) == 'nc', 'no change',
-  as.character(test2$reg_rate)
-  )
-test2$regularisation_rate = factor(test2$regularisation_rate, levels = c('no change', '-40%', '+40%'))
-
-
+source('functions/grabdata.R')
 
 
 ```
@@ -382,7 +325,7 @@ with(baseline, Hmisc::somers2(baseline_gcm_features,regular)['C']) # .581
 with(baseline, Hmisc::somers2(baseline_mgl_features,regular)['C']) # .586
 ```
 
-## jumping to Appendix E!
+## jumping to SI section E!
 
 We scale gcm and mgl scores for the regression models. We residualise to see if the baseline gcm and mgl explain variation not explained by the other one.
 
@@ -445,7 +388,7 @@ They do. The abstract generalisations and the word-based comparisons explain non
 
 ## Section 6.4
 
-## jumping to Appendix F; Table 12
+## jumping to SI section F; Table 12
 
 ```{r }
 
@@ -459,7 +402,7 @@ with(test2, Hmisc::somers2(baseline_mgl_features,resp_post_reg)['C']) # .61
 with(test2, Hmisc::somers2(individual_mgl_features,resp_post_reg)['C']) # .55
 ```
 
-## jumping to Appendix F.2
+## jumping to SI section F.2
 
 Now we check, for GCM/MGL, if the individual model explains variation beyond the baseline model in the esp test2.
 

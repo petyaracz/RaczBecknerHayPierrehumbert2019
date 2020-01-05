@@ -8,7 +8,7 @@ output: html_document
 ```{r echo = F, message = F, warning = F}
 knitr::opts_chunk$set(fig.width=10, fig.height=10, fig.path='Figs/', eval=FALSE, echo=TRUE, warning = FALSE, message=FALSE, tidy=TRUE)
 
-setwd('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/gcm')
+setwd('~/Github/RaczBecknerHayPierrehumbert2019/models/gcm')
 ```
 
 This is the Generalised Context Model [GCM] code for the paper "Morphological convergence as on-line lexical analogy" [from now on: ESP paper]. 
@@ -41,11 +41,11 @@ The lookup table looks like this:
 It's long.
 
 ```{r }
-source('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/functions/grabfunctions.R')
+source('Github/RaczBecknerHayPierrehumbert2019/functions/grabfunctions.R')
 
-source('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/functions/grabdata.R')
+source('Github/RaczBecknerHayPierrehumbert2019/functions/grabdata.R')
 
-lookup = read_csv('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/gcm/feature_distance_lookup_tidy.txt')
+lookup = read_csv('Github/RaczBecknerHayPierrehumbert2019/models/gcm/feature_distance_lookup_tidy.txt')
 
 ```
 
@@ -118,16 +118,14 @@ write_delim(all_combinations, 'all_combinations.txt', delim = '\t', col_names = 
 We grab the combinations and create a lookup table.
 
 ```{r create_lookup_table2, eval=F}
-# of course, what I do above is not what I did in practice. in practice, I fit four different sets of words because I was in the process of figuring out what's going on and what I need. The first set had word pairs repeat several times because of a join. Etc.
-# see pocketgcm_create_lookup_table.R
-
+# I did this in four batches originally as I was in the process of figuring things out.
 # I'm not sharing these files, but you can see the code here to get an idea.
 
 # batch 1
-distances1 = read_csv('~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/out.txt', col_names = F)
+distances1 = read_csv('Github/convergence_esp/ESP2019/pocketgcm/Alignment/out.txt', col_names = F)
 names(distances1) = 'feature.distance'
 
-pairs1 = read_delim('~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/everybody.txt', '\t', col_names = F)
+pairs1 = read_delim('Github/convergence_esp/ESP2019/pocketgcm/Alignment/everybody.txt', '\t', col_names = F)
 names(pairs1) = c('target', 'training')
 
 nrow(pairs1)==nrow(distances1)
@@ -137,10 +135,10 @@ lookup1 = lookup1 %>% distinct() # I made a mistake in setting up the first batc
 names(lookup1)
 
 # batch 2
-distances2 = read_csv('~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/out2.txt', col_names = F)
+distances2 = read_csv('Github/convergence_esp/ESP2019/pocketgcm/Alignment/out2.txt', col_names = F)
 names(distances2) = 'feature.distance'
 
-pairs2 = read_delim('~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/everybody2.txt', '\t', col_names = F)
+pairs2 = read_delim('Github/convergence_esp/ESP2019/pocketgcm/Alignment/everybody2.txt', '\t', col_names = F)
 names(pairs2) = c('target', 'training')
 
 nrow(pairs2)==nrow(distances2)
@@ -149,10 +147,10 @@ lookup2 = cbind(distances2, pairs2)
 names(lookup2)
 
 # batch 3
-distances3 = read_csv('~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/out3.txt', col_names = F)
+distances3 = read_csv('Github/convergence_esp/ESP2019/pocketgcm/Alignment/out3.txt', col_names = F)
 names(distances3) = 'feature.distance'
 
-pairs3 = read_delim('~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/everybody3.txt', '\t', col_names = F)
+pairs3 = read_delim('Github/convergence_esp/ESP2019/pocketgcm/Alignment/everybody3.txt', '\t', col_names = F)
 names(pairs3) = c('target', 'training')
 
 nrow(pairs3)==nrow(distances3)
@@ -161,10 +159,10 @@ lookup3 = cbind(distances3, pairs3)
 names(lookup3)
 
 # batch 4
-distances4 = read_csv('~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/out4.txt', col_names = F)
+distances4 = read_csv('Github/convergence_esp/ESP2019/pocketgcm/Alignment/out4.txt', col_names = F)
 names(distances4) = 'feature.distance'
 
-pairs4 = read_delim('~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/everybody4.txt', '\t', col_names = F)
+pairs4 = read_delim('Github/convergence_esp/ESP2019/pocketgcm/Alignment/everybody4.txt', '\t', col_names = F)
 names(pairs4) = c('target', 'training')
 
 nrow(pairs4)==nrow(distances4)
@@ -355,7 +353,7 @@ baseline.gcm.paper = doGCM(restricted.set = baseline.gcm.paper, gcm.id = 'baseli
 
 ## 2b. Refitting the Baseline-GCM in the paper using a larger regular set.
 
-Reviewer points out that we are tilting the field in the GCM's favour by restricting its training set to verbs that basically look exactly like the verb schemata we are interested in. One of their alternative suggestions is to keep Moder classes but include *all* regular verbs in the regular category.
+One could argue that we are tilting the field in the GCM's favour by restricting its training set to verbs that basically look exactly like the verb schemata we are interested in. One alternative suggestion is to keep Moder classes but include *all* regular verbs in the regular category.
 
 We implement this below with one restriction: verbs have to be monosyllabic. (Irregular verbs in the set already are. Polysyllabic regular verbs will be very far away from the targets in any case.)
 
@@ -397,7 +395,7 @@ with(baseline.verbs, cor(reg.av, baseline_gcm_wf_lookup_reviewer)) # .455
 
 ```
 
-## 2c. Tuning s for the reviewer GCM
+## 2c. Tuning s for the GCM with the larger regular training set
 
 We suspect that the drop in accuracy stems from the fact that there are loads more verbs in the regular category now. 
 
@@ -455,7 +453,7 @@ with(baseline.verbs, cor(reg.av, baseline_gcm_wf_lookup_reviewer)) # .61
 
 ```
 
-## 3a. Fitting the reviewer GCM on the ESP experiment
+## 3a. Fitting this second GCM on the ESP experiment
 
 We now have a GCM that's trained on irregular and regular verbs in the target verb's moder class, as well as miscellaneous regular verbs. We tuned it.
 
@@ -571,6 +569,8 @@ test2 = left_join(test2, bsum, by = 'disc')
 write_csv(test2, 'convergence_paper_esp_test2_predictions.txt')
 
 ```
+
+We are done with the GCM fits on the data.
 
 ## 5. Check the reviewer critique of moder classes on baseline data
 

@@ -1,11 +1,9 @@
 # code to process an MGL sum file
+setwd('~/Github/RaczBecknerHayPierrehumbert2019/models/gcm')
 
-library(dplyr)
-library(stringr)
-library(knitr)
+library(tidyverse)
 
-
-handles <- read.delim("256verbs_print_forms.txt", sep=",") %>% select(base.form,category,base.print,regular.form,irregular.form) %>% rename(present.form = base.form)
+handles <- read.delim("data/256verbs_print_forms.txt", sep=",") %>% select(base.form,category,base.print,regular.form,irregular.form) %>% rename(present.form = base.form)
 # get formatting right
 handles$irregular.form <- sub("5","o",handles$irregular.form)
 handles$regular.form <- sub("Id","@d",handles$regular.form)
@@ -64,3 +62,8 @@ rules <- merge(regular.rules,irregular.rules, all = T)
 rules <- rules %>% mutate(ir.conf = ifelse(is.na(ir.conf), 0, ir.conf)) %>% mutate(indiv_mgl_conf = reg.conf / (reg.conf + ir.conf)) %>% select(present.form,indiv_mgl_conf)
 return(rules)
 }
+
+# an example
+
+out = 
+getMGLRules()

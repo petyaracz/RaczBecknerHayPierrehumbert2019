@@ -2,15 +2,11 @@
 
 Data and code for the paper "morphological convergence as on-line lexical analogy" 2019
 
-## Gist
-
-These are the results of the Spring 2019 revision. The GCM weights are what's different.
-
-The paper is [here](https://www.overleaf.com/project/59b9a96f509e650540d6fcc7).
-
-Our letter to reviewers is [here](https://docs.google.com/document/d/1psklCvgpPMUy8ZVMmU4yIOwKEk0sVDtgIpiNRJ-9mZg/edit).
-
 ## Contents
+
+### Supplementary Information
+
+The SI for the paper. The GCM and MGL sections are included in the paper as appendices.
 
 ### Data
 
@@ -19,10 +15,12 @@ Our letter to reviewers is [here](https://docs.google.com/document/d/1psklCvgpPM
 - convergence_paper_esp_data -- Esp data (all)
 - convergence_paper_esp_test2_predictions -- Esp data (post-test, w/ predictions)
 - transcription_matcher -- differences between A&H and Celex transcription
+- 256verbs_print_forms -- separate list of nonce verbs used in experiment
 
 ### Functions
 
 - grabfunctions -- GCM written in R, with lookup table
+- grabdata -- function to pull in data, used in other scripts
 
 ### Models
 
@@ -32,7 +30,7 @@ GCM with lookup table, in R. See gcm.Rmd
 
 #### MGL
 
-MGL rules for our data plus helper scripts. For MGL, visit Adam Albright's [page](http://www.mit.edu/~albright/mgl/).
+MGL rules for our data plus helper scripts. For MGL, visit Adam Albright's [page](http://www.mit.edu/~albright/mgl/). For a workflow summary, see MGL.md
 
 #### Paper
 

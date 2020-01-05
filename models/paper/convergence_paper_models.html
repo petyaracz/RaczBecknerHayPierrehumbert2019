@@ -7,6 +7,7 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Peter Racz" />
@@ -84,7 +85,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -158,18 +158,6 @@ summary {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 
 
@@ -197,7 +185,7 @@ $(document).ready(function () {
 
 
 <p>These are the models and stats for the convergence paper, going through it by section number.</p>
-<pre class="r"><code>source(&quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/functions/grabdata.R&quot;)</code></pre>
+<pre class="r"><code>source(&quot;functions/grabdata.R&quot;)</code></pre>
 <div id="section-4.2" class="section level2">
 <h2>Section 4.2</h2>
 <pre class="r"><code>baseline %&gt;% group_by(word) %&gt;% summarise(regular = mean(regular)) %&gt;% filter(word == 
@@ -212,72 +200,225 @@ $(document).ready(function () {
 <h2>Section 5</h2>
 <p>Fits on what people are doing across conditions in test2. No algorithmic learning here.</p>
 <p>Our weapon of choice is typially lme4. But it won’t converge with full random effects structure. So we turn to brms.</p>
-<pre class="r"><code>test2$lex_typicality = factor(test2$lex_typicality, levels = c(&quot;typical&quot;, &quot;random&quot;, 
-    &quot;atypical&quot;))
-test2$reg_rate = factor(test2$reg_rate, levels = c(&quot;-40%&quot;, &quot;nc&quot;, &quot;+40%&quot;))
-test2$baseline_av_z = scales::rescale(test2$baseline_av)
-test2$pre_reg_av_z = scales::rescale(test2$pre_reg_av)
-
-fit1 = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + 
-    reg_rate + (1 | participant_id) + (1 | word), data = d, family = bernoulli, 
+<pre class="r"><code>fit1 = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + 
+    reg_rate + (1 | participant_id) + (1 | word), data = test2, family = bernoulli, 
     control = list(adapt_delta = 0.99, stepsize = 0.01, max_treedepth = 15))
 
 fit1 = add_criterion(fit1, criterion = &quot;loo&quot;)
 
-save(fit1, file = &quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/bayes_fit1.rda&quot;)
+save(fit1, file = &quot;../../models/paper/bayes_fit1.rda&quot;)
 
 ##################################################### 
 
 fit2 = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + 
-    reg_rate + (1 + baseline_av_z | participant_id) + (1 | word), data = d, 
+    reg_rate + (1 + baseline_av_z | participant_id) + (1 | word), data = test2, 
     family = bernoulli, control = list(adapt_delta = 0.99, stepsize = 0.01, 
         max_treedepth = 15))
 
 fit2 = add_criterion(fit2, criterion = &quot;loo&quot;)
 
-save(fit2, file = &quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/bayes_fit2.rda&quot;)
+save(fit2, file = &quot;../../models/paper/bayes_fit2.rda&quot;)
 
 ##################################################### 
 
 fit3 = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + 
     reg_rate + (1 + baseline_av_z | participant_id) + (1 + pre_reg_av_z | word), 
-    data = d, family = bernoulli, control = list(adapt_delta = 0.99, stepsize = 0.01, 
+    data = test2, family = bernoulli, control = list(adapt_delta = 0.99, stepsize = 0.01, 
         max_treedepth = 15))
 
 fit3 = add_criterion(fit3, criterion = &quot;loo&quot;)
 
-save(fit3, file = &quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/bayes_fit3.rda&quot;)
+# fit3b = add_criterion(fit3b, criterion = 'loo')
+
+save(fit3, file = &quot;../../models/paper/bayes_fit3.rda&quot;)
 
 ##################################################### 
 
 fit4 = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + 
     reg_rate + (1 + baseline_av_z | participant_id) + (1 + pre_reg_av_z + lex_typicality + 
-    reg_rate | word), data = d, family = bernoulli, control = list(adapt_delta = 0.99, 
+    reg_rate | word), data = test2, family = bernoulli, control = list(adapt_delta = 0.99, 
     stepsize = 0.01, max_treedepth = 15))
 
 fit4 = add_criterion(fit4, criterion = &quot;loo&quot;)
 
-save(fit4, file = &quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/bayes_fit4.rda&quot;)
+save(fit4, file = &quot;../../models/paper/bayes_fit4.rda&quot;)
 
 ##################################################### 
 
 loo.comparisons = loo_compare(fit1, fit2, fit3, fit4)
-save(loo.comparisons, file = &quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/loo_comparisons.rda&quot;)
+save(loo.comparisons, file = &quot;../../models/paper/loo_comparisons.rda&quot;)
 
 options(mc.cores = 1)
 
 
-##################################################### 
+##################################################### </code></pre>
+<pre class="r"><code>load(&quot;models/paper/bayes_fit3.rda&quot;)
+bayes_factor()
 
-load(&quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/data/loo_comparisons.rda&quot;)
+load(&quot;../../models/paper/loo_comparisons.rda&quot;)
 loo.comparisons</code></pre>
+<p>We definitely want some random slopes (fit1 is worse than the rest). Other than that, the various constellations do not improve the model’s expected log pointwise predictive density.</p>
 <p>It looks like the model reported in the paper does not ignore too much relevant variation in the random effects.</p>
+</div>
+<div id="bayes-factors" class="section level2">
+<h2>Bayes factors!</h2>
+<pre class="r"><code># random vs atypical
+
+test2b = test2 %&gt;% filter(lex_typicality != &quot;typical&quot;)
+
+fit_power1 = glmer(resp_post_reg ~ 1 + baseline_av_c * lex_typicality + pre_reg_av_c + 
+    reg_rate + (1 + baseline_av_c | participant_id) + (1 | word), data = test2b, 
+    family = binomial(link = logit), control = glmerControl(optimizer = &quot;bobyqa&quot;))
+
+fit_power2 = glmer(resp_post_reg ~ 1 + baseline_av_c + lex_typicality + pre_reg_av_c + 
+    reg_rate + (1 + baseline_av_c | participant_id) + (1 | word), data = test2b, 
+    family = binomial(link = logit), control = glmerControl(optimizer = &quot;bobyqa&quot;))
+
+# summary(fit_power1) summary(fit_power2)
+
+exp((BIC(fit_power2) - BIC(fit_power1))/2)
+# 0.01179529 we favour the null model</code></pre>
+<p>The lme4 fit reported in the paper is here.</p>
+<pre class="r"><code># the frequentist fit reported in the paper watch out for factor levels
+test2$verb_baseline_average = test2$baseline_av_c
+test2$bot_lexical_typicality = test2$lexical_typicality
+test2$participant_prereg_average = test2$pre_reg_av_c
+test2$bot_regularisation_rate = test2$regularisation_rate
+
+lme.fit2 = glmer(resp_post_reg ~ 1 + verb_baseline_average * bot_lexical_typicality + 
+    participant_prereg_average + bot_regularisation_rate + (1 + baseline_av_c | 
+    participant_id) + (1 | word), data = test2, family = binomial(link = logit), 
+    control = glmerControl(optimizer = &quot;bobyqa&quot;))
+summary(lme.fit2)$coef
+
+plot(effects::effect(&quot;bot_regularisation_rate&quot;, lme.fit2), main = &quot;&quot;, xlab = &quot;regularisation shift&quot;, 
+    ylab = &quot;regular response in post-test&quot;)
+plot(effects::effect(&quot;verb_baseline_average:bot_lexical_typicality&quot;, lme.fit2), 
+    multiline = T, lines = list(lty = c(1, 2, 3)), main = &quot;&quot;, xlab = &quot;verb baseline mean&quot;, 
+    ylab = &quot;regular response in post-test&quot;)
+
+# https://arxiv.org/abs/1507.04544 s5.2</code></pre>
+<p>Here is a simple confint plot using Wald estimates.</p>
+<pre class="r"><code>t1 = broom::tidy(lme.fit2)
+
+# we get some wald confidence intervals
+
+confints = confint(lme.fit2, method = 'Wald') %&gt;% broom::tidy()
+confints = confints[-1,]
+names(confints) = c('term', '2.5%', '97.5%')
+t1 = inner_join(t1, confints) %&gt;% 
+  dplyr::select(-p.value,-group)
+
+t1 %&gt;% 
+  mutate(
+    row_id = 9:1, # watch this
+  ) %&gt;% 
+  mutate(
+    term2 = 
+    case_when(
+      term == 'verb_baseline_average' ~ 'verb baseline average',
+      term == 'bot_lexical_typicalityrandom' ~ 'bot lexical typicality = random',
+      term == 'bot_lexical_typicalityatypical' ~ 'bot lexical typicality = atypical',
+      term == 'participant_prereg_average' ~ 'participant prereg average',
+      term == 'bot_regularisation_rate-40%' ~ 'bot regularisation rate = -40%',
+      term == 'bot_regularisation_rate+40%' ~ 'bot regularisation rate = +40%',
+      term == 'verb_baseline_average:bot_lexical_typicalityrandom' ~ 'verb baseline average : bot lexical typicality = random',
+      term == 'verb_baseline_average:bot_lexical_typicalityatypical' ~ 'verb baseline average : bot lexical typicality = atypical',
+      term == '(Intercept)' ~ 'Intercept'
+      )
+    ) %&gt;% 
+  ggplot(aes(x = term2 %&gt;% reorder(row_id), y = estimate)) +
+  geom_point() +
+  geom_linerange(aes(x = term2, ymin = `2.5%`, ymax = `97.5%`)) +
+  geom_hline(aes(yintercept = 0), linetype = 'dashed') +
+  xlab('') +
+  coord_flip() +
+  ggtitle('Estimates and 95% confidence intervals in model for test results')
+ggsave('terms_figure.pdf', width = 9, height = 5)</code></pre>
+<p>Let’s have a few predicted intervals.</p>
+<pre class="r"><code>lme.fit2.preds = predictInterval(merMod = lme.fit2, level = 0.95, n.sims = 1000, stat = 'median', type = 'probability')
+
+test2c = cbind(test2,lme.fit2.preds) 
+test2c %&gt;%   
+  group_by(
+    reg_rate
+  ) %&gt;% 
+  summarise(
+    fit = mean(fit),
+    upr = mean(upr),
+    lwr = mean(lwr)
+  ) %&gt;% 
+  ggplot(aes(x = reg_rate, y = fit)) +
+  geom_point() +
+  geom_linerange(aes(ymin = lwr, ymax = upr))
+
+test2 %&gt;% 
+  mutate(
+    reg_rate2 = factor(reg_rate, levels = c('-40%', 'nc', '+40%'))
+  ) %&gt;% 
+  ggplot(aes(x = reg_rate2, y = post_reg_av, fill = reg_rate2)) +
+  geom_jitter(aes(colour = reg_rate2), width = 0.3) +
+    geom_violin(aes(alpha = 0.5)) +
+    geom_boxplot(width = 0.2) +
+    # stat_summary(fun.y=mean, geom=&quot;point&quot;, shape=16, size=4) +
+    scale_fill_brewer(palette=&quot;Set2&quot;) +
+    scale_colour_brewer(palette=&quot;Set2&quot;) +
+    theme(
+      text = element_text(size=30), 
+      # axis.text.x = element_text(angle=90, vjust=0.5), 
+      # axis.title.x=element_blank(), 
+      legend.position = 'none'
+      ) +
+    xlab('bot regularisation shift') +
+    ylab('participant post-test mean regularisation') +
+    scale_x_discrete(labels=c('-40%', 'no change', '+40%'))
+ggsave('reg_shift_av.pdf', width = 9, height = 6)  
+
+test2 %&gt;% 
+  group_by(
+    word,
+    baseline_av,
+    lex_typicality
+  ) %&gt;% 
+  summarise(
+    mean = mean(resp_post_reg)
+  ) %&gt;% 
+  ggplot(aes(x = baseline_av, y = mean, colour = lex_typicality, label = word)) +
+  geom_label() +
+  geom_smooth(method = 'lm', se = F) +
+  scale_colour_brewer(palette=&quot;Dark2&quot;) +
+    theme(
+      text = element_text(size=30), 
+      # axis.text.x = element_text(angle=90, vjust=0.5), 
+      # axis.title.x=element_blank(), 
+      legend.position = 'none'
+      ) +
+    xlab('verb baseline mean regularisation') +
+    ylab('verb post-test mean regularisation')
+ggsave('lex_typ_av.pdf', width = 9, height = 9)  
+
+sum1 = confint(lme.fit2, method = 'Wald') %&gt;% data.frame
+sum2 = summary(lme.fit2)$coef %&gt;% data.frame
+sum1$Term = rownames(sum1)
+sum2$Term = rownames(sum2)
+sum3 = left_join(sum2, sum1) %&gt;% 
+  rename(`Std error` = Std..Error,
+    `z value` = z.value,
+    `2.5%` = X2.5..,
+    `97.5%` = X97.5..
+    )
+sum3 %&gt;% dplyr::select(Term, Estimate, `Std error`, `z value`, `2.5%`, `97.5%`) %&gt;% knitr::kable(digits = 2)</code></pre>
 </div>
 <div id="section-6" class="section level2">
 <h2>Section 6</h2>
-<pre class="r"><code>baseline %&gt;% select(word, baseline_gcm_features, baseline_gcm_edits) %&gt;% filter(word == 
+<pre class="r"><code>baseline$r.baseline_gcm_features = scales::rescale(baseline$baseline_gcm_features, 
+    to = c(0, 1))
+baseline$r.baseline_mgl_features = scales::rescale(baseline$baseline_mgl_features, 
+    to = c(0, 1))
+
+baseline %&gt;% select(word, r.baseline_gcm_features, baseline_gcm_edits) %&gt;% filter(word == 
     &quot;splive&quot;) %&gt;% unique
-baseline %&gt;% select(word, baseline_mgl_features, baseline_mgl_edits) %&gt;% filter(word == 
+baseline %&gt;% select(word, r.baseline_mgl_features, baseline_mgl_edits) %&gt;% filter(word == 
     &quot;splive&quot;) %&gt;% unique</code></pre>
 </div>
 <div id="section-6.3" class="section level2">
@@ -315,14 +456,14 @@ baseline2 = left_join(baseline, baseline_sum, by = &quot;word&quot;)
 m3 = glmer(regular ~ c.baseline_mgl_features + gcm_residual + (1 | subject) + 
     (1 | word), data = baseline2, family = binomial(link = logit), control = glmerControl(optimizer = &quot;bobyqa&quot;))
 
-save(m3, file = &quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m3.rda&quot;)
+save(m3, file = &quot;../../models/paper/m3.rda&quot;)
 
 m4 = glmer(regular ~ c.baseline_gcm_features + mgl_residual + (1 | subject) + 
     (1 | word), data = baseline2, family = binomial(link = logit), control = glmerControl(optimizer = &quot;bobyqa&quot;))
 
-save(m4, file = &quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m4.rda&quot;)</code></pre>
-<pre class="r"><code>load(&quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m4.rda&quot;)
-load(&quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m3.rda&quot;)
+save(m4, file = &quot;../../models/paper/m4.rda&quot;)</code></pre>
+<pre class="r"><code>load(&quot;../../models/paper/m4.rda&quot;)
+load(&quot;../../models/paper/m3.rda&quot;)
 
 summary(m3)
 # Estimate Std. Error z value Pr(&gt;|z|) (Intercept) -0.44918 0.11202 -4.010
@@ -361,12 +502,12 @@ test2$mgl_wf_score_diff &lt;- test2$c.individual_mgl_features - test2$c.baseline
 m5 &lt;- glmer(resp_post_reg ~ c.baseline_gcm_features + gcm_wf_score_diff + pre_reg_av + 
     (1 + c.baseline_gcm_features + gcm_wf_score_diff | participant_id) + (1 | 
     word), data = test2, family = binomial(link = logit), control = glmerControl(optimizer = &quot;bobyqa&quot;))
-save(m5, file = &quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m5.rda&quot;)
+save(m5, file = &quot;../../models/paper/m5.rda&quot;)
 
 m6 &lt;- glmer(resp_post_reg ~ c.baseline_mgl_features + mgl_wf_score_diff + pre_reg_av + 
     (1 + c.baseline_mgl_features + mgl_wf_score_diff | participant_id) + (1 | 
     word), data = test2, family = binomial(link = logit), control = glmerControl(optimizer = &quot;bobyqa&quot;))
-save(m6, file = &quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m6.rda&quot;)
+save(m6, file = &quot;../../models/paper/m6.rda&quot;)
 
 # Third
 
@@ -374,10 +515,10 @@ m7 &lt;- glmer(resp_post_reg ~ c.individual_gcm_features + c.baseline_mgl_featur
     pre_reg_av + (1 + c.individual_gcm_features + c.baseline_mgl_features | 
     participant_id) + (1 | word), data = test2, family = binomial(link = logit), 
     control = glmerControl(optimizer = &quot;bobyqa&quot;))
-save(m7, file = &quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/paper/m7.rda&quot;)</code></pre>
-<pre class="r"><code>load(&quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/paper/m5.rda&quot;)
-load(&quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/paper/m6.rda&quot;)
-load(&quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/paper/m7.rda&quot;)
+save(m7, file = &quot;../../models/paper/m7.rda&quot;)</code></pre>
+<pre class="r"><code>load(&quot;../../models/paper/m5.rda&quot;)
+load(&quot;../../models/paper/m6.rda&quot;)
+load(&quot;../../models/paper/m7.rda&quot;)
 
 summary(m5)
 # Estimate Std. Error z value Pr(&gt;|z|) (Intercept) -5.5677 0.3724 -14.949 &lt;
@@ -399,11 +540,68 @@ summary(m7)$coef %&gt;% round(3) %&gt;% xtable
 summary(rePCA(m7))
 
 
+
 test2 %&gt;% select(word, moder, verb_baseline_mgl_reg) %&gt;% filter(moder == &quot;KEPT&quot; &amp; 
     verb_baseline_mgl_reg == 1) %&gt;% unique %&gt;% arrange(word) %&gt;% select(word) %&gt;% 
     pull %&gt;% length
 # 28, not 57</code></pre>
 <p>It looks like the best model has the predictions of the individual gcm and the baseline mgl.</p>
+</div>
+<div id="marginal-and-conditional-r-squared-for-the-two-models" class="section level2">
+<h2>Marginal and conditional r squared for the two models</h2>
+<pre class="r"><code>load(&quot;esp_fit.rda&quot;)
+formula(fit)
+MuMIn::r.squaredGLMM(fit)  # 0.27 0.45
+MuMIn::r.squaredGLMM(m7)  # 0.22 0.47 
+test2$m7.pred = predict(m7, type = &quot;response&quot;)
+with(test2, Hmisc::somers2(m7.pred, resp_post_reg))  # .84</code></pre>
+</div>
+<div id="figure-4" class="section level2">
+<h2>Figure 4</h2>
+<pre class="r"><code># baseline, post-test, type type: means, gcm, mgl
+b1 = baseline %&gt;% group_by(word, baseline_gcm_features, baseline_mgl_features) %&gt;% 
+    summarise(reg.av = mean(regular)) %&gt;% ungroup()
+
+b1 = b1 %&gt;% mutate(baseline_gcm_features = scales::rescale(baseline_gcm_features, 
+    to = c(0, 1)), baseline_mgl_features = scales::rescale(baseline_mgl_features, 
+    to = c(0, 1)), reg.av = scales::rescale(reg.av, to = c(0, 1)))
+
+t2 = test2 %&gt;% mutate(lex_typicality2 = case_when(lex_typicality == &quot;atypical&quot; ~ 
+    &quot;reversed&quot;, lex_typicality == &quot;typical&quot; ~ &quot;typical&quot;, lex_typicality == &quot;random&quot; ~ 
+    &quot;random&quot;, ), lex_typicality2 = factor(lex_typicality2, levels = c(&quot;typical&quot;, 
+    &quot;reversed&quot;, &quot;random&quot;))) %&gt;% group_by(word, lex_typicality2) %&gt;% summarise(post.reg.av = mean(resp_post_reg), 
+    individual_gcm_features = mean(individual_gcm_features), individual_mgl_features = mean(individual_mgl_features), 
+    ) %&gt;% ungroup() %&gt;% mutate(individual_gcm_features = scales::rescale(individual_gcm_features, 
+    to = c(0, 1)), individual_mgl_features = scales::rescale(individual_mgl_features, 
+    to = c(0, 1)), post.reg.av = scales::rescale(post.reg.av, to = c(0, 1)))
+
+
+t3 = t2 %&gt;% left_join(b1, by = &quot;word&quot;) %&gt;% rename(individual.mgl = individual_mgl_features, 
+    individual.gcm = individual_gcm_features, baseline.mgl = baseline_mgl_features, 
+    baseline.gcm = baseline_gcm_features)
+
+t3la = t3 %&gt;% dplyr::select(word, lex_typicality2, baseline.gcm, baseline.mgl, 
+    reg.av) %&gt;% rename(GCM = baseline.gcm, MGL = baseline.mgl, participants = reg.av) %&gt;% 
+    gather(type, baseline.averages, -word, -lex_typicality2)
+
+t3lb = t3 %&gt;% dplyr::select(word, lex_typicality2, individual.gcm, individual.mgl, 
+    post.reg.av) %&gt;% rename(GCM = individual.gcm, MGL = individual.mgl, participants = post.reg.av) %&gt;% 
+    gather(type, individual.averages, -word, -lex_typicality2)
+
+t4 = full_join(t3la, t3lb, by = c(&quot;word&quot;, &quot;lex_typicality2&quot;, &quot;type&quot;))
+
+t4$type = factor(t4$type, levels = c(&quot;participants&quot;, &quot;GCM&quot;, &quot;MGL&quot;))
+
+ggplot(t4, aes(x = baseline.averages, y = individual.averages, colour = lex_typicality2, 
+    shape = lex_typicality2, linetype = lex_typicality2)) + guides(size = F) + 
+    geom_point() + geom_smooth(se = F, method = &quot;loess&quot;, formula = &quot;y ~ x&quot;) + 
+    facet_wrap(~type) + scale_shape_discrete(name = &quot;Lexical\ntypicality&quot;) + 
+    # scale_colour_discrete(name='Lexical\ntypicality') +
+xlab(&quot;verb baseline regularization&quot;) + ylab(&quot;verb ESP regularization&quot;) + guides(linetype = F) + 
+    scale_colour_brewer(palette = &quot;Set2&quot;, name = &quot;Lexical\ntypicality&quot;)
+# ggsave('interactionplot.pdf', device = cairo_pdf, width = 12.5, height =
+# 4)
+ggsave(&quot;fig4_2019.pdf&quot;, width = 12.5, height = 4)</code></pre>
 </div>
 
 
@@ -423,6 +621,23 @@ $(document).ready(function () {
 
 
 </script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

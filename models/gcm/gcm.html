@@ -7,6 +7,7 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Peter Racz" />
@@ -84,7 +85,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -157,18 +157,6 @@ summary {
   display: none;
 }
 </style>
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
 
 <!-- code folding -->
 
@@ -256,11 +244,11 @@ $(document).ready(function () {
 </tbody>
 </table>
 <p>It’s long.</p>
-<pre class="r"><code>source(&quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/functions/grabfunctions.R&quot;)
+<pre class="r"><code>source(&quot;Github/RaczBecknerHayPierrehumbert2019/functions/grabfunctions.R&quot;)
 
-source(&quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/functions/grabdata.R&quot;)
+source(&quot;Github/RaczBecknerHayPierrehumbert2019/functions/grabdata.R&quot;)
 
-lookup = read_csv(&quot;~/Work/NZILBB/RaczBecknerHayPierrehumbert2019/models/gcm/feature_distance_lookup_tidy.txt&quot;)</code></pre>
+lookup = read_csv(&quot;Github/RaczBecknerHayPierrehumbert2019/models/gcm/feature_distance_lookup_tidy.txt&quot;)</code></pre>
 <div id="creating-the-lookup-tables" class="section level2">
 <h2>1. Creating the lookup tables</h2>
 <p>We create all combinations of forms. This is test words x test words / training words. We write the combinations into a file.</p>
@@ -321,19 +309,16 @@ write_delim(all_combinations, 'all_combinations.txt', delim = '\t', col_names = 
 # this takes about twelve hours on my hardware:
 # system('bash alignment_runner_ideal.sh &gt; all_combinations_out.txt')</code></pre>
 <p>We grab the combinations and create a lookup table.</p>
-<pre class="r"><code># of course, what I do above is not what I did in practice. in practice, I
-# fit four different sets of words because I was in the process of figuring
-# out what's going on and what I need. The first set had word pairs repeat
-# several times because of a join. Etc.  see pocketgcm_create_lookup_table.R
-
-# I'm not sharing these files, but you can see the code here to get an idea.
+<pre class="r"><code># I did this in four batches originally as I was in the process of figuring
+# things out.  I'm not sharing these files, but you can see the code here to
+# get an idea.
 
 # batch 1
-distances1 = read_csv(&quot;~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/out.txt&quot;, 
+distances1 = read_csv(&quot;Github/convergence_esp/ESP2019/pocketgcm/Alignment/out.txt&quot;, 
     col_names = F)
 names(distances1) = &quot;feature.distance&quot;
 
-pairs1 = read_delim(&quot;~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/everybody.txt&quot;, 
+pairs1 = read_delim(&quot;Github/convergence_esp/ESP2019/pocketgcm/Alignment/everybody.txt&quot;, 
     &quot;\t&quot;, col_names = F)
 names(pairs1) = c(&quot;target&quot;, &quot;training&quot;)
 
@@ -344,11 +329,11 @@ lookup1 = lookup1 %&gt;% distinct()  # I made a mistake in setting up the first 
 names(lookup1)
 
 # batch 2
-distances2 = read_csv(&quot;~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/out2.txt&quot;, 
+distances2 = read_csv(&quot;Github/convergence_esp/ESP2019/pocketgcm/Alignment/out2.txt&quot;, 
     col_names = F)
 names(distances2) = &quot;feature.distance&quot;
 
-pairs2 = read_delim(&quot;~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/everybody2.txt&quot;, 
+pairs2 = read_delim(&quot;Github/convergence_esp/ESP2019/pocketgcm/Alignment/everybody2.txt&quot;, 
     &quot;\t&quot;, col_names = F)
 names(pairs2) = c(&quot;target&quot;, &quot;training&quot;)
 
@@ -358,11 +343,11 @@ lookup2 = cbind(distances2, pairs2)
 names(lookup2)
 
 # batch 3
-distances3 = read_csv(&quot;~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/out3.txt&quot;, 
+distances3 = read_csv(&quot;Github/convergence_esp/ESP2019/pocketgcm/Alignment/out3.txt&quot;, 
     col_names = F)
 names(distances3) = &quot;feature.distance&quot;
 
-pairs3 = read_delim(&quot;~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/everybody3.txt&quot;, 
+pairs3 = read_delim(&quot;Github/convergence_esp/ESP2019/pocketgcm/Alignment/everybody3.txt&quot;, 
     &quot;\t&quot;, col_names = F)
 names(pairs3) = c(&quot;target&quot;, &quot;training&quot;)
 
@@ -372,11 +357,11 @@ lookup3 = cbind(distances3, pairs3)
 names(lookup3)
 
 # batch 4
-distances4 = read_csv(&quot;~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/out4.txt&quot;, 
+distances4 = read_csv(&quot;Github/convergence_esp/ESP2019/pocketgcm/Alignment/out4.txt&quot;, 
     col_names = F)
 names(distances4) = &quot;feature.distance&quot;
 
-pairs4 = read_delim(&quot;~/Work/NZILBB/convergence_esp/ESP2019/pocketgcm/Alignment/everybody4.txt&quot;, 
+pairs4 = read_delim(&quot;Github/convergence_esp/ESP2019/pocketgcm/Alignment/everybody4.txt&quot;, 
     &quot;\t&quot;, col_names = F)
 names(pairs4) = c(&quot;target&quot;, &quot;training&quot;)
 
@@ -441,6 +426,8 @@ celex2 = celex2 %&gt;%
 # - irregular and regular verbs in sang/kept/burnt/drove
 # - regular verbs not in a moder class
 # - irregular verbs not in a moder class
+
+celex2 %&gt;% filter(is.na(moder.training), category.training == 'regular')
 
 # some verbs are in celex as both regular and irregular. these verbs are in the lookup only once.
 # so we expect the lookup to get longer after the join.
@@ -511,12 +498,15 @@ lookup = rbind(lookup_baseline, lookup_esp)
 # burnt/drove/kept/sang: irregular/ regular celex + target. regular non-moder verbs from celex.
 
 write_csv(lookup, 'feature_distance_lookup_tidy.txt')</code></pre>
-<p>Our lookup table has been made. Let’s hope it’s not the way Joe Pesci was made in Goodfellas.</p>
+<p>Our lookup table has been made.</p>
 </div>
 <div id="a.-replicating-the-baseline-gcm-in-the-paper." class="section level2">
 <h2>2a. Replicating the Baseline-GCM in the paper.</h2>
 <p>Training sets are regular / irregular. They consist of verbs in Celex that match the Moder class of the target. Note that one verb can be in both the training and the test sets if it’s listed as both a regular and an irregular in Celex.</p>
-<pre class="r"><code>baseline.gcm.paper = baselineGCMpaperSetup(lookup = lookup)
+<pre class="r"><code># training sets SANG &amp; 13 &amp; 8 \\ BURNT &amp; 43 &amp; 6\\ KEPT &amp; 34 &amp; 12\\
+# DROVE &amp; 93 &amp; 15\\
+
+baseline.gcm.paper = baselineGCMpaperSetup(lookup = lookup)
 
 # baseline.gcm.paper[baseline.gcm.paper$target == 'drin',] %&gt;%
 # arrange(category.training) %&gt;% View
@@ -530,9 +520,12 @@ baseline.gcm.paper = doGCM(restricted.set = baseline.gcm.paper, gcm.id = &quot;b
 </div>
 <div id="b.-refitting-the-baseline-gcm-in-the-paper-using-a-larger-regular-set." class="section level2">
 <h2>2b. Refitting the Baseline-GCM in the paper using a larger regular set.</h2>
-<p>Reviewer points out that we are tilting the field in the GCM’s favour by restricting its training set to verbs that basically look exactly like the verb schemata we are interested in. One of their alternative suggestions is to keep Moder classes but include <em>all</em> regular verbs in the regular category.</p>
+<p>One could argue that we are tilting the field in the GCM’s favour by restricting its training set to verbs that basically look exactly like the verb schemata we are interested in. One alternative suggestion is to keep Moder classes but include <em>all</em> regular verbs in the regular category.</p>
 <p>We implement this below with one restriction: verbs have to be monosyllabic. (Irregular verbs in the set already are. Polysyllabic regular verbs will be very far away from the targets in any case.)</p>
-<pre class="r"><code># lookup[is.na(lookup$category.training),] %&gt;% select(training) %&gt;%
+<pre class="r"><code># training sets SANG &amp; 13 &amp; 1221 \\ BURNT &amp; 43 &amp; 1219\\ KEPT &amp; 34 &amp;
+# 1225\\ DROVE &amp; 93 &amp; 1228\\
+
+# lookup[is.na(lookup$category.training),] %&gt;% select(training) %&gt;%
 # distinct() %&gt;% View
 
 baseline.gcm.reviewer = baselineGCMreviewerSetup(lookup)
@@ -557,8 +550,8 @@ with(baseline.verbs, cor(reg.av, celex_gcm_wf))  # .545
 with(baseline.verbs, cor(reg.av, baseline_gcm_wf_lookup_moder))  # .531
 with(baseline.verbs, cor(reg.av, baseline_gcm_wf_lookup_reviewer))  # .455</code></pre>
 </div>
-<div id="c.-tuning-s-for-the-reviewer-gcm" class="section level2">
-<h2>2c. Tuning s for the reviewer GCM</h2>
+<div id="c.-tuning-s-for-the-gcm-with-the-larger-regular-training-set" class="section level2">
+<h2>2c. Tuning s for the GCM with the larger regular training set</h2>
 <p>We suspect that the drop in accuracy stems from the fact that there are loads more verbs in the regular category now.</p>
 <p>We tune the s parameter and use two measures: pearson’s rho with baseline averages and index of concordance with individual responses (regular/irregular). We could also fit hierarchical generalised linear models and compare their goodness of fit; but it would take longer.</p>
 <pre class="r"><code>baseline.verbs = baseline %&gt;% group_by(word, disc) %&gt;% summarise(reg.av = mean(regular))
@@ -596,8 +589,8 @@ baseline = left_join(baseline, baseline.gcm.reviewer, by = &quot;disc&quot;)
 baseline.verbs = left_join(baseline.verbs, baseline.gcm.reviewer, by = &quot;disc&quot;)
 with(baseline.verbs, cor(reg.av, baseline_gcm_wf_lookup_reviewer))  # .61</code></pre>
 </div>
-<div id="a.-fitting-the-reviewer-gcm-i-hope-this-catches-on-on-the-esp-experiment" class="section level2">
-<h2>3a. Fitting the reviewer GCM (I hope this catches on) on the ESP experiment</h2>
+<div id="a.-fitting-this-second-gcm-on-the-esp-experiment" class="section level2">
+<h2>3a. Fitting this second GCM on the ESP experiment</h2>
 <p>We now have a GCM that’s trained on irregular and regular verbs in the target verb’s moder class, as well as miscellaneous regular verbs. We tuned it.</p>
 <p>We loop through the participants of the esp experiment. For each participant, we filter the lookup table to only contain target forms from test2 and training forms from celex (following the reviewer GCM setup) and esp robot answers with appropriate regular / irregular categories.</p>
 <pre class="r"><code>my.participant_ids = unique(espdata$participant_id)
@@ -688,6 +681,7 @@ bsum = baseline %&gt;%
 test2 = left_join(test2, bsum, by = 'disc')
 
 write_csv(test2, 'convergence_paper_esp_test2_predictions.txt')</code></pre>
+<p>We are done with the GCM fits on the data.</p>
 </div>
 <div id="check-the-reviewer-critique-of-moder-classes-on-baseline-data" class="section level2">
 <h2>5. Check the reviewer critique of moder classes on baseline data</h2>
@@ -778,6 +772,23 @@ $(document).ready(function () {
 
 
 </script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

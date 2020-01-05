@@ -1,0 +1,76 @@
+Phonological rules discovered: 
+	kd -> kt
+	td -> t@d
+	tt -> t@d
+	zt -> zd
+	dd -> d@d
+	dt -> d@d
+	vt -> vd
+	_t -> _d
+	pd -> pt
+	sd -> st
+	Jd -> Jt
+	Sd -> St
+	fd -> ft
+	gt -> gd
+	Dt -> Dd
+	bt -> bd
+	Td -> Tt
+	Zt -> Zd
+Morphological changes:
+	[2] -> [o]	infix
+	[ip] -> [Ept]	suffix
+	[in] -> [Ent]	suffix
+	[il] -> [Elt]	suffix
+	[i] -> [Q]	suffix
+	[ir] -> [3d]	suffix
+	[Q] -> [E]	infix
+	[u] -> [a]	infix
+	[d] -> [t]	suffix
+	[] -> [@d]	suffix
+	[I] -> [e]	infix
+	[V] -> [{]	infix
+	[{J] -> [Qt]	suffix
+	[i] -> [e]	infix
+	[s»e] -> [»sU]	infix
+	[u] -> [Id]	suffix
+	[I] -> [V]	infix
+	[2] -> [Q]	infix
+	[] -> []	suffix
+	[i] -> [V]	infix
+	[IN] -> [Qt]	suffix
+	[i] -> [E]	infix
+	[INk] -> [Qt]	suffix
+	[e] -> [o]	infix
+	[2] -> [u]	suffix
+	[i] -> [5]	infix
+	[I] -> [{]	infix
+	[2] -> [e]	suffix
+	[E] -> [a]	infix
+	[] -> [t]	suffix
+	[2] -> [V]	infix
+	[iv] -> [Eft]	suffix
+	[ik] -> [Qt]	suffix
+	[im] -> [Emt]	suffix
+	[] -> [d]	suffix
+	[El] -> [old]	suffix
+	[2] -> [5]	infix
+	[i] -> [Ed]	suffix
+	[o] -> [u]	suffix
+	[2] -> [6]	infix
+	[e] -> [u]	suffix
+	[i] -> [o]	infix
+	[2] -> [I]	infix
+	[2] -> [Qt]	suffix
+	[Q] -> [u]	suffix
+	[{n] -> [U]	infix
+	[e] -> [U]	infix
+	[V] -> [e]	infix
+	[u] -> [o]	infix
+	[e] -> [Ed]	suffix
+	[o] -> [E]	infix
+	[iJ] -> [Qt]	suffix
+	[uz] -> [Qst]	suffix
+	[g»o] -> [w»Ent]	suffix
+	[{] -> [V]	infix
+
