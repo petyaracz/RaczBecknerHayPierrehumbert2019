@@ -1,7 +1,7 @@
 library(Hmisc)
-library(dplyr)
-library(stringr)
-library(knitr)
+# library(dplyr)
+# library(stringr)
+# library(knitr)
 library(lme4)
 library(RePsychLing)
 library(tidyverse)
@@ -138,3 +138,66 @@ esp <- read.csv('data/convergence_paper_esp_data.txt')
 esp2 <- esp %>% mutate(part_type = paste(reg_rate, lex_typicality, list_block_order, sep = ' '))
 # esp_mini <- merge(esp_mini,esp_mini_wf)
 esp2 <- merge(esp2, esp_mini_wf)
+
+###############################################################
+# Do we lose information by not fitting the MGL on all participants?
+###############################################################
+
+# let's fit a simple model to see how predictions match with actual post-test behaviour.
+# we do this for the entire data (fit1/fit2)
+# we do this for the participants where the MGL was hand-fit (fit1b/fit2b)
+
+test2 = read_csv('data/convergence_paper_esp_test2_predictions.txt')
+
+test2b = test2[test2$participant_id %in% participants$participant_id,]
+
+# a simple model of how predictions match post-test behaviour on the entire data
+
+fit1 = glmer(resp_post_reg ~ 1 + 
+    baseline_mgl_features + 
+    baseline_gcm_features + 
+    individual_mgl_features + 
+    individual_gcm_features + 
+    (1 | participant_id) + (1|word), 
+  family = binomial, data = test2, control=glmerControl(optimizer="bobyqa")
+  )
+summary(fit1)
+
+# a simple model of how predictions match post-test behaviour on the participants fit
+
+fit1b = glmer(resp_post_reg ~ 1 + 
+    baseline_mgl_features + 
+    baseline_gcm_features + 
+    individual_mgl_features + 
+    individual_gcm_features + 
+    (1 | participant_id) + (1|word), 
+  family = binomial, data = test2b, control=glmerControl(optimizer="bobyqa")
+  )
+summary(fit1b)
+
+# comparison models
+
+fit2 = glmer(resp_post_reg ~ 1 + 
+    baseline_mgl_features + 
+    # baseline_gcm_features +
+    # individual_mgl_features + 
+    individual_gcm_features + 
+    (1 | participant_id) + (1|word), 
+  family = binomial, data = test2, control=glmerControl(optimizer="bobyqa")
+  )
+summary(fit2)
+
+fit2b = glmer(resp_post_reg ~ 1 + 
+    baseline_mgl_features + 
+    # baseline_gcm_features + 
+    # individual_mgl_features + 
+    individual_gcm_features + 
+    (1 | participant_id) + (1|word), 
+  family = binomial, data = test2b, control=glmerControl(optimizer="bobyqa")
+  )
+summary(fit2b)
+
+anova(fit1,fit2)
+anova(fit1b,fit2b)
+
+# even for the hand-picked participants, the individual MGL doesn't explain additional variation.

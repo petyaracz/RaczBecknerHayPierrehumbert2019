@@ -20,4 +20,4 @@ You can fit the MGL on batches using a batch file and a CLI. It will not, howeve
 
 The MGL with no features was fit on the esp data this way, for each participant in the reported dataset.
 
-If you want features, you have to fit sets individually. You have to also have a separate feature file for each set. You have to quit and reopen the MGL each time after fit. I fit the MGL on a subset of all participants making sure that the possible input and tests lists as well as bot behaviours are all covered. 
+If you want features, you have to fit sets individually. You have to also have a separate feature file for each set. You have to quit and reopen the MGL each time after fit. I fit the MGL on a subset of all participants making sure that the possible input and tests lists as well as bot behaviours are all covered. I checked to make sure that the MGL predictions on the subset are quantitatively no different from the MGL predictions on the entire set of participants.
