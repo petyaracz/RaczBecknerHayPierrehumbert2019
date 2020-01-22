@@ -38,6 +38,8 @@ Regression models reported in paper and in appendix. See convergence_paper_model
 
 ## Data dictionary
 
+We use tidied-up column names in the paper. The relevant matchings can be found in convergence_paper_models.html. The original levels of *lexical typicality* were typical, random, and atypical. We refer to the "atypical" level as "reversed" in the paper.
+
 ### convergence_paper_baseline_data
 
 Data from our baseline experiment. Column names:
@@ -45,8 +47,8 @@ Data from our baseline experiment. Column names:
 - disc: disc transcription
 - word: orthographic transcription
 - subject: subject ID
-- regular: is response regular (as opposed to irregular)
-- yOB: year of birth of subject
+- regular: is subject response to verb prompt regular (as opposed to irregular)
+- yearOfBirth: year of birth of subject
 - sex: sex of subject, self-identified (male/female/other or refuse to answer)
 - vocab.av: subjects were given a vocabulary test based on (https://doi.org/10.1515/labphon.2010.018). this is the average score of the subject across the items
 - baseline_gcm_features: Generalised Context Model (GCM) fit on celex, using segmental similarity, calculated across features (see appendix in paper)
@@ -56,7 +58,7 @@ Data from our baseline experiment. Column names:
 
 ### convergence_paper_esp_data
 
-This is the entire experiment: pre-test, esp test, post-test. Additional column names:
+This is the entire experiment: pre-test, esp test, post-test. Additional, relevant column names:
 
 #### participant-level
 
@@ -84,7 +86,7 @@ This is the entire experiment: pre-test, esp test, post-test. Additional column 
 
 ### convergence_paper_esp_test2_predictions
 
-Post-test data from our ESP experiment, along with model predictions. Additional column names:
+Post-test data from our ESP experiment, along with model predictions. Additional, relevant column names:
 
 #### word-level
 

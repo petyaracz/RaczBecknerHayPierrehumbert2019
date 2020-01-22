@@ -19,9 +19,9 @@ Sys.setenv(TZ="Europe/Rome") # a szivemben örök tavasz van
 try(setwd('~/Github/RaczBecknerHayPierrehumbert2019'))
 ```
 
-These are the models and stats for the convergence paper, going through it by section number.
+These are the models and stats reported in the main text of the convergence paper. We go through the main text by section number and replicate the relevant statistics / figures / models here.
 
-
+This file references both the main text and the supplementary information. To make things slightly more complicated, the appendix of the main text and the SI overlap. And section lettering is different in the appendix of the main text and the si. Here, we use lettering that matches the si.
 
 ```{r }
 source('functions/grabdata.R')
@@ -45,7 +45,9 @@ espdata %>% select(participant_id,lex_typicality,reg_rate) %>% unique %>% group_
 
 Fits on what people are doing across conditions in test2. No algorithmic learning here.
 
-Our weapon of choice is typially lme4. But it won't converge with full random effects structure. So we turn to brms.
+Our weapon of choice is typially lme4. But it won't converge with full random effects structure. So we turn to brms. We assume flat priors and a bernoulli error distribution, which is preferred to the binomial distribution in brms for binary outcomes. We compare models using leave-one-out cross-validation.
+
+The Bayesian models are equivalent to the frequentist models reported in the paper, at least conceptually, if not in many other ways. 
 
 ```{r }
 fit1 = brm(resp_post_reg ~ 1 + baseline_av_z * lex_typicality + pre_reg_av_z + reg_rate +
@@ -120,11 +122,15 @@ load('../../models/paper/loo_comparisons.rda')
 loo.comparisons
 ```
 
-We definitely want some random slopes (fit1 is worse than the rest). Other than that, the various constellations do not improve the model's expected log pointwise predictive density.
+What do we learn from LOO comparisons?
+
+Fit1 is worse than the rest, so random slopes do improve model fit. Building up the random effect structure for the word random intercept does not improve the model's expected log pointwise predictive density.
 
 It looks like the model reported in the paper does not ignore too much relevant variation in the random effects.
 
-## Bayes factors!
+## Bayes factors
+
+We could not reject the null on the absence of difference between our typical and atypical (reversed) conditions. Upon reviewer suggestion, we used Bayes factors to test whether this is due to the lack of evidence.
 
 ```{r eval=F}
 # random vs atypical
@@ -155,11 +161,11 @@ fit_power2 = glmer(resp_post_reg ~ 1 + baseline_av_c + lex_typicality + pre_reg_
 
 exp((BIC(fit_power2) - BIC(fit_power1))/2)
 # 0.01179529
-# we favour the null model
+# it is unlikely that there is a difference here
 
 ```
 
-The lme4 fit reported in the paper is here.
+The lme4 fit reported in the paper is here:
 
 ```{r }
 # the frequentist fit reported in the paper
@@ -211,7 +217,7 @@ t1 %>%
       term == 'bot_regularisation_rate-40%' ~ 'bot regularisation rate = -40%',
       term == 'bot_regularisation_rate+40%' ~ 'bot regularisation rate = +40%',
       term == 'verb_baseline_average:bot_lexical_typicalityrandom' ~ 'verb baseline average : bot lexical typicality = random',
-      term == 'verb_baseline_average:bot_lexical_typicalityatypical' ~ 'verb baseline average : bot lexical typicality = atypical',
+      term == 'verb_baseline_average:bot_lexical_typicalityatypical' ~ 'verb baseline average : bot lexical typicality = reversed',
       term == '(Intercept)' ~ 'Intercept'
       )
     ) %>% 
@@ -303,7 +309,6 @@ sum3 = left_join(sum2, sum1) %>%
 sum3 %>% dplyr::select(Term, Estimate, `Std error`, `z value`, `2.5%`, `97.5%`) %>% knitr::kable(digits = 2)
 
 ```
-
 
 ## Section 6
 
