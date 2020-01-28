@@ -1,11 +1,8 @@
-try(setwd('~/Github/RaczBecknerHayPierrehumbert2019'))
-# try(setwd('~/Work/NZILBB/RaczBecknerHayPierrehumbert2019'))
-
 ######################################################################
 # training set
 ######################################################################
 
-celex = read_csv('data/celex_verbs_with_categories_csv_fixed_moder.txt')
+celex = read_csv('~/Github/RaczBecknerHayPierrehumbert2019/data/celex_verbs_with_categories_csv_fixed_moder.txt')
 
 celex = celex %>% 
   select(
@@ -28,7 +25,7 @@ celex = celex %>%
 
 # fixing transcription
 
-transcription.matcher = read_csv('data/transcription_matcher.txt')
+transcription.matcher = read_csv('~/Github/RaczBecknerHayPierrehumbert2019/data/transcription_matcher.txt')
 
 celex = left_join(celex, transcription.matcher)
 
@@ -38,12 +35,11 @@ celex = left_join(celex, transcription.matcher)
 # test set
 ######################################################################
 
-baseline = read_csv('data/convergence_paper_baseline_data.txt')
+baseline = read_csv('~/Github/RaczBecknerHayPierrehumbert2019/data/convergence_paper_baseline_data.txt')
 
-baseline.verbs = read_csv('data/baseline_verbs.txt')
 # esp data
-espdata = read_csv('data/convergence_paper_esp_data.txt')
+espdata = read_csv('~/Github/RaczBecknerHayPierrehumbert2019/data/convergence_paper_esp_data.txt')
 
 # esp only post-test with gcm weights
-test2 = read_csv('data/convergence_paper_esp_test2_predictions.txt')
+test2 = read_csv('~/Github/RaczBecknerHayPierrehumbert2019/data/convergence_paper_esp_test2_predictions.txt')
 

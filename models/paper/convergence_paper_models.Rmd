@@ -26,19 +26,30 @@ This file references both the main text and the supplementary information. To ma
 ```{r }
 source('functions/grabdata.R')
 
+espdata[espdata$lex_typicality == 'atypical',]$lex_typicality = 'reversed'
+
+test2[test2$lex_typicality == 'atypical',]$lex_typicality = 'reversed'
 
 ```
 
 ## Section 4.2
 
 ```{r }
-baseline %>% group_by(word) %>% summarise(regular = mean(regular)) %>% filter(word == 'splive') 
+baseline %>% 
+  group_by(word) %>% 
+  summarise(regular = mean(regular)) %>% 
+  filter(word == 'fim') 
 ```
 
 ## Section 4.3
 
 ```{r }
-espdata %>% select(participant_id,lex_typicality,reg_rate) %>% unique %>% group_by(lex_typicality,reg_rate) %>% summarise(n = n()) 
+espdata %>% 
+  select(participant_id,lex_typicality,reg_rate) %>% 
+  unique %>% 
+  group_by(lex_typicality,reg_rate) %>% 
+  summarise(n = n()) %>% 
+  pivot_wider(names_from = reg_rate, values_from = n)
 ```
 
 ## Section 5
@@ -316,8 +327,15 @@ sum3 %>% dplyr::select(Term, Estimate, `Std error`, `z value`, `2.5%`, `97.5%`) 
 baseline$r.baseline_gcm_features = scales::rescale(baseline$baseline_gcm_features, to = c(0,1))
 baseline$r.baseline_mgl_features = scales::rescale(baseline$baseline_mgl_features, to = c(0,1))
   
-baseline %>% select(word,r.baseline_gcm_features,baseline_gcm_edits) %>% filter(word == 'splive') %>% unique
-baseline %>% select(word,r.baseline_mgl_features,baseline_mgl_edits) %>% filter(word == 'splive') %>% unique
+baseline %>% 
+  select(word,r.baseline_gcm_features,baseline_gcm_edits) %>% 
+  filter(word == 'splive') %>% 
+  unique
+
+baseline %>% 
+  select(word,r.baseline_mgl_features,baseline_mgl_edits) %>% 
+  filter(word == 'splive') %>% 
+  unique
 
 ```
 
@@ -325,9 +343,9 @@ baseline %>% select(word,r.baseline_mgl_features,baseline_mgl_edits) %>% filter(
 
 ```{r }
 # don't want to load Hmisc, messes with select()
-with(baseline, Hmisc::somers2(baseline_gcm_features,regular)['C']) # .581
+with(baseline, Hmisc::somers2(baseline_gcm_features,regular)['C']) 
 
-with(baseline, Hmisc::somers2(baseline_mgl_features,regular)['C']) # .586
+with(baseline, Hmisc::somers2(baseline_mgl_features,regular)['C']) 
 ```
 
 ## jumping to SI section E!
@@ -365,28 +383,22 @@ baseline2 = left_join(baseline,baseline_sum, by = 'word')
 
 m3 = glmer(regular ~ c.baseline_mgl_features + gcm_residual + (1 | subject) + (1|word), data = baseline2, family = binomial (link = logit), control=glmerControl(optimizer="bobyqa"))
 
-save(m3, file = '../../models/paper/m3.rda')
+save(m3, file = 'models/paper/m3.rda')
 
 m4 = glmer(regular ~ c.baseline_gcm_features + mgl_residual + (1 | subject) + (1|word), data = baseline2, family = binomial (link = logit), control=glmerControl(optimizer="bobyqa"))
 
-save(m4, file = '../../models/paper/m4.rda')
+save(m4, file = 'models/paper/m4.rda')
 ```
 
 ```{r }
 
-load('../../models/paper/m4.rda')
-load('../../models/paper/m3.rda')
+load('models/paper/m4.rda')
+load('models/paper/m3.rda')
 
 summary(m3)
-#                         Estimate Std. Error z value Pr(>|z|)    
-# (Intercept)             -0.44918    0.11202  -4.010 6.08e-05 ***
-# c.baseline_mgl_features  1.27846    0.07525  16.989  < 2e-16 ***
-# gcm_residual             1.37767    0.17171   8.023 1.03e-15 ***
+
 summary(m4)
-#                         Estimate Std. Error z value Pr(>|z|)    
-# (Intercept)             -1.12780    0.14259  -7.909 2.58e-15 ***
-# c.baseline_gcm_features  2.29014    0.15126  15.140  < 2e-16 ***
-# mgl_residual             0.95005    0.08549  11.113  < 2e-16 ***
+
 ```
 
 They do. The abstract generalisations and the word-based comparisons explain non-overlapping domains of variation in participant responses.
@@ -397,14 +409,16 @@ They do. The abstract generalisations and the word-based comparisons explain non
 
 ```{r }
 
-with(baseline, Hmisc::somers2(baseline_gcm_features,regular)['C']) # .58
-with(baseline, Hmisc::somers2(baseline_mgl_features,regular)['C']) # .59
+# first method
 
-with(test2, Hmisc::somers2(baseline_gcm_features,resp_post_reg)['C']) # .6
-with(test2, Hmisc::somers2(individual_gcm_features,resp_post_reg)['C']) # .68
+with(baseline, Hmisc::somers2(baseline_gcm_features,regular)['C']) 
+with(baseline, Hmisc::somers2(baseline_mgl_features,regular)['C']) 
 
-with(test2, Hmisc::somers2(baseline_mgl_features,resp_post_reg)['C']) # .61
-with(test2, Hmisc::somers2(individual_mgl_features,resp_post_reg)['C']) # .55
+with(test2, Hmisc::somers2(baseline_gcm_features,resp_post_reg)['C'])
+with(test2, Hmisc::somers2(individual_gcm_features,resp_post_reg)['C'])
+
+with(test2, Hmisc::somers2(baseline_mgl_features,resp_post_reg)['C']) 
+with(test2, Hmisc::somers2(individual_mgl_features,resp_post_reg)['C'])
 ```
 
 ## jumping to SI section F.2
@@ -412,6 +426,9 @@ with(test2, Hmisc::somers2(individual_mgl_features,resp_post_reg)['C']) # .55
 Now we check, for GCM/MGL, if the individual model explains variation beyond the baseline model in the esp test2.
 
 ```{r eval=F}
+
+# second method
+
 test2 = test2 %>% 
   mutate(
     c.baseline_gcm_features = scales::rescale(baseline_gcm_features),
@@ -424,48 +441,42 @@ test2$gcm_wf_score_diff <- test2$c.individual_gcm_features - test2$c.baseline_gc
 test2$mgl_wf_score_diff <- test2$c.individual_mgl_features - test2$c.baseline_mgl_features
 
 m5 <- glmer(resp_post_reg ~ c.baseline_gcm_features + gcm_wf_score_diff + pre_reg_av + (1 + c.baseline_gcm_features + gcm_wf_score_diff | participant_id) + (1 | word), data = test2, family = binomial (link = logit), control=glmerControl(optimizer="bobyqa"))
-save(m5, file = '../../models/paper/m5.rda')
+save(m5, file = 'models/paper/m5.rda')
 
 m6 <- glmer(resp_post_reg ~ c.baseline_mgl_features + mgl_wf_score_diff + pre_reg_av + (1 + c.baseline_mgl_features + mgl_wf_score_diff | participant_id) + (1 | word), data = test2, family = binomial (link = logit), control=glmerControl(optimizer="bobyqa"))
-save(m6, file = '../../models/paper/m6.rda')
+save(m6, file = 'models/paper/m6.rda')
 
-# Third
+# third method
+
+m7a <- glmer(resp_post_reg ~ c.individual_gcm_features + c.baseline_mgl_features + c.individual_mgl_features + c.baseline_gcm_features + pre_reg_av + (1 + c.individual_gcm_features + c.baseline_mgl_features | participant_id) + (1 | word), data = test2, family = binomial (link = logit), control=glmerControl(optimizer="bobyqa"))
+
+# summary(m7a)
 
 m7 <- glmer(resp_post_reg ~ c.individual_gcm_features + c.baseline_mgl_features + pre_reg_av + (1 + c.individual_gcm_features + c.baseline_mgl_features | participant_id) + (1 | word), data = test2, family = binomial (link = logit), control=glmerControl(optimizer="bobyqa"))
-save(m7, file = '../../models/paper/m7.rda')
+save(m7, file = 'models/paper/m7.rda')
 
 ```
 
 ```{r }
-load('../../models/paper/m5.rda')
-load('../../models/paper/m6.rda')
-load('../../models/paper/m7.rda')
+load('models/paper/m5.rda')
+load('models/paper/m6.rda')
+load('models/paper/m7.rda')
 
 summary(m5)
-#                  Estimate Std. Error z value Pr(>|z|)    
-# (Intercept)              -5.5677     0.3724 -14.949  < 2e-16 ***
-# c.baseline_gcm_features   4.3687     0.4249  10.281  < 2e-16 ***
-# gcm_wf_score_diff         2.6117     0.4696   5.562 2.67e-08 ***
-# pre_reg_av                5.2887     0.6022   8.782  < 2e-16 ***
 summary(m6)
-#                        Estimate Std. Error z value Pr(>|z|)    
-# (Intercept)              -5.0641     0.3374 -15.010   <2e-16 ***
-# c.baseline_mgl_features   2.0335     0.2079   9.782   <2e-16 ***
-# mgl_wf_score_diff         0.2085     0.1723   1.210    0.226    
-# pre_reg_av                7.4492     0.5996  12.425   <2e-16 ***
 summary(m7)
-#                      Estimate Std. Error z value Pr(>|z|)    
-# (Intercept)                -5.6326     0.3364 -16.743  < 2e-16 ***
-# c.individual_gcm_features   2.7857     0.3776   7.378 1.61e-13 ***
-# c.baseline_mgl_features     1.5998     0.1709   9.361  < 2e-16 ***
-# pre_reg_av                  5.4374     0.5842   9.307  < 2e-16 ***
 summary(m7)$coef %>% round(3) %>% xtable
 # vif.mer(m7)
 summary(rePCA(m7))
 
-
-
-test2 %>% select(word,moder,verb_baseline_mgl_reg) %>% filter(moder == 'KEPT' & verb_baseline_mgl_reg == 1) %>% unique %>% arrange(word) %>% select(word) %>% pull %>% length
+test2 %>% 
+  select(word,moder,verb_baseline_mgl_reg) %>% 
+  filter(moder == 'KEPT' & verb_baseline_mgl_reg == 1) %>% 
+  unique %>% 
+  arrange(word) %>% 
+  select(word) %>% 
+  pull %>% 
+  length
 # 28, not 57
 ```
 
@@ -474,12 +485,12 @@ It looks like the best model has the predictions of the individual gcm and the b
 ## Marginal and conditional r squared for the two models
 
 ```{r eval=F}
-load('esp_fit.rda')
+load('models/paper/esp_fit.rda')
 formula(fit)
 MuMIn::r.squaredGLMM(fit) # 0.27 0.45
 MuMIn::r.squaredGLMM(m7) # 0.22 0.47 
 test2$m7.pred = predict(m7, type = 'response')
-with(test2, Hmisc::somers2(m7.pred, resp_post_reg)) # .84
+with(test2, Hmisc::somers2(m7.pred, resp_post_reg)) 
 ```
 
 ## Figure 4
@@ -507,6 +518,7 @@ t2 = test2 %>%
   mutate(lex_typicality2 = 
            case_when(
              lex_typicality == 'atypical' ~ 'reversed',
+             lex_typicality == 'reversed' ~ 'reversed',
              lex_typicality == 'typical' ~ 'typical',
              lex_typicality == 'random' ~ 'random',
            ),
@@ -583,6 +595,6 @@ ggplot(t4, aes(x = baseline.averages, y = individual.averages, colour = lex_typi
   guides(linetype = F) +
   scale_colour_brewer(palette = 'Set2', name="Lexical\ntypicality")
 # ggsave('interactionplot.pdf', device = cairo_pdf, width = 12.5, height = 4)
-ggsave('fig4_2019.pdf', width = 12.5, height = 4)
+ggsave('fig4_2020.pdf', width = 12.5, height = 4)
 
 ```

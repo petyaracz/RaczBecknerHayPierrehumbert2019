@@ -1,3 +1,7 @@
+###########################################################################
+# GCM functions
+###########################################################################
+
 # get similarity from whatever distance you choose to use
 getSimilarity = function(feature.distance, var_s, var_p){#the def values in the paper
   pairwise.similarity = exp ( -feature.distance / var_s )^var_p 
@@ -195,4 +199,174 @@ runGuyLookup = function(espdata, lookup, gcm.id, my.participant_id, var_s, var_p
   participant.output$participant_id = my.participant_id
   
   return(participant.output)
+}
+
+###########################################################################
+# MGL functions
+###########################################################################
+
+## functions
+
+# takes in read-in tsv, returns list of verbs with conf of regular form
+getMGLRules <- function(output){
+  
+  output2 = output %>% 
+    mutate(
+      past.form = sub("»", "", form2),
+      present.form = sub("»", "", form1),
+      alternation = paste0(A,X8,B),
+      environment = paste0(P,X15,Q)
+    ) %>% 
+    rename(
+      related_forms = `related forms`
+    )
+  
+  output2 = output2 %>% 
+    select(
+      present.form,
+      past.form,
+      alternation,
+      Pres,
+      Pfeat,
+      environment,
+      Qfeat,
+      Qres,
+      scope,
+      hits,
+      reliability,
+      confidence,
+      related_forms,
+      exceptions
+    )
+  
+  foc.dat = left_join(output2, verb_handles, by = 'present.form')
+  
+  
+  foc.irreg.rules = subset(foc.dat, as.character(past.form) == as.character(irregular.form))
+  foc.reg.rules = subset(foc.dat, as.character(past.form) == as.character(regular.form))
+  foc.irreg.rules = subset(foc.irreg.rules, !duplicated(present.form))
+  foc.reg.rules = subset(foc.reg.rules, !duplicated(present.form))
+  
+  foc.irreg.rules$rule_type = 'irregular'
+  foc.reg.rules$rule_type = 'regular'
+  
+  regular.rules = foc.reg.rules %>% 
+    select(
+      present.form,
+      reliability,
+      confidence,
+      category,
+      base.print
+    ) %>% 
+    rename(
+      reg.rel = reliability, 
+      reg.conf = confidence
+    )
+  
+  irregular.rules = foc.irreg.rules %>% 
+    select(
+      present.form,
+      reliability,
+      confidence,
+      category,
+      base.print
+    ) %>% 
+    rename(
+      ir.rel = reliability, 
+      ir.conf = confidence
+    )
+  
+  rules = full_join(regular.rules,irregular.rules, by = c("present.form", "category", "base.print"))
+  
+  rules = rules %>% 
+    mutate(
+      ir.conf = ifelse(is.na(ir.conf), 0, ir.conf),
+      indiv_mgl_conf = reg.conf / (reg.conf + ir.conf)
+    ) %>% 
+    select(present.form,indiv_mgl_conf)
+  return(rules)
+}
+
+### example
+# output = read_tsv('models/mgl/esp_mgl_by_hand_features_2/input_part1.sum')
+# out = getMGLRules(output)
+
+## getting data from everybody
+
+### no features
+
+getNoFeatures = function(participant_handles){
+  
+  participant_handles = participant_handles %>% 
+    mutate(
+      individual_mgl_edits_raw = map(participant, ~ read_tsv(
+        paste0(
+          'models/mgl/esp_mgl_no_features/input_part', ., '.sum'
+        )  
+      )
+      )
+    )
+  
+  # participant_handles$individual_mgl_edits_raw[[1]]
+  
+  participant_handles = participant_handles %>% 
+    mutate(
+      individual_mgl_edits = map(individual_mgl_edits_raw, ~ getMGLRules(.))
+    )
+  
+  # this scoping is quite something
+  
+  # participant_handles$individual_mgl_edits[[1]]
+  # participant 6030 == indiv 1 and test nonce verbs check out
+  
+  participant_handles = participant_handles %>% 
+    select(
+      participant_id,
+      individual_mgl_edits
+    ) %>% 
+    unnest(cols = c(individual_mgl_edits)) %>% 
+    rename(
+      individual_mgl_edits = indiv_mgl_conf
+    )
+  
+  return(participant_handles)
+}
+
+### with features
+
+getWithFeatures = function(participant_handles){
+  
+  participant_handles = participant_handles %>% 
+    mutate(
+      individual_mgl_features_raw = map(participant, ~ read_tsv(
+        paste0(
+          'models/mgl/esp_mgl_by_hand_features_2/input_part', ., '.sum'
+        )  
+      )
+      )
+    )
+  
+  # participant_handles$individual_mgl_features_raw[[1]]
+  
+  participant_handles = participant_handles %>% 
+    mutate(
+      individual_mgl_features = map(individual_mgl_features_raw, ~ getMGLRules(.))
+    )
+  
+  # this scoping is quite something
+  
+  # participant_handles$individual_mgl_features[[1]]
+  # participant 6030 == indiv 1 and test nonce verbs check out
+  
+  participant_handles = participant_handles %>% 
+    select(
+      participant_id,
+      individual_mgl_features
+    ) %>% 
+    unnest(cols = c(individual_mgl_features)) %>% 
+    rename(
+      individual_mgl_features = indiv_mgl_conf
+    )
+  
+  return(participant_handles)
 }

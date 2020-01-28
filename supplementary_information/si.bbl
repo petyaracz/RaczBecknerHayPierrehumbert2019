@@ -1,0 +1,168 @@
+\begin{thebibliography}{26}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}{\relax}
+\providecommand{\urlprefix}{Online: }
+
+\bibitem[{Aiken et~al.(1991)Aiken and colleagues}]{aiken1991multiple}
+\textsc{Aiken, Leona~S.}; \textsc{Stephen~G. West}; and \textsc{Raymond~R.
+  Reno}. 1991.
+\newblock \emph{Multiple regression: Testing and interpreting interactions}.
+\newblock Newbury Park, CA: Sage.
+
+\bibitem[{Albright \& Hayes(2002)Albright and Hayes}]{albright2002modeling}
+\textsc{Albright, Adam}, and \textsc{Bruce Hayes}. 2002.
+\newblock Modeling {E}nglish past tense intuitions with minimal generalization.
+\newblock \emph{{Proceedings of the ACL-02 Workshop on Morphological and
+  Phonological Learning}}, vol.~6, 58--69. Stroudsburg, PA.
+
+\bibitem[{Albright \& Hayes(2003)Albright and Hayes}]{albright2003rules}
+\textsc{Albright, Adam}, and \textsc{Bruce Hayes}. 2003.
+\newblock Rules vs. analogy in {E}nglish past tenses: A
+  computational/experimental study.
+\newblock \emph{Cognition} 90.119--161.
+
+\bibitem[{Alegre \& Gordon(1999)Alegre and Gordon}]{alegre1999rule}
+\textsc{Alegre, Maria}, and \textsc{Peter Gordon}. 1999.
+\newblock Rule-based versus associative processes in derivational morphology.
+\newblock \emph{Brain and Language} 68.347--354.
+
+\bibitem[{Baayen et~al.(2008)Baayen and colleagues}]{baayen2008mixed}
+\textsc{Baayen, R.~Harald}; \textsc{Douglas~J. Davidson}; and
+  \textsc{Douglas~M. Bates}. 2008.
+\newblock Mixed-effects modeling with crossed random effects for subjects and
+  items.
+\newblock \emph{Journal of Memory and Language} 59.390--412.
+
+\bibitem[{Baayen et~al.(2006)Baayen and colleagues}]{baayen2006morphological}
+\textsc{Baayen, R.~Harald}; \textsc{Laurie~B. Feldman}; and \textsc{Robert
+  Schreuder}. 2006.
+\newblock Morphological influences on the recognition of monosyllabic
+  monomorphemic words.
+\newblock \emph{Journal of Memory and Language} 55.290--313.
+
+\bibitem[{Baayen et~al.(1993)Baayen and colleagues}]{baayen1993celex}
+\textsc{Baayen, R.~Harald}; \textsc{Richard Piepenbrock}; and \textsc{Hedderik
+  van Rijn}. 1993.
+\newblock \emph{The {CELEX} lexical database on {CD-ROM}}.
+\newblock Philadelphia: Linguistic Data Consortium.
+
+\bibitem[{Bates et~al.(2015)Bates and colleagues}]{bateslme4}
+\textsc{Bates, Douglas}; \textsc{Martin M{\"a}chler}; \textsc{Ben Bolker}; and
+  \textsc{Steve Walker}. 2015.
+\newblock Fitting linear mixed-effects models using {lme4}.
+\newblock \emph{Journal of Statistical Software} 67.1--48, DOI:
+  10.18637/jss.v067.i01.
+
+\bibitem[{Belsley(1991)}]{belsley1991conditioning}
+\textsc{Belsley, David~A.} 1991.
+\newblock \emph{Conditioning diagnostics: Collinearity and weak data in
+  regression}.
+\newblock New York: Wiley.
+
+\bibitem[{Bybee \& Moder(1983)Bybee and Moder}]{bybee1983morphological}
+\textsc{Bybee, Joan~L.}, and \textsc{Carol~Lynn Moder}. 1983.
+\newblock Morphological classes as natural categories.
+\newblock \emph{Language} 59.251--270.
+
+\bibitem[{Bybee \& Slobin(1982)Bybee and Slobin}]{bybee1982rules}
+\textsc{Bybee, Joan~L.}, and \textsc{Dan~I. Slobin}. 1982.
+\newblock Rules and schemas in the development and use of the {E}nglish past
+  tense.
+\newblock \emph{Language} 58.265--289.
+
+\bibitem[{Dawdy-Hesterberg \& Pierrehumbert(2014)Dawdy-Hesterberg and
+  Pierrehumbert}]{dawdy2014learnability}
+\textsc{Dawdy-Hesterberg, Lisa}, and \textsc{Janet~B. Pierrehumbert}. 2014.
+\newblock Learnability and generalisation of {Arabic} broken plural nouns.
+\newblock \emph{Language, Cognition and Neuroscience} 29.1268--1282.
+
+\bibitem[{Echambadi \& Hess(2007)Echambadi and Hess}]{echambadi2007mean}
+\textsc{Echambadi, Raj}, and \textsc{James~D. Hess}. 2007.
+\newblock Mean-centering does not alleviate collinearity problems in moderated
+  multiple regression models.
+\newblock \emph{Marketing Science} 26.438--445.
+
+\bibitem[{Frisch et~al.(2004)Frisch and colleagues}]{frisch1997similarity}
+\textsc{Frisch, Stefan~A.}; \textsc{Janet~B. Pierrehumbert}; and
+  \textsc{Michael Broe}. 2004.
+\newblock Similarity avoidance and the {OCP}.
+\newblock \emph{Natural Language and Linguistic Theory} 22.179--228.
+
+\bibitem[{Harrell(2013)}]{harrell2013regression}
+\textsc{Harrell, Frank~E.} 2013.
+\newblock \emph{Regression modeling strategies: {W}ith applications to linear
+  models, logistic regression, and survival analysis}.
+\newblock New York: Springer Science \& Business Media.
+
+\bibitem[{Harrell~Jr(2008)}]{harrell2014hmisc}
+\textsc{Harrell~Jr, et~al, Frank~E}. 2008.
+\newblock Hmisc: A package of miscellaneous {R} functions.
+\newblock \emph{R package version} 3.
+\urlprefix\url{http://biostat.mc.vanderbilt.edu/Hmisc}.
+
+\bibitem[{Jaccard \& Turrisi(2003)Jaccard and Turrisi}]{jaccard2003interaction}
+\textsc{Jaccard, James}, and \textsc{Robert Turrisi}. 2003.
+\newblock \emph{Interaction effects in multiple regression}.
+\newblock Thousand Oaks, CA: Sage.
+
+\bibitem[{Jaeger(2008)}]{jaeger2008categorical}
+\textsc{Jaeger, T.~Florian}. 2008.
+\newblock Categorical data analysis: Away from {ANOVA}s (transformation or not)
+  and towards logit mixed models.
+\newblock \emph{Journal of Memory and Language} 59.434--446.
+
+\bibitem[{Mielke(2008)}]{mielke2008emergence}
+\textsc{Mielke, Jeff}. 2008.
+\newblock \emph{The emergence of distinctive features}.
+\newblock Oxford: Oxford University Press.
+
+\bibitem[{Moder(1992)}]{moder1992productivity}
+\textsc{Moder, Carol~Lynn}. 1992.
+\newblock \emph{Productivity and categorization in morphological classes}.
+\newblock Buffalo, NY: State University of New York dissertation.
+
+\bibitem[{Nakisa et~al.(2001)Nakisa and colleagues}]{nakisa2001dual}
+\textsc{Nakisa, Ramin~C.}; \textsc{Kim Plunkett}; and \textsc{Ulrike Hahn}.
+  2001.
+\newblock A cross-linguistic comparison of single and dual-route models of
+  inflectional morphology.
+\newblock \emph{Models of language acquisition: Inductive and deductive
+  approaches}, ed.~by Peter Broeder and Jaap Murre, 201--222. Cambrdge, MA: MIT
+  Press.
+
+\bibitem[{Nosofsky(1990)}]{nosofsky1990relations}
+\textsc{Nosofsky, Robert~M.} 1990.
+\newblock Relations between exemplar-similarity and likelihood models of
+  classification.
+\newblock \emph{Journal of Mathematical Psychology} 34.393--418.
+
+\bibitem[{Schumacher \& Pierrehumbert(2017)Schumacher and
+  Pierrehumbert}]{schumacher2017prior}
+\textsc{Schumacher, R.~Alexander}, and \textsc{Janet~B. Pierrehumbert}. 2017.
+\newblock Prior expectations in linguistic learning: A stochastic model of
+  individual differences.
+\newblock \emph{Proceedings of the 39th {M}eeting of the {C}ognitive {S}cience
+  {S}ociety ({CogSci2017})}. London, UK.
+
+\bibitem[{Schumacher et~al.(2014)Schumacher and
+  colleagues}]{schumacher2014reconciling}
+\textsc{Schumacher, R.~Alexander}; \textsc{Janet~B. Pierrehumbert}; and
+  \textsc{Patrick LaShell}. 2014.
+\newblock Reconciling inconsistency in encoded morphological distinctions in an
+  artificial language.
+\newblock \emph{Proceedings of the 36th {A}nnual {M}eeting of the {C}ognitive
+  {S}cience {S}ociety ({CogSci2014)}}, 2895--2900. Quebec City,CA.
+
+\bibitem[{Sinclair(1987)}]{sinclair1987}
+\textsc{Sinclair, John~M.} (ed.) 1987.
+\newblock \emph{Looking up: An account of the {COBUILD} project in lexical
+  computing}.
+\newblock London: Collins.
+
+\bibitem[{Wurm \& Fisicaro(2014)Wurm and Fisicaro}]{wurm2014residualizing}
+\textsc{Wurm, Lee~H.}, and \textsc{Sebastiano~A. Fisicaro}. 2014.
+\newblock What residualizing predictors in regression analyses does (and what
+  it does not do).
+\newblock \emph{Journal of Memory and Language} 72.37--48.
+
+\end{thebibliography}
