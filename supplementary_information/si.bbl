@@ -1,4 +1,4 @@
-\begin{thebibliography}{26}
+\begin{thebibliography}{25}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}{\relax}
 \providecommand{\urlprefix}{Online: }
@@ -87,12 +87,6 @@
   \textsc{Michael Broe}. 2004.
 \newblock Similarity avoidance and the {OCP}.
 \newblock \emph{Natural Language and Linguistic Theory} 22.179--228.
-
-\bibitem[{Harrell(2013)}]{harrell2013regression}
-\textsc{Harrell, Frank~E.} 2013.
-\newblock \emph{Regression modeling strategies: {W}ith applications to linear
-  models, logistic regression, and survival analysis}.
-\newblock New York: Springer Science \& Business Media.
 
 \bibitem[{Harrell~Jr(2008)}]{harrell2014hmisc}
 \textsc{Harrell~Jr, et~al, Frank~E}. 2008.
