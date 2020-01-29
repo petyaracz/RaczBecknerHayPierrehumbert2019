@@ -81,8 +81,8 @@ Table \ref{gcmsetsize} shows the number of verbs in \textsc{Celex} that were use
 
 The model calculates the similarity of a given nonce verb to the regular and the irregular set. Comparisons to stems in other classes are not calculated, as past tense markings for these classes were not available to participants in the forced-choice tasks.
 
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Jan 29 18:07:06 2020
+% latex table generated in R 3.6.2 by xtable 1.8-4 package
+% Thu Jan 30 00:23:25 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rllll}
@@ -160,8 +160,8 @@ The MGL generates multiple possible past tense forms for each nonce verb. We onl
 Note that the sets of exceptions and related forms of each rule can overlap, both respectively and with each other. As a consequence, the MGL rules apply to fewer forms than apparent from the table: 456 (instead of 617) in total.
 
 
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Jan 29 18:07:07 2020
+% latex table generated in R 3.6.2 by xtable 1.8-4 package
+% Thu Jan 30 00:23:25 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rllrr}
@@ -223,8 +223,8 @@ As we see, however, the MGL also focuses the training set. The structural descri
 
 
 
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Jan 29 18:07:07 2020
+% latex table generated in R 3.6.2 by xtable 1.8-4 package
+% Thu Jan 30 00:23:25 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rllrr}
@@ -275,8 +275,8 @@ The rule structure of the MGL likely follows from its parameter settings, which 
 
 
 
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Jan 29 18:07:07 2020
+% latex table generated in R 3.6.2 by xtable 1.8-4 package
+% Thu Jan 30 00:23:25 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -318,8 +318,8 @@ Since the regularity scores of the GCM and the MGL for the nonce verbs are corre
 We fit two simple linear regression models; no random effects are explored in these models, since we are merely predicting algorithmic scores for each item. We rescale and center GCM and MGL scores for the model fits. 
 
 
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Jan 29 18:07:07 2020
+% latex table generated in R 3.6.2 by xtable 1.8-4 package
+% Thu Jan 30 00:23:26 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -334,8 +334,8 @@ We fit two simple linear regression models; no random effects are explored in th
 \caption{MGL scores and GCM residuals, baseline data} 
 \label{resid1}
 \end{table}
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Jan 29 18:07:07 2020
+% latex table generated in R 3.6.2 by xtable 1.8-4 package
+% Thu Jan 30 00:23:26 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -374,7 +374,7 @@ Table \ref{modellingsummary} summarizes the concordance indices between our data
 
     \centering
     \begin{tabular}{lllll}
-            & training data & method & test data & C (test data)\\
+            & training data & method & test data & C\\
             \hline
 \textsc{Celex}-GCM & real verbs & `analogy' & verbs in baseline &0.581\\
 \textsc{Celex}-MGL & real verbs & `rules' & verbs in baseline &0.586\\ \hline
@@ -392,15 +392,15 @@ individual-MGL & real verbs + verbs seen in ESP & `rules' & verbs in post-test &
 
 The issue here is that a concordance index is not a statistical test, and does not provide a margin of error. The trends are apparent: the individual-GCM is more of an improvement than the individual-MGL. But the strength of these trends is less clear.
 
-\subsection{Extra information provided by the individual model over the \sc{Celex}-model}
+\subsection{Extra information provided by the individual model over the {\sc Celex}-model}
 
-Second, we considered the amount of extra variation explained by the individual-model over the \sc{Celex}-model, for the MGL and the GCM, respectively.
+Second, we considered the amount of extra variation explained by the individual-model over the {\sc Celex}-model, for the MGL and the GCM, respectively.
 
-Section 6.4 in the main text explains that we calculate the extra information given by the individual models by subtracting the \textsc{Celex} model prediction from the individual model prediction for each item for each participant.
+Section 6.4 in the main text explains that we calculate the extra information given by the individual models by subtracting the {\sc Celex} model prediction from the individual model prediction for each item for each participant.
 
 
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Jan 29 18:07:07 2020
+% latex table generated in R 3.6.2 by xtable 1.8-4 package
+% Thu Jan 30 00:23:27 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -416,8 +416,8 @@ Section 6.4 in the main text explains that we calculate the extra information gi
 \caption{Celex-GCM and individual score difference, post-test data} 
 \label{indiv1}
 \end{table}
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Jan 29 18:07:07 2020
+% latex table generated in R 3.6.2 by xtable 1.8-4 package
+% Thu Jan 30 00:23:27 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -437,9 +437,45 @@ We do this for both the GCM  (Model 5: regular response  $\sim$ \textsc{Celex} G
 
 The extra information is a significant predictor of post-test responses in both models. However, this effect is much more robust for the GCM than for the MGL, as seen in Table \ref{indiv1} (M5) and Table \ref{indiv2} (M6). The individual-GCM has some success in modeling post-test behavior when trained with real English verbs and information from the ESP test, whereas adjustments made to the individual-MGL do not vastly improve predictive power. 
 
-These techniques are indicative of the relative strengths of the individual-MGL and -GCM respective to their \sc{Celex}-counterparts and each other. However, they do not compare them directly using statistical tests. 
+These techniques are indicative of the relative strengths of the individual-MGL and -GCM respective to their {\sc Celex}-counterparts and each other. However, they do not compare them directly. 
 
 \subsection{Using combined model predictions to explain variation in participant post-test responses}
+
+
+We used the {\sc Celex}-GCM, {\sc Celex}-MGL, individual-GCM, and individual-MGL together to predict participant post-test responses. The best model, reported in the paper, contains the {\sc Celex}-MGL and the individal-GCM. The summary can be seen in Table \ref{comp3}. 
+
+
+% latex table generated in R 3.6.2 by xtable 1.8-4 package
+% Thu Jan 30 00:23:27 2020
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & Estimate & Std. Error & z value & Pr($>$$|$z$|$) \\ 
+  \hline
+(Intercept) & -2.942 & 0.270 & -10.896 & 0.000 \\ 
+  r\_baseline\_mgl\_features & 1.600 & 0.171 & 9.361 & 0.000 \\ 
+  r\_individual\_gcm\_features & 2.786 & 0.378 & 7.369 & 0.000 \\ 
+  participant\_prereg\_average & 5.437 & 0.585 & 9.298 & 0.000 \\ 
+   \hline
+\end{tabular}
+\caption{Celex-MGL and Individual-GCM predict variation in the post-test} 
+\label{comp3}
+\end{table}
+Goodness-of-fit tests show that model fit is significantly worse if we exclude {\sc Celex}-MGL ($\chi^2 = $ 201.86) or individual-GCM ($\chi^2 = $ 81.82) as predictors. It is not significantly better if we include individual-MGL ($\chi^2 = $ 0.09) or {\sc Celex}-GCM ($\chi^2 = $ 2.03).
+
+\subsection{Visualising model contributions to explaining variation in post-test responses}
+
+Figure \ref{bigfigure} shows how baseline and post-test regularisation means of words compare for participant responses, the GCM, and the MGL.
+
+
+\begin{figure}
+\includegraphics{si-model_figure2}
+\caption{Baseline and individual regularisation weights: participants, GCM, MGL}
+\label{bigfigure}
+\end{figure}
+
+\newpage
 
 \bibliographystyle{language}
 \bibliography{racz_beckner_hay_pierrehumbert_2020}

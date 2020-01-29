@@ -16,9 +16,50 @@
 library(tidyverse)
 library(xtable)
 library(lme4)
+library(patchwork) # take this out
 
 # data
 source('~/Github/RaczBecknerHayPierrehumbert2019/functions/grabdata.R')
+
+# setting up columns in baseline and post-test data
+baseline = baseline %>% 
+  mutate(
+    r_baseline_mgl_features = scales::rescale(baseline_mgl_features), # rescale regularity weights
+    r_baseline_gcm_features = scales::rescale(baseline_gcm_features),
+  )
+
+test2 = test2 %>% 
+  mutate(
+    verb_baseline_average = baseline_av - mean(baseline_av, na.rm = T), # center verb average
+    participant_prereg_average = pre_reg_av - mean(pre_reg_av, na.rm = T), # center participant average
+    bot_lexical_typicality = case_when( # set factor levels used in paper, order factor
+        lex_typicality == 'typical' ~ 'typical',
+        lex_typicality == 'random' ~ 'random',
+        lex_typicality == 'atypical' ~ 'reversed'
+      ) %>% 
+      factor(levels = c('typical', 'random', 'reversed')),
+    bot_regularisation_rate = reg_rate %>% # order factor
+      factor(levels = c('nc', '-40%', '+40%')),
+    r_baseline_mgl_features = scales::rescale(baseline_mgl_features), # scale regular weights
+    r_baseline_gcm_features = scales::rescale(baseline_gcm_features),
+    r_individual_mgl_features = scales::rescale(individual_mgl_features),
+    r_individual_gcm_features = scales::rescale(individual_gcm_features),
+    gcm_score_diff = r_individual_gcm_features - r_baseline_gcm_features, # calculate score diff
+    mgl_score_diff = r_individual_mgl_features - r_baseline_mgl_features
+  )
+    
+
+# mgl illustrations
+
+## get the raw output of the baseline feature-distance mgl
+mgl_baseline_rules_raw = read_tsv('~/Github/RaczBecknerHayPierrehumbert2019/models/mgl/baseline_mgl/CELEXFull3.sum') %>% 
+  mutate(
+    form1 = str_replace_all(form1, '»', ''), # get rid of syllable boundary markers
+    form2 = str_replace_all(form2, '»', '')
+  )
+
+## get verb handles
+verb_handles = read_csv('~/Github/RaczBecknerHayPierrehumbert2019/data/256verbs_print_forms.txt')
 
 @
 
@@ -200,9 +241,6 @@ reg_set = gcm_table %>%
   as.double
 
 splive_gcm = test2 %>% 
-  mutate(
-    r_baseline_gcm_features = scales::rescale(baseline_gcm_features)
-  ) %>% 
   filter(word == 'splive') %>% 
   pull(r_baseline_gcm_features) %>% 
   unique %>% 
@@ -239,20 +277,11 @@ Note that the sets of exceptions and related forms of each rule can overlap, bot
 # in order to look up the number of words per rule type, we need to dig up the raw mgl outputs.
 # we have a function that turns them into mgl regular weights. but we need to break up that functions part-way and print the output here.
 
-# get the raw output of the baseline feature-distance mgl
-mgl_baseline_rules_raw = read_tsv('~/Github/RaczBecknerHayPierrehumbert2019/models/mgl/baseline_mgl/CELEXFull3.sum') %>% 
-  mutate(
-    form1 = str_replace_all(form1, '»', ''), # get rid of syllable boundary markers
-    form2 = str_replace_all(form2, '»', '')
-  )
-
 disc_category = test2 %>% # get words and categories from test2. match colnames with above
   distinct(disc, category) %>% 
   mutate(
     form1 = disc
   )
-
-verb_handles = read_csv('~/Github/RaczBecknerHayPierrehumbert2019/data/256verbs_print_forms.txt')
 
 disc_reg_past_irreg_past = verb_handles %>% # get reg and irreg transcriptions from verb handles. match colnames with above.
   select(base.form,regular.form,irregular.form) %>% 
@@ -470,19 +499,6 @@ The rule structure of the MGL likely follows from its parameter settings, which 
 \section{Regression modeling procedures}\label{appendixregression}
 
 <<main_model1, echo=F,eval=T>>=
-test2 = test2 %>% 
-  mutate(
-    verb_baseline_average = baseline_av - mean(baseline_av, na.rm = T),
-    participant_prereg_average = pre_reg_av - mean(pre_reg_av, na.rm = T),
-    bot_lexical_typicality = case_when(
-        lex_typicality == 'typical' ~ 'typical',
-        lex_typicality == 'random' ~ 'random',
-        lex_typicality == 'atypical' ~ 'reversed'
-      ) %>% 
-      factor(levels = c('typical', 'random', 'reversed')),
-    bot_regularisation_rate = reg_rate %>% 
-      factor(levels = c('nc', '-40%', '+40%'))
-  )
 
 ##########################################
 # from Florian Jaeger
@@ -505,7 +521,10 @@ vif.mer <- function (fit) {
 
 <<main_model2, echo=F,eval=F>>=
 
-lme.fit1 = glmer(resp_post_reg ~ 1 + verb_baseline_average * bot_lexical_typicality + participant_prereg_average + bot_regularisation_rate +
+# the model reported in the paper
+
+lme.fit1 = glmer(resp_post_reg ~ 
+    1 + verb_baseline_average * bot_lexical_typicality + participant_prereg_average + bot_regularisation_rate +
     (1 + verb_baseline_average | participant_id) + 
     (1  | word), 
   data = test2, 
@@ -513,8 +532,36 @@ lme.fit1 = glmer(resp_post_reg ~ 1 + verb_baseline_average * bot_lexical_typical
   control=glmerControl(optimizer="bobyqa")
 )
 
+# the first comparison that comes to mind (no interaction):
+
+lme.fit1b = glmer(resp_post_reg ~ 
+    1 + verb_baseline_average + bot_lexical_typicality + participant_prereg_average + bot_regularisation_rate +
+    (1 + verb_baseline_average | participant_id) + 
+    (1  | word), 
+  data = test2, 
+  family = binomial (link = logit),
+  control=glmerControl(optimizer="bobyqa")
+)
+
+# the second comparison that comes to mind (three-way interaction):
+
+lme.fit1c = glmer(resp_post_reg ~ 
+    1 + verb_baseline_average * bot_lexical_typicality * bot_regularisation_rate + participant_prereg_average + 
+    (1 + verb_baseline_average | participant_id) + 
+    (1  | word), 
+  data = test2, 
+  family = binomial (link = logit),
+  control=glmerControl(optimizer="bobyqa", optCtrl = list(maxfun = 100000))
+)
+
 save(lme.fit1, file = 'si_fit1.rda')
+save(lme.fit1b, file = 'si_fit1b.rda')
+save(lme.fit1c, file = 'si_fit1c.rda')
 vif.mer(lme.fit1)
+vif.mer(lme.fit1c)
+
+anova(lme.fit1,lme.fit1b,lme.fit1c)
+
 @
 
 <<main_model3, echo=F,eval=T, results=tex>>=
@@ -536,7 +583,8 @@ test2b = test2 %>%
     bot_lexical_typicality != 'typical'
   )
 
-fit_power1 = glmer(resp_post_reg ~ 1 + verb_baseline_average * bot_lexical_typicality + participant_prereg_average + bot_regularisation_rate +
+fit_power1 = glmer(resp_post_reg ~ 
+    1 + verb_baseline_average * bot_lexical_typicality + participant_prereg_average + bot_regularisation_rate +
     (1 + verb_baseline_average | participant_id) + 
     (1  | word), 
   data = test2b, 
@@ -544,7 +592,8 @@ fit_power1 = glmer(resp_post_reg ~ 1 + verb_baseline_average * bot_lexical_typic
   control=glmerControl(optimizer="bobyqa")
   )
 
-fit_power2 = glmer(resp_post_reg ~ 1 + verb_baseline_average + bot_lexical_typicality + participant_prereg_average + bot_regularisation_rate +
+fit_power2 = glmer(resp_post_reg ~ 
+    1 + verb_baseline_average + bot_lexical_typicality + participant_prereg_average + bot_regularisation_rate +
     (1 + verb_baseline_average | participant_id) + 
     (1  | word), 
   data = test2b, 
@@ -554,6 +603,8 @@ fit_power2 = glmer(resp_post_reg ~ 1 + verb_baseline_average + bot_lexical_typic
 
 # summary(fit_power1)
 # summary(fit_power2)
+save(fit_power1, file = 'si_fit_power1.rda')
+save(fit_power2, file = 'si_fit_power2.rda')
 
 exp((BIC(fit_power2) - BIC(fit_power1))/2)
 @
@@ -565,12 +616,6 @@ Since it is unclear whether the absence of a difference between random and rever
 We fit the Celex-GCM and the Celex-MGL on the baseline data to see how well they predict regularisation responses by the baseline participants. The Celex-MGL outperforms the Celex-GCM, if slightly. Both models contribute independently to explaining variation in the data.
 
 <<celex_gcm_mgl1, eval=T, echo=F>>=
-
-baseline = baseline %>% 
-  mutate(
-    r_baseline_mgl_features = scales::rescale(baseline_mgl_features),
-    r_baseline_gcm_features = scales::rescale(baseline_gcm_features),
-  )
 
 C_baseline_mgl_features = with(baseline, Hmisc::somers2(r_baseline_mgl_features,regular)['C']) %>% 
   round(3)
@@ -609,13 +654,15 @@ baseline_words = baseline_words %>%
 
 baseline = left_join(baseline, baseline_words, by = c("word", "r_baseline_mgl_features", "r_baseline_gcm_features"))
 
-celex_m3 = glmer(regular ~ 1 + r_baseline_mgl_features + r_baseline_gcm_features_residual + 
+celex_m3 = glmer(regular ~ 
+                1 + r_baseline_mgl_features + r_baseline_gcm_features_residual + 
                 (1 + r_baseline_mgl_features + r_baseline_gcm_features_residual | subject), 
                 data = baseline, 
                 family = binomial ( link = logit ),
                 control=glmerControl(optimizer="bobyqa"))
 
-celex_m4 = glmer(regular ~ 1 + r_baseline_gcm_features + r_baseline_mgl_features_residual + 
+celex_m4 = glmer(regular ~ 
+                1 + r_baseline_gcm_features + r_baseline_mgl_features_residual + 
                 (1 + r_baseline_gcm_features + r_baseline_mgl_features_residual | subject), 
                 data = baseline, 
                 family = binomial ( link = logit ),
@@ -655,14 +702,6 @@ First, we calculated concordance indices for the Celex- and individual-models on
 
 <<first, echo=F,eval=T>>=
 
-test2 = test2 %>% 
- mutate(
-    r_baseline_mgl_features = scales::rescale(baseline_mgl_features),
-    r_baseline_gcm_features = scales::rescale(baseline_gcm_features),
-    r_individual_mgl_features = scales::rescale(individual_mgl_features),
-    r_individual_gcm_features = scales::rescale(individual_gcm_features)
- )
-
 # C_baseline_mgl_features # celex-mgl on baseline
 # C_baseline_gcm_features # celex-gcm on baseline
 
@@ -697,32 +736,26 @@ individual-MGL & real verbs + verbs seen in ESP & `rules' & verbs in post-test &
 
 The issue here is that a concordance index is not a statistical test, and does not provide a margin of error. The trends are apparent: the individual-GCM is more of an improvement than the individual-MGL. But the strength of these trends is less clear.
 
-\subsection{Extra information provided by the individual model over the \sc{Celex}-model}
+\subsection{Extra information provided by the individual model over the {\sc Celex}-model}
 
-Second, we considered the amount of extra variation explained by the individual-model over the \sc{Celex}-model, for the MGL and the GCM, respectively.
+Second, we considered the amount of extra variation explained by the individual-model over the {\sc Celex}-model, for the MGL and the GCM, respectively.
 
-Section 6.4 in the main text explains that we calculate the extra information given by the individual models by subtracting the \sc{Celex} model prediction from the individual model prediction for each item for each participant.
+Section 6.4 in the main text explains that we calculate the extra information given by the individual models by subtracting the {\sc Celex} model prediction from the individual model prediction for each item for each participant.
 
 <<modeldiff1, echo=F,eval=F>>=
 
-test2 = test2 %>% 
-  mutate(
-    gcm_score_diff = r_individual_gcm_features - r_baseline_gcm_features,
-    mgl_score_diff = r_individual_mgl_features - r_baseline_mgl_features
-)
-
-resp_post_reg ~ 1 + verb_baseline_average * bot_lexical_typicality + participant_prereg_average + bot_regularisation_rate 
-
-indiv_m5 = glmer(resp_post_reg ~ r_baseline_gcm_features + gcm_score_diff + participant_prereg_average + 
-                   (1 + r_baseline_gcm_features + gcm_score_diff | participant_id) + (1 | word), 
+indiv_m5 = glmer(resp_post_reg ~
+    1 + r_baseline_gcm_features + gcm_score_diff + participant_prereg_average + 
+    (1 + r_baseline_gcm_features + gcm_score_diff | participant_id) + (1 | word), 
                  data = test2, 
                  family = binomial (link = logit), 
                  control=glmerControl(optimizer="bobyqa"))
 
 save(indiv_m5, file = 'si_indiv_m5.rda')
 
-indiv_m6 = glmer(resp_post_reg ~ r_baseline_mgl_features + mgl_score_diff + participant_prereg_average  + 
-                   (1 + r_baseline_mgl_features + mgl_score_diff | participant_id) + (1 | word), 
+indiv_m6 = glmer(resp_post_reg ~ 
+    1 + r_baseline_mgl_features + mgl_score_diff + participant_prereg_average  + 
+    (1 + r_baseline_mgl_features + mgl_score_diff | participant_id) + (1 | word), 
                  data = test2, 
                  family = binomial (link = logit), 
                  control=glmerControl(optimizer="bobyqa"))
@@ -747,9 +780,166 @@ We do this for both the GCM  (Model 5: regular response  $\sim$ \textsc{Celex} G
 
 The extra information is a significant predictor of post-test responses in both models. However, this effect is much more robust for the GCM than for the MGL, as seen in Table \ref{indiv1} (M5) and Table \ref{indiv2} (M6). The individual-GCM has some success in modeling post-test behavior when trained with real English verbs and information from the ESP test, whereas adjustments made to the individual-MGL do not vastly improve predictive power. 
 
-These techniques are indicative of the relative strengths of the individual-MGL and -GCM respective to their \sc{Celex}-counterparts and each other. However, they do not compare them directly using statistical tests. 
+These techniques are indicative of the relative strengths of the individual-MGL and -GCM respective to their {\sc Celex}-counterparts and each other. However, they do not compare them directly. 
 
 \subsection{Using combined model predictions to explain variation in participant post-test responses}
+
+<<comparison_model1, echo=F,eval=F>>=
+
+# the model reported in the paper 
+comp_fit1 = glmer(resp_post_reg ~ 
+    1 + r_baseline_mgl_features + r_individual_gcm_features + participant_prereg_average  + 
+    (1 + r_baseline_mgl_features + r_individual_gcm_features | participant_id) + (1 | word), 
+                 data = test2, 
+                 family = binomial (link = logit), 
+                 control=glmerControl(optimizer="bobyqa"))
+
+# model without baseline mgl
+comp_fit1b = glmer(resp_post_reg ~ 
+    1 + r_individual_gcm_features + participant_prereg_average  + 
+    (1 + r_individual_gcm_features | participant_id) + (1 | word), 
+                 data = test2, 
+                 family = binomial (link = logit), 
+                 control=glmerControl(optimizer="bobyqa"))
+
+# model without individual gcm
+comp_fit1c = glmer(resp_post_reg ~ 
+    1 + r_baseline_mgl_features + participant_prereg_average  + 
+    (1 + r_baseline_mgl_features | participant_id) + (1 | word), 
+                 data = test2, 
+                 family = binomial (link = logit), 
+                 control=glmerControl(optimizer="bobyqa"))
+ 
+# model with individual mgl
+comp_fit1d = glmer(resp_post_reg ~ 
+    1 + r_baseline_mgl_features + r_individual_gcm_features + r_individual_mgl_features + participant_prereg_average  + 
+    (1 + r_baseline_mgl_features + r_individual_gcm_features | participant_id) + (1 | word), 
+                 data = test2, 
+                 family = binomial (link = logit), 
+                 control=glmerControl(optimizer="bobyqa"))
+
+# model with celex gcm
+comp_fit1e = glmer(resp_post_reg ~ 
+    1 + r_baseline_mgl_features + r_individual_gcm_features + r_baseline_gcm_features + participant_prereg_average  + 
+    (1 + r_baseline_mgl_features + r_individual_gcm_features | participant_id) + (1 | word), 
+                 data = test2, 
+                 family = binomial (link = logit), 
+                 control=glmerControl(optimizer="bobyqa"))
+
+save(comp_fit1, file = 'si_comp_fit1.rda')
+save(comp_fit1b, file = 'si_comp_fit1b.rda')
+save(comp_fit1c, file = 'si_comp_fit1c.rda')
+save(comp_fit1d, file = 'si_comp_fit1d.rda')
+save(comp_fit1e, file = 'si_comp_fit1e.rda')
+
+@
+
+We used the {\sc Celex}-GCM, {\sc Celex}-MGL, individual-GCM, and individual-MGL together to predict participant post-test responses. The best model, reported in the paper, contains the {\sc Celex}-MGL and the individal-GCM. The summary can be seen in Table \ref{comp3}. 
+
+<<comparison_model2, echo=F,eval=T>>=
+
+load('si_comp_fit1.rda')
+load('si_comp_fit1b.rda')
+load('si_comp_fit1c.rda')
+load('si_comp_fit1d.rda')
+load('si_comp_fit1e.rda')
+
+chisq1 = anova(comp_fit1, comp_fit1b)[2,6] %>% round(2) # without baseline mgl
+chisq2 = anova(comp_fit1, comp_fit1c)[2,6] %>% round(2) # without individual gcm
+chisq3 = anova(comp_fit1, comp_fit1d)[2,6] %>% round(2) # with individual mgl
+chisq4 = anova(comp_fit1, comp_fit1e)[2,6] %>% round(2) # with celex gcm
+
+@
+
+<<comparison_model3, echo=F,eval=T, results=tex>>=
+print(xtable(summary(comp_fit1)$coef, digits = 3, label = 'comp3', caption = 'Celex-MGL and Individual-GCM predict variation in the post-test'))
+@
+
+Goodness-of-fit tests show that model fit is significantly worse if we exclude {\sc Celex}-MGL ($\chi^2 = $ \Sexpr{chisq1}) or individual-GCM ($\chi^2 = $ \Sexpr{chisq2}) as predictors. It is not significantly better if we include individual-MGL ($\chi^2 = $ \Sexpr{chisq3}) or {\sc Celex}-GCM ($\chi^2 = $ \Sexpr{chisq4}).
+
+\subsection{Visualising model contributions to explaining variation in post-test responses}
+
+Figure \ref{bigfigure} shows how baseline and post-test regularisation means of words compare for participant responses, the GCM, and the MGL.
+
+<<model_figure, echo=F,eval=T>>=
+
+# can't figure first panel out
+
+first_panel = test2 %>% 
+  group_by(
+    word,
+    bot_lexical_typicality,
+    baseline_av
+  ) %>%
+  summarise(
+    post_reg_mean = post_reg_av %>% 
+      mean()
+  ) %>% 
+  ungroup() %>% 
+  mutate(
+    baseline = scales::rescale(baseline_av),
+    posttest = scales::rescale(post_reg_mean),
+    type = 'Participant responses'
+  )
+
+second_panel = test2 %>% 
+  group_by(
+    word,
+    bot_lexical_typicality,
+    r_baseline_gcm_features
+  ) %>% 
+  rename(
+    baseline = r_baseline_gcm_features
+  ) %>% 
+  summarise(
+    posttest = mean(r_individual_gcm_features)
+  ) %>% 
+  mutate(
+    type = 'GCM'
+  )
+
+third_panel = test2 %>% 
+  group_by(
+    word,
+    bot_lexical_typicality,
+    r_baseline_mgl_features
+  ) %>% 
+  rename(
+    baseline = r_baseline_mgl_features
+  ) %>% 
+  summarise(
+    posttest = mean(r_individual_mgl_features)
+  ) %>% 
+  mutate(
+    type = 'MGL'
+  )
+
+# three_studies = bind_rows(first_panel,second_panel,third_panel)  
+three_studies = bind_rows(second_panel,third_panel)  
+
+p1 = ggplot(three_studies, aes(x = baseline, y = posttest, colour = bot_lexical_typicality, shape = bot_lexical_typicality, linetype = bot_lexical_typicality)) +
+  guides(size = F) +
+  geom_point() +
+  geom_smooth(se = F, method = 'loess', formula = 'y ~ x') +
+  facet_wrap( ~ type) +
+  scale_shape_discrete(name="Lexical\ntypicality") +
+  # scale_colour_discrete(name="Lexical\ntypicality") +
+  xlab('verb baseline regularization') +
+  ylab('verb ESP regularization') +
+  guides(linetype = F) +
+  scale_colour_brewer(palette = 'Set2', name="Lexical\ntypicality")
+
+@
+
+\begin{figure}
+<<model_figure2, fig=T,echo=F,eval=T, height = 4, width = 13>>=
+wrap_elements(grid::textGrob("I'm a \n giant \n turnip")) + p1
+@
+\caption{Baseline and individual regularisation weights: participants, GCM, MGL}
+\label{bigfigure}
+\end{figure}
+
+\newpage
 
 \bibliographystyle{language}
 \bibliography{racz_beckner_hay_pierrehumbert_2020}
