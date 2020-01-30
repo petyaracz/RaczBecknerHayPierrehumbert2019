@@ -19,7 +19,7 @@
 \noindent In this supplementary information, we detail (\ref{appendixverbs}) the structure of our nonce verb stimuli, the setup of (\ref{appendixgcm}) the Generalized Context Model (GCM) and (\ref{appendixmgl}) the Minimal Generalization Learner (MGL), and (\ref{appendixgcmvsmgl}) how these models compare. 
 We illustrate the models using fits on our \emph {baseline} data. 
 
-We also discuss (\ref{appendixgcmmglresidualization}) the residualization method used to compare them, (\ref{posttestimplementation}) how well they fit our ESP test, and (\ref{appendixregression}) the regression methods used.
+We also discuss model selection in analysing our regression data (\ref{appendixregression}), how the two learning models compare on our baseline data (\ref{appendixgcmmglresidualization}), and how they compare on our ESP post-test data (\ref{mglgcmposttest}). 
 
 Sections (\ref{appendixgcm}) and (\ref{appendixmgl}) also appear in the main text of  R\'acz et al. (2020), as Appendices A and B. However, this material is included here so that this Supplement can serve as a standalone document for readers who are interested in the technical details of our study. 
 
@@ -82,7 +82,7 @@ Table \ref{gcmsetsize} shows the number of verbs in \textsc{Celex} that were use
 The model calculates the similarity of a given nonce verb to the regular and the irregular set. Comparisons to stems in other classes are not calculated, as past tense markings for these classes were not available to participants in the forced-choice tasks.
 
 % latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 00:23:25 2020
+% Thu Jan 30 09:32:35 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rllll}
@@ -135,7 +135,7 @@ We standardize the regularity score to match the range of participant responses:
 \subsection{Example: {\em splive}}
 
 
-%The nonce form {\em splive} belongs to the DROVE class in our model. The two past forms of {\em splive} in the experiment are regular {\em splived} and irregular {\em splove}. It is compared to 1301 regular verbs -- these are 83 verbs that match the DROVE schema (e.g.\ {\em side, hive, line}) and 1218 miscellaneous verbs. It is also compared to 14 irregular verbs (e.g.\ {\em drive, stride, smite}) in this class. Overall, it is more similar to the regular set: its {\em regularity score} is 0.57.   
+The nonce form {\em splive} belongs to the DROVE class in our model. The two past forms of {\em splive} in the experiment are regular {\em splived} and irregular {\em splove}. It is compared to 1301 regular verbs -- these are 83 verbs that match the DROVE schema (e.g.\ {\em side, hive, line}) and 1218 miscellaneous verbs. It is also compared to 14 irregular verbs (e.g.\ {\em drive, stride, smite}) in this class. Overall, it is more similar to the regular set: its {\em regularity score} is 0.57.   
 
 \section{Implementation of the Minimal Generalization \\ Learner}\label{appendixmgl}
 
@@ -161,7 +161,7 @@ Note that the sets of exceptions and related forms of each rule can overlap, bot
 
 
 % latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 00:23:25 2020
+% Thu Jan 30 09:32:36 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rllrr}
@@ -224,7 +224,7 @@ As we see, however, the MGL also focuses the training set. The structural descri
 
 
 % latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 00:23:25 2020
+% Thu Jan 30 09:32:36 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rllrr}
@@ -247,6 +247,7 @@ Table \ref{mglruleseskept} shows the list of (irregular and regular) rules for o
 
 Inspection of the table shows that the MGL fails to generate some expected irregular rules; in the KEPT class, the MGL omits rules for any stems ending in \textipa{[in]} or \textipa{[im]}. Under the MGL, there is not enough lexical support for irregular rules of these types, and yet participants do irregularize nonce forms like {\em cheen} and {\em kleem}  in the forced choice task. In this respect, the variegated similarity of the non-natural GCM class (which can be used to categorize {\em cheen}) allows for a better approximation of participant behavior. Note also that in some cases, the MGL generates an overly-specific rule; the rule for stems ending in [il] applies only after obstruents, whereas participants also irregularize KEPT stems with a sonorant in the onset ({\em greel}/{\em grelt}).    
 
+% directly piping in this table from R would be difficult, but it's lookupable
 \begin{table}[ht]
 \centering
 \begin{tabular}{lll}
@@ -276,7 +277,7 @@ The rule structure of the MGL likely follows from its parameter settings, which 
 
 
 % latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 00:23:25 2020
+% Thu Jan 30 09:32:36 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -319,7 +320,7 @@ We fit two simple linear regression models; no random effects are explored in th
 
 
 % latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 00:23:26 2020
+% Thu Jan 30 09:32:37 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -335,7 +336,7 @@ We fit two simple linear regression models; no random effects are explored in th
 \label{resid1}
 \end{table}
 % latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 00:23:26 2020
+% Thu Jan 30 09:32:37 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -357,7 +358,7 @@ The model summaries can be seen in Table \ref{resid1} (M3) and Table \ref{resid2
 Although residualization is sometimes critiqued when used as a stopgap for collinearity or sign changes in a regression model \citep{wurm2014residualizing}, these concerns do not apply in the present case.  We use residualization as a tool to test whether one metric contributes beyond what is covered by a different metric of the same attribute, as in 
 \cite{baayen2006morphological}, and as also acknowledged in \cite{wurm2014residualizing}. 
 
-\section{Model fits on the post-test data}
+\section{Model fits on the post-test data}\label{mglgcmposttest}
 
 We fit the Celex-GCM,the Celex-MGL, as well as the Individual-GCM and the Individual-MGL on the post-test data. Recall that the Celex-based models were trained on verbs in Celex. The individual-based models were trained for each participant, on Celex verbs as well as the co-player's responses in the ESP test. They were tested on the post-test for each participant, individually.
 
@@ -400,7 +401,7 @@ Section 6.4 in the main text explains that we calculate the extra information gi
 
 
 % latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 00:23:27 2020
+% Thu Jan 30 09:32:37 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -417,7 +418,7 @@ Section 6.4 in the main text explains that we calculate the extra information gi
 \label{indiv1}
 \end{table}
 % latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 00:23:27 2020
+% Thu Jan 30 09:32:37 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -446,7 +447,7 @@ We used the {\sc Celex}-GCM, {\sc Celex}-MGL, individual-GCM, and individual-MGL
 
 
 % latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 00:23:27 2020
+% Thu Jan 30 09:32:38 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -474,6 +475,11 @@ Figure \ref{bigfigure} shows how baseline and post-test regularisation means of 
 \caption{Baseline and individual regularisation weights: participants, GCM, MGL}
 \label{bigfigure}
 \end{figure}
+
+The Figure shows the average baseline regularity (x axis) and the post-test regularity (y axis) of the verbs in the ESP experiment. The post-test values vary across the dimension of co-player lexical typicality. Loess smooths show the general trajectory of the effects of typicality. In the first panel, regularity translates to aggregate participant responses in the baseline and in the ESP post-test. In the second and third panels, regularity translates to regularity scores provided by the {\sc Celex}- and individual-GCM and -MGL. Values are rescaled for better comparison.
+
+While the loess smooths are likely slightly overfit, they show the general trend in the raw data, which is echoed in the regression analysis in the main text: the "typical" trend of baseline-post-test difference is stronger than either the "random" or "reversed" trends. These are not very much different from each other. The differences are gradual. The GCM, while generally overestimating regularity, captures this gradual shift, since verb behaviour is shifted individually in the post-test. The MGL also overestimates regularisation. Since rules affect groups of verbs, rather than individual verbs, the post-test shifts are abrupt. The "typical" trend continues climbing after a longer plateau. However, the "random" and "reversed" trends trail off, where the "reversed" trend turns negative towards the higher tail of the distribution.
+
 
 \newpage
 
