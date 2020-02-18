@@ -29,8 +29,8 @@ source('~/Github/RaczBecknerHayPierrehumbert2019/functions/grabdata.R')
 # setting up columns in baseline and post-test data
 baseline = baseline %>% 
   dplyr::mutate(
-    r_baseline_mgl_features = scales::rescale(baseline_mgl_features), # rescale regularity weights
-    r_baseline_gcm_features = scales::rescale(baseline_gcm_features),
+    rescaled_CELEX_mgl_feature_distance = scales::rescale(baseline_mgl_features), # rescale regularity weights
+    rescaled_CELEX_gcm_feature_distance = scales::rescale(baseline_gcm_features),
   )
 
 test2 = test2 %>% 
@@ -45,12 +45,12 @@ test2 = test2 %>%
       factor(levels = c('typical', 'random', 'reversed')),
     bot_regularisation_rate = reg_rate %>% # order factor
       factor(levels = c('nc', '-40%', '+40%')),
-    r_baseline_mgl_features = scales::rescale(baseline_mgl_features), # scale regular weights
-    r_baseline_gcm_features = scales::rescale(baseline_gcm_features),
-    r_individual_mgl_features = scales::rescale(individual_mgl_features),
-    r_individual_gcm_features = scales::rescale(individual_gcm_features),
-    gcm_score_diff = r_individual_gcm_features - r_baseline_gcm_features, # calculate score diff
-    mgl_score_diff = r_individual_mgl_features - r_baseline_mgl_features
+    rescaled_CELEX_mgl_feature_distance = scales::rescale(baseline_mgl_features), # scale regular weights
+    rescaled_CELEX_gcm_feature_distance = scales::rescale(baseline_gcm_features),
+    rescaled_individual_mgl_feature_distance = scales::rescale(individual_mgl_features),
+    rescaled_individual_gcm_feature_distance = scales::rescale(individual_gcm_features),
+    gcm_score_diff = rescaled_individual_gcm_feature_distance - rescaled_CELEX_gcm_feature_distance, # calculate score diff
+    mgl_score_diff = rescaled_individual_mgl_feature_distance - rescaled_CELEX_mgl_feature_distance
   )
     
 # mgl illustrations
@@ -76,7 +76,7 @@ We illustrate the models using fits on our \emph {baseline} data.
 
 We also discuss model selection in analysing our regression data (\ref{appendixregression}), how the two learning models compare on our baseline data (\ref{appendixgcmmglresidualization}), and how they compare on our ESP post-test data (\ref{mglgcmposttest}). 
 
-Sections (\ref{appendixgcm}) and (\ref{appendixmgl}) also appear in the main text of  R\'acz et al. (2020), as Appendices A and B. However, this material is included here so that this Supplement can serve as a standalone document for readers who are interested in the technical details of our study. 
+Sections (\ref{appendixgcm}) and (\ref{appendixmgl}) also appear in the main text of  R\'acz et al. (2020), as Appendices A and B. However, this material is included here so that this Supplement can serve as a standalone document for readers who are interested in the technical details of our study. Additional material is reproduced from the main text, revisiting specific regression model summaries and additional methods we used to investigate contributions from the GCM and MGL.
 
 \section{Regular and irregular verbs in English \label{appendixverbs}}
 
@@ -246,7 +246,7 @@ reg_set = gcm_table %>%
 
 splive_gcm = test2 %>% 
   dplyr::filter(word == 'splive') %>% 
-  dplyr::pull(r_baseline_gcm_features) %>% 
+  dplyr::pull(rescaled_CELEX_gcm_feature_distance) %>% 
   unique %>% 
   round(2)
 
@@ -424,7 +424,7 @@ splive_mgl_rules[1,]$confidence
 
 test2 %>% 
   dplyr::filter(word == 'splive') %>% 
-  dplyr::select(baseline_mgl_features,r_baseline_mgl_features) %>% 
+  dplyr::select(baseline_mgl_features,rescaled_CELEX_mgl_feature_distance) %>% 
   dplyr::distinct()
 
 @
@@ -582,7 +582,7 @@ Our regression model selection in this article proceeded as follows. Except wher
 
 We investigate maximal random effects structures, allowing for random intercepts for participants and stimulus items (verbs), as well as random slopes for all within-unit factors. We compare nested random effects structures as above, and retain any random slopes and intercepts which are supported by likelihood ratio tests \citep{baayen2008mixed}.
 
-In the model in Table 5 in the main text, repeated here as Table \ref{regressiontable1}, we elect to mean center continuous variables to counteract collinearity that becomes evident when including the interaction between and {\em lexical typicality} .  Although some debate exists regarding the practice of transforming variables \citep{belsley1991conditioning,echambadi2007mean}, centering variables is common practice to remove nonessential ill conditioning, that is, relationships that inevitably exist between main and product terms \citep{aiken1991multiple,jaccard2003interaction, jaeger2008categorical}. We note that if {\em verb baseline mean} is {\em not} centered, collinearity is high (VIF=15.79) in this model. A non-centered model also yields a significant main effect for {\em lexical typicality}, with increased post-test regularization in the random and reversed conditions. However, we elect to take a more conservative approach by not including a potentially spurious main effect. Note that other than this main effect difference, models with and without centering yield results that are qualitatively indistinguishable; all other main effects and interactions are present in either case. The collinearity for the centered model (Table 5 in the main text) is acceptable, with a maximum VIF score of 2.9.
+In the model in Table 5 in the main text, repeated here as Table \ref{regressiontable1}, we elect to mean center continuous variables to counteract collinearity that becomes evident when including the interaction between and {\em lexical typicality}\footnote{In the SI, all p values rounded to 0.00 should be taken to indicate p $<$ 0.001.}.  Although some debate exists regarding the practice of transforming variables \citep{belsley1991conditioning,echambadi2007mean}, centering variables is common practice to remove nonessential ill conditioning, that is, relationships that inevitably exist between main and product terms \citep{aiken1991multiple,jaccard2003interaction, jaeger2008categorical}. We note that if {\em verb baseline mean} is {\em not} centered, collinearity is high (VIF=15.79) in this model. A non-centered model also yields a significant main effect for {\em lexical typicality}, with increased post-test regularization in the random and reversed conditions. However, we elect to take a more conservative approach by not including a potentially spurious main effect. Note that other than this main effect difference, models with and without centering yield results that are qualitatively indistinguishable; all other main effects and interactions are present in either case. The collinearity for the centered model (Table 5 in the main text) is acceptable, with a maximum VIF score of 2.9.
 
 <<Bayes factor, echo=F, eval=F>>=
 
@@ -624,30 +624,30 @@ Since it is unclear whether the absence of a difference between random and rever
 
 \section{Fits of the two categorization models on the baseline data}\label{appendixgcmmglresidualization}
 
-We fit the Celex-GCM and the Celex-MGL on the baseline data to see how well they predict regularisation responses by the baseline participants. The Celex-MGL outperforms the Celex-GCM, if slightly. Both models contribute independently to explaining variation in the data.
+We fit the \textsc{Celex-GCM} and the \textsc{Celex-MGL} on the baseline data to see how well they predict regularization responses by the baseline participants. The \textsc{Celex-MGL} outperforms the \textsc{Celex-GCM}, if slightly. Both models contribute independently to explaining variation in the data.
 
 <<celex_gcm_mgl1, eval=T, echo=F>>=
 
 # calculating concordance indices.
 # we DON'T load Hmisc in itself as it messes up function names
 
-C_baseline_mgl_features = with(baseline, Hmisc::somers2(r_baseline_mgl_features,regular)['C']) %>% 
+C_CELEX_mgl_features = with(baseline, Hmisc::somers2(rescaled_CELEX_mgl_feature_distance,regular)['C']) %>% 
   round(3)
-C_baseline_gcm_features = with(baseline, Hmisc::somers2(r_baseline_gcm_features,regular)['C']) %>% 
+C_CELEX_gcm_features = with(baseline, Hmisc::somers2(rescaled_CELEX_gcm_feature_distance,regular)['C']) %>% 
   round(3)
 
 # get correlation between mgl and gcm scores in baseline
 mgl_gcm_cor = baseline %>% 
-  dplyr::distinct(word,r_baseline_mgl_features,baseline_gcm_features) %>% 
+  dplyr::distinct(word,rescaled_CELEX_mgl_feature_distance,baseline_gcm_features) %>% 
   dplyr::summarise(
-    cor = cor(r_baseline_mgl_features,baseline_gcm_features)
+    cor = cor(rescaled_CELEX_mgl_feature_distance,baseline_gcm_features)
   ) %>% 
   dplyr::pull() %>% 
   round(3)
 
 @
 
-The concordance indices of the Celex-MGL (\Sexpr{C_baseline_mgl_features}) and the Celex-MGL (\Sexpr{C_baseline_gcm_features}) on the baseline data are similar, with some edge retained by the MGL, as in the case of \citep{albright2003rules}. Our concordance indices are calculated using the somers2 function in R's \texttt{Hmisc} package \citep{harrell2014hmisc}. 
+The concordance indices of the \textsc{Celex}-MGL (\Sexpr{C_CELEX_mgl_features}) and the \textsc{Celex}-MGL (\Sexpr{C_CELEX_gcm_features}) on the baseline data are similar, with some edge retained by the MGL, as in the case of \citep{albright2003rules}. Our concordance indices are calculated using the somers2 function in R's \texttt{Hmisc} package \citep{harrell2014hmisc}. 
 
 Since the regularity scores of the GCM and the MGL for the nonce verbs are correlated  (r $=$ \Sexpr{mgl_gcm_cor}), we use residualization to see whether the two models make separate significant contributions to explaining variation in the baseline dataset (Section 6.3 in the main text.)
 
@@ -657,33 +657,33 @@ We fit two simple linear regression models; no random effects are explored in th
 
 # simple baseline words data frame
 baseline_words = baseline %>% 
-  dplyr::distinct(word, r_baseline_mgl_features, r_baseline_gcm_features)
+  dplyr::distinct(word, rescaled_CELEX_mgl_feature_distance, rescaled_CELEX_gcm_feature_distance)
 
 # fitting models 1 and 2 on it
-celex_m1 = lm(r_baseline_gcm_features ~ 1 + r_baseline_mgl_features, data = baseline_words)
-celex_m2 = lm(r_baseline_mgl_features ~ 1 + r_baseline_gcm_features, data = baseline_words)
+celex_m1 = lm(rescaled_CELEX_gcm_feature_distance ~ 1 + rescaled_CELEX_mgl_feature_distance, data = baseline_words)
+celex_m2 = lm(rescaled_CELEX_mgl_feature_distance ~ 1 + rescaled_CELEX_gcm_feature_distance, data = baseline_words)
 
 # getting residuals from models and putting them back in this data frame
 baseline_words = baseline_words %>% 
   dplyr::mutate(
-    r_baseline_gcm_features_residual = resid(celex_m1),
-    r_baseline_mgl_features_residual = resid(celex_m2)
+    rescaled_CELEX_gcm_feature_distance_residual = resid(celex_m1),
+    rescaled_CELEX_mgl_feature_distance_residual = resid(celex_m2)
   )
 
 # joining it with entire baseline data
-baseline = left_join(baseline, baseline_words, by = c("word", "r_baseline_mgl_features", "r_baseline_gcm_features"))
+baseline = left_join(baseline, baseline_words, by = c("word", "rescaled_CELEX_mgl_feature_distance", "rescaled_CELEX_gcm_feature_distance"))
 
 # fitting models 3 and 4
 celex_m3 = glmer(regular ~ 
-                1 + r_baseline_mgl_features + r_baseline_gcm_features_residual + 
-                (1 + r_baseline_mgl_features + r_baseline_gcm_features_residual | subject), 
+                1 + rescaled_CELEX_mgl_feature_distance + rescaled_CELEX_gcm_feature_distance_residual + 
+                (1 + rescaled_CELEX_mgl_feature_distance + rescaled_CELEX_gcm_feature_distance_residual | subject), 
                 data = baseline, 
                 family = binomial ( link = logit ),
                 control=glmerControl(optimizer="bobyqa"))
 
 celex_m4 = glmer(regular ~ 
-                1 + r_baseline_gcm_features + r_baseline_mgl_features_residual + 
-                (1 + r_baseline_gcm_features + r_baseline_mgl_features_residual | subject), 
+                1 + rescaled_CELEX_gcm_feature_distance + rescaled_CELEX_mgl_feature_distance_residual + 
+                (1 + rescaled_CELEX_gcm_feature_distance + rescaled_CELEX_mgl_feature_distance_residual | subject), 
                 data = baseline, 
                 family = binomial ( link = logit ),
                 control=glmerControl(optimizer="bobyqa"))
@@ -695,12 +695,12 @@ save(celex_m4, file = 'models/si_celex_m4.rda')
 
 <<celex_resid1, echo=F,eval=T, results=tex>>=
 load('models/si_celex_m3.rda')
-print(xtable::xtable(summary(celex_m3)$coef, digits = 3, label = 'resid1', caption = 'MGL scores and GCM residuals, baseline data'))
+print(xtable::xtable(summary(celex_m3)$coef, digits = 3, label = 'resid1', caption = 'Model 3: MGL scores and GCM residuals, baseline data'))
 @
 
 <<celex_resid2, echo=F,eval=T, results=tex>>=
 load('models/si_celex_m4.rda')
-print(xtable::xtable(summary(celex_m4)$coef, digits = 3, label = 'resid2', caption = 'GCM scores and MGL residuals, baseline data'))
+print(xtable::xtable(summary(celex_m4)$coef, digits = 3, label = 'resid2', caption = 'Model 4: GCM scores and MGL residuals, baseline data'))
 @
 
 Model 1 predicts the GCM scores from the MGL scores (M1: GCM regular score  $\sim$ MGL regular score). Model 2 predicts the MGL scores from the GCM scores (M2: MGL regular score  $\sim$ GCM regular score). In two additional models, we then use the residuals from each model (M1, M2) as an estimate of the variation present in one score that cannot be attributed to the other.  First, we use the residuals of Model 1 in another, mixed-effects logistic regression model along with the MGL scores to predict regular responses in the baseline task (M3: regular response  $\sim$ MGL score + GCM residual + (1 + MGL score + GCM residual$|$participant) + (1 $|$ verb)). We then residualize for the MGL. We use the residuals of Model 2 along with the GCM scores in a similar logistic regression model (M4: regular response  $\sim$ GCM score + MGL residual + (1 + GCM score + MGL residual $|$participant)). 
@@ -712,29 +712,29 @@ Although residualization is sometimes critiqued when used as a stopgap for colli
 
 \section{Model fits on the post-test data}\label{mglgcmposttest}
 
-We fit the Celex-GCM,the Celex-MGL, as well as the Individual-GCM and the Individual-MGL on the post-test data. Recall that the Celex-based models were trained on verbs in Celex. The individual-based models were trained for each participant, on Celex verbs as well as the co-player's responses in the ESP test. They were tested on the post-test for each participant, individually.
+We fit the \textsc{Celex-GCM},the \textsc{Celex-MGL}, as well as the Individual-GCM and the Individual-MGL on the post-test data. Recall that the \textsc{Celex}-based models were trained on verbs in \textsc{Celex}. The individual-based models were trained for each participant, on \textsc{Celex} verbs as well as the co-player's responses in the ESP test. They were tested on the post-test for each participant, individually.
 
 In the paper, we list four techniques of evaluating model fit. We go through these in turn.
 
 \subsection{Comparing concordance indices}
 
-First, we calculated concordance indices for the Celex- and individual-models on the post-test data of the ESP experiment.
+First, we calculated concordance indices for the \textsc{Celex}- and individual-models on the post-test data of the ESP experiment.
 
 <<first, echo=F,eval=T>>=
 
 # concordance indices of everything on everything, saving into variables, piping into table below
 
-# C_baseline_mgl_features # celex-mgl on baseline
-# C_baseline_gcm_features # celex-gcm on baseline
+# C_CELEX_mgl_features # celex-mgl on baseline
+# C_CELEX_gcm_features # celex-gcm on baseline
 
-C_test2_baseline_mgl_features = with(test2, Hmisc::somers2(r_baseline_mgl_features,resp_post_reg)['C']) %>% round(3)
-C_test2_baseline_gcm_features = with(test2, Hmisc::somers2(r_baseline_gcm_features,resp_post_reg)['C']) %>% round(3)
-C_test2_individual_mgl_features = with(test2, Hmisc::somers2(r_individual_mgl_features,resp_post_reg)['C']) %>% round(3)
-C_test2_individual_gcm_features = with(test2, Hmisc::somers2(r_individual_gcm_features,resp_post_reg)['C']) %>% round(3)
+C_test2_baseline_mgl_features = with(test2, Hmisc::somers2(rescaled_CELEX_mgl_feature_distance,resp_post_reg)['C']) %>% round(3)
+C_test2_baseline_gcm_features = with(test2, Hmisc::somers2(rescaled_CELEX_gcm_feature_distance,resp_post_reg)['C']) %>% round(3)
+C_test2_individual_mgl_features = with(test2, Hmisc::somers2(rescaled_individual_mgl_feature_distance,resp_post_reg)['C']) %>% round(3)
+C_test2_individual_gcm_features = with(test2, Hmisc::somers2(rescaled_individual_gcm_feature_distance,resp_post_reg)['C']) %>% round(3)
 
 @
 
-Table \ref{modellingsummary} summarizes the concordance indices between our data and the various categorization models. The \textsc{Celex}-MGL, outperforms the \textsc{Celex}-GCM on the post-test data to some extent, much like in the case of our baseline data. The individual-GCM considerably improves on the \textsc{Celex}-GCM in terms of explaining the post-test data. The individual-MGL also improves on the \textsc{Celex}-MGL, but to a lesser extent.
+Table \ref{modellingsummary} summarizes the concordance indices between our data and the various categorization models. The \textsc{Celex}-MGL outperforms the \textsc{Celex}-GCM on the post-test data to some extent, much like in the case of our baseline data. The individual-GCM considerably improves on the \textsc{Celex}-GCM in terms of explaining the post-test data. The individual-MGL also improves on the \textsc{Celex}-MGL, but to a lesser extent.
 
 \begin{table}[h]
 
@@ -742,8 +742,8 @@ Table \ref{modellingsummary} summarizes the concordance indices between our data
     \begin{tabular}{lllll}
             & training data & method & test data & C\\
             \hline
-\textsc{Celex}-GCM & real verbs & `analogy' & verbs in baseline &\Sexpr{C_baseline_gcm_features }\\
-\textsc{Celex}-MGL & real verbs & `rules' & verbs in baseline &\Sexpr{C_baseline_mgl_features }\\ \hline
+\textsc{Celex}-GCM & real verbs & `analogy' & verbs in baseline &\Sexpr{C_CELEX_gcm_features }\\
+\textsc{Celex}-MGL & real verbs & `rules' & verbs in baseline &\Sexpr{C_CELEX_mgl_features }\\ \hline
 \textsc{Celex}-GCM & real verbs & `analogy' & verbs in post-test &\Sexpr{C_test2_baseline_gcm_features}\\
 individual-GCM & real verbs + verbs seen in ESP & `analogy' & verbs in post-test &\Sexpr{C_test2_individual_gcm_features}\\
 
@@ -769,8 +769,8 @@ Section 6.4 in the main text explains that we calculate the extra information gi
 # fitting models 5 and 6
 
 indiv_m5 = glmer(resp_post_reg ~
-    1 + r_baseline_gcm_features + gcm_score_diff + participant_prereg_average + 
-    (1 + r_baseline_gcm_features + gcm_score_diff | participant_id) + (1 | word), 
+    1 + rescaled_CELEX_gcm_feature_distance + gcm_score_diff + participant_prereg_average + 
+    (1 + rescaled_CELEX_gcm_feature_distance + gcm_score_diff | participant_id) + (1 | word), 
                  data = test2, 
                  family = binomial (link = logit), 
                  control=glmerControl(optimizer="bobyqa"))
@@ -778,8 +778,8 @@ indiv_m5 = glmer(resp_post_reg ~
 save(indiv_m5, file = 'models/si_indiv_m5.rda')
 
 indiv_m6 = glmer(resp_post_reg ~ 
-    1 + r_baseline_mgl_features + mgl_score_diff + participant_prereg_average  + 
-    (1 + r_baseline_mgl_features + mgl_score_diff | participant_id) + (1 | word), 
+    1 + rescaled_CELEX_mgl_feature_distance + mgl_score_diff + participant_prereg_average  + 
+    (1 + rescaled_CELEX_mgl_feature_distance + mgl_score_diff | participant_id) + (1 | word), 
                  data = test2, 
                  family = binomial (link = logit), 
                  control=glmerControl(optimizer="bobyqa"))
@@ -791,13 +791,13 @@ save(indiv_m6, file = 'models/si_indiv_m6.rda')
 <<indiv_diff1, echo=F, eval=T, results=tex>>=
 
 load('models/si_indiv_m5.rda')
-print(xtable::xtable(summary(indiv_m5)$coef, digits = 3, label = 'indiv1', caption = 'Celex-GCM and individual score difference, post-test data'))
+print(xtable::xtable(summary(indiv_m5)$coef, digits = 3, label = 'indiv1', caption = 'Model 5: Celex-GCM and individual score difference, post-test data'))
 
 @
 
 <<indiv_diff2, echo=F,eval=T, results=tex>>=
 load('models/si_indiv_m6.rda')
-print(xtable::xtable(summary(indiv_m6)$coef, digits = 3, label = 'indiv2', caption = 'Celex-MGL and individual score difference, post-test data'))
+print(xtable::xtable(summary(indiv_m6)$coef, digits = 3, label = 'indiv2', caption = 'Model 6: Celex-MGL and individual score difference, post-test data'))
 @
 
 We do this for both the GCM  (Model 5: regular response  $\sim$ \textsc{Celex} GCM score + extra GCM information + participant pre-test mean + (1 + \textsc{Celex} GCM + extra GCM information$|$participant) + (1$|$verb) and the MGL (Model 6: regular response  $\sim$ \textsc{Celex} MGL score + extra MGL information + participant pre-test mean + (1 + \textsc{Celex} MGL + extra MGL information$|$participant)+ (1$|$verb)).
@@ -812,40 +812,40 @@ These techniques are indicative of the relative strengths of the individual-MGL 
 
 # the model reported in the paper 
 comp_fit1 = glmer(resp_post_reg ~ 
-    1 + r_baseline_mgl_features + r_individual_gcm_features + participant_prereg_average  + 
-    (1 + r_baseline_mgl_features + r_individual_gcm_features | participant_id) + (1 | word), 
+    1 + rescaled_CELEX_mgl_feature_distance + rescaled_individual_gcm_feature_distance + participant_prereg_average  + 
+    (1 + rescaled_CELEX_mgl_feature_distance + rescaled_individual_gcm_feature_distance | participant_id) + (1 | word), 
                  data = test2, 
                  family = binomial (link = logit), 
                  control=glmerControl(optimizer="bobyqa"))
 
 # model without baseline mgl
 comp_fit1b = glmer(resp_post_reg ~ 
-    1 + r_individual_gcm_features + participant_prereg_average  + 
-    (1 + r_individual_gcm_features | participant_id) + (1 | word), 
+    1 + rescaled_individual_gcm_feature_distance + participant_prereg_average  + 
+    (1 + rescaled_individual_gcm_feature_distance | participant_id) + (1 | word), 
                  data = test2, 
                  family = binomial (link = logit), 
                  control=glmerControl(optimizer="bobyqa"))
 
 # model without individual gcm
 comp_fit1c = glmer(resp_post_reg ~ 
-    1 + r_baseline_mgl_features + participant_prereg_average  + 
-    (1 + r_baseline_mgl_features | participant_id) + (1 | word), 
+    1 + rescaled_CELEX_mgl_feature_distance + participant_prereg_average  + 
+    (1 + rescaled_CELEX_mgl_feature_distance | participant_id) + (1 | word), 
                  data = test2, 
                  family = binomial (link = logit), 
                  control=glmerControl(optimizer="bobyqa"))
  
 # model with individual mgl
 comp_fit1d = glmer(resp_post_reg ~ 
-    1 + r_baseline_mgl_features + r_individual_gcm_features + r_individual_mgl_features + participant_prereg_average  + 
-    (1 + r_baseline_mgl_features + r_individual_gcm_features | participant_id) + (1 | word), 
+    1 + rescaled_CELEX_mgl_feature_distance + rescaled_individual_gcm_feature_distance + rescaled_individual_mgl_feature_distance + participant_prereg_average  + 
+    (1 + rescaled_CELEX_mgl_feature_distance + rescaled_individual_gcm_feature_distance | participant_id) + (1 | word), 
                  data = test2, 
                  family = binomial (link = logit), 
                  control=glmerControl(optimizer="bobyqa"))
 
 # model with celex gcm
 comp_fit1e = glmer(resp_post_reg ~ 
-    1 + r_baseline_mgl_features + r_individual_gcm_features + r_baseline_gcm_features + participant_prereg_average  + 
-    (1 + r_baseline_mgl_features + r_individual_gcm_features | participant_id) + (1 | word), 
+    1 + rescaled_CELEX_mgl_feature_distance + rescaled_individual_gcm_feature_distance + rescaled_CELEX_gcm_feature_distance + participant_prereg_average  + 
+    (1 + rescaled_CELEX_mgl_feature_distance + rescaled_individual_gcm_feature_distance | participant_id) + (1 | word), 
                  data = test2, 
                  family = binomial (link = logit), 
                  control=glmerControl(optimizer="bobyqa"))
@@ -885,7 +885,7 @@ Goodness-of-fit tests show that model fit is significantly worse if we exclude {
 
 \subsection{Visualising model contributions to explaining variation in post-test responses}
 
-Figure \ref{bigfigure} shows how baseline and post-test regularisation means of words compare for participant responses, the GCM, and the MGL.
+Figure \ref{bigfigure} shows how baseline and post-test regularization means of words compare for participant responses, the GCM, and the MGL.
 
 <<model_figure, echo=F,eval=T>>=
 
@@ -914,13 +914,13 @@ second_panel = test2 %>%
   dplyr::group_by(
     word,
     bot_lexical_typicality,
-    r_baseline_gcm_features
+    rescaled_CELEX_gcm_feature_distance
   ) %>% 
   dplyr::rename(
-    baseline = r_baseline_gcm_features
+    baseline = rescaled_CELEX_gcm_feature_distance
   ) %>% 
   dplyr::summarise(
-    posttest = mean(r_individual_gcm_features)
+    posttest = mean(rescaled_individual_gcm_feature_distance)
   ) %>% 
   dplyr::mutate(
     type = 'GCM'
@@ -931,13 +931,13 @@ third_panel = test2 %>%
   dplyr::group_by(
     word,
     bot_lexical_typicality,
-    r_baseline_mgl_features
+    rescaled_CELEX_mgl_feature_distance
   ) %>% 
   dplyr::rename(
-    baseline = r_baseline_mgl_features
+    baseline = rescaled_CELEX_mgl_feature_distance
   ) %>% 
   dplyr::summarise(
-    posttest = mean(r_individual_mgl_features)
+    posttest = mean(rescaled_individual_mgl_feature_distance)
   ) %>% 
   dplyr::mutate(
     type = 'MGL'
@@ -971,13 +971,13 @@ p1 = ggplot(three_studies, aes(x = baseline, y = posttest, colour = bot_lexical_
 <<model_figure2, fig=T,echo=F,eval=T, width = 12.5, height = 4, fig.margin=T, fig.align = ‘center’>>=
 p1
 @
-\caption{Baseline and individual regularisation weights: participants, GCM, MGL}
+\caption{Baseline and individual regularization weights: participants, GCM, MGL}
 \label{bigfigure}
 \end{figure}
 
 The Figure shows the average baseline regularity (x axis) and the post-test regularity (y axis) of the verbs in the ESP experiment. The post-test values vary across the dimension of co-player lexical typicality. Loess smooths show the general trajectory of the effects of typicality. In the first panel, regularity translates to aggregate participant responses in the baseline and in the ESP post-test. In the second and third panels, regularity translates to regularity scores provided by the {\sc Celex}- and individual-GCM and -MGL. Values are rescaled for better comparison.
 
-While the loess smooths are likely slightly overfit, they show the general trend in the raw data, which is echoed in the regression analysis in the main text: the "typical" trend of baseline-post-test difference is stronger than either the "random" or "reversed" trends. These are not very much different from each other. The differences are gradual. The GCM, while generally overestimating regularity, captures this gradual shift, since verb behaviour is shifted individually in the post-test. The MGL also overestimates regularisation. Since rules affect groups of verbs, rather than individual verbs, the post-test shifts are abrupt. The "typical" trend continues climbing after a longer plateau. However, the "random" and "reversed" trends trail off, where the "reversed" trend turns negative towards the higher tail of the distribution.
+While the loess smooths are likely slightly overfit, they show the general trend in the raw data, which is echoed in the regression analysis in the main text: the `typical' trend of baseline-post-test difference is stronger than either the "random" or "reversed" trends. These are not very much different from each other. The differences are gradual. The GCM, while generally overestimating regularity, captures this gradual shift, since verb behavior is shifted individually in the post-test. The MGL also overestimates regularization. Since rules affect groups of verbs, rather than individual verbs, the post-test shifts are abrupt. The "typical" trend continues climbing after a longer plateau. However, the `random' and `reversed' trends trail off, where the "reversed" trend turns negative towards the higher tail of the distribution.
 
 
 \newpage

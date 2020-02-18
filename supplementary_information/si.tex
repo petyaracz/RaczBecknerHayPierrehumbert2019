@@ -21,7 +21,7 @@ We illustrate the models using fits on our \emph {baseline} data.
 
 We also discuss model selection in analysing our regression data (\ref{appendixregression}), how the two learning models compare on our baseline data (\ref{appendixgcmmglresidualization}), and how they compare on our ESP post-test data (\ref{mglgcmposttest}). 
 
-Sections (\ref{appendixgcm}) and (\ref{appendixmgl}) also appear in the main text of  R\'acz et al. (2020), as Appendices A and B. However, this material is included here so that this Supplement can serve as a standalone document for readers who are interested in the technical details of our study. 
+Sections (\ref{appendixgcm}) and (\ref{appendixmgl}) also appear in the main text of  R\'acz et al. (2020), as Appendices A and B. However, this material is included here so that this Supplement can serve as a standalone document for readers who are interested in the technical details of our study. Additional material is reproduced from the main text, revisiting specific regression model summaries and additional methods we used to investigate contributions from the GCM and MGL.
 
 \section{Regular and irregular verbs in English \label{appendixverbs}}
 
@@ -81,8 +81,8 @@ Table \ref{gcmsetsize} shows the number of verbs in \textsc{Celex} that were use
 
 The model calculates the similarity of a given nonce verb to the regular and the irregular set. Comparisons to stems in other classes are not calculated, as past tense markings for these classes were not available to participants in the forced-choice tasks.
 
-% latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 09:32:35 2020
+% latex table generated in R 3.6.0 by xtable 1.8-4 package
+% Tue Feb 18 16:57:29 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rllll}
@@ -160,8 +160,8 @@ The MGL generates multiple possible past tense forms for each nonce verb. We onl
 Note that the sets of exceptions and related forms of each rule can overlap, both respectively and with each other. As a consequence, the MGL rules apply to fewer forms than apparent from the table: 456 (instead of 617) in total.
 
 
-% latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 09:32:36 2020
+% latex table generated in R 3.6.0 by xtable 1.8-4 package
+% Tue Feb 18 16:57:29 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rllrr}
@@ -223,8 +223,8 @@ As we see, however, the MGL also focuses the training set. The structural descri
 
 
 
-% latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 09:32:36 2020
+% latex table generated in R 3.6.0 by xtable 1.8-4 package
+% Tue Feb 18 16:57:29 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rllrr}
@@ -276,8 +276,8 @@ The rule structure of the MGL likely follows from its parameter settings, which 
 
 
 
-% latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 09:32:36 2020
+% latex table generated in R 3.6.0 by xtable 1.8-4 package
+% Tue Feb 18 16:57:29 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -302,25 +302,25 @@ Our regression model selection in this article proceeded as follows. Except wher
 
 We investigate maximal random effects structures, allowing for random intercepts for participants and stimulus items (verbs), as well as random slopes for all within-unit factors. We compare nested random effects structures as above, and retain any random slopes and intercepts which are supported by likelihood ratio tests \citep{baayen2008mixed}.
 
-In the model in Table 5 in the main text, repeated here as Table \ref{regressiontable1}, we elect to mean center continuous variables to counteract collinearity that becomes evident when including the interaction between and {\em lexical typicality} .  Although some debate exists regarding the practice of transforming variables \citep{belsley1991conditioning,echambadi2007mean}, centering variables is common practice to remove nonessential ill conditioning, that is, relationships that inevitably exist between main and product terms \citep{aiken1991multiple,jaccard2003interaction, jaeger2008categorical}. We note that if {\em verb baseline mean} is {\em not} centered, collinearity is high (VIF=15.79) in this model. A non-centered model also yields a significant main effect for {\em lexical typicality}, with increased post-test regularization in the random and reversed conditions. However, we elect to take a more conservative approach by not including a potentially spurious main effect. Note that other than this main effect difference, models with and without centering yield results that are qualitatively indistinguishable; all other main effects and interactions are present in either case. The collinearity for the centered model (Table 5 in the main text) is acceptable, with a maximum VIF score of 2.9.
+In the model in Table 5 in the main text, repeated here as Table \ref{regressiontable1}, we elect to mean center continuous variables to counteract collinearity that becomes evident when including the interaction between and {\em lexical typicality}\footnote{In the SI, all p values rounded to 0.00 should be taken to indicate p $<$ 0.001.}.  Although some debate exists regarding the practice of transforming variables \citep{belsley1991conditioning,echambadi2007mean}, centering variables is common practice to remove nonessential ill conditioning, that is, relationships that inevitably exist between main and product terms \citep{aiken1991multiple,jaccard2003interaction, jaeger2008categorical}. We note that if {\em verb baseline mean} is {\em not} centered, collinearity is high (VIF=15.79) in this model. A non-centered model also yields a significant main effect for {\em lexical typicality}, with increased post-test regularization in the random and reversed conditions. However, we elect to take a more conservative approach by not including a potentially spurious main effect. Note that other than this main effect difference, models with and without centering yield results that are qualitatively indistinguishable; all other main effects and interactions are present in either case. The collinearity for the centered model (Table 5 in the main text) is acceptable, with a maximum VIF score of 2.9.
 
 
 Since it is unclear whether the absence of a difference between random and reversed conditions is due to a lack of data, we refit the model with the baseline average : typicality interaction on the random and reversed conditions only. Then we calculated the Bayes Factor of the null model (with no interaction) over the full model (with interaction) using Bayesian Information Criteria calculated by lme4. The result strongly supports the null model over the full model, indicating that the preference for the null model is {\em not} due to the lack of evidence to reject it.
 
 \section{Fits of the two categorization models on the baseline data}\label{appendixgcmmglresidualization}
 
-We fit the Celex-GCM and the Celex-MGL on the baseline data to see how well they predict regularisation responses by the baseline participants. The Celex-MGL outperforms the Celex-GCM, if slightly. Both models contribute independently to explaining variation in the data.
+We fit the \textsc{Celex-GCM} and the \textsc{Celex-MGL} on the baseline data to see how well they predict regularization responses by the baseline participants. The \textsc{Celex-MGL} outperforms the \textsc{Celex-GCM}, if slightly. Both models contribute independently to explaining variation in the data.
 
 
-The concordance indices of the Celex-MGL (0.586) and the Celex-MGL (0.581) on the baseline data are similar, with some edge retained by the MGL, as in the case of \citep{albright2003rules}. Our concordance indices are calculated using the somers2 function in R's \texttt{Hmisc} package \citep{harrell2014hmisc}. 
+The concordance indices of the \textsc{Celex}-MGL (0.586) and the \textsc{Celex}-MGL (0.581) on the baseline data are similar, with some edge retained by the MGL, as in the case of \citep{albright2003rules}. Our concordance indices are calculated using the somers2 function in R's \texttt{Hmisc} package \citep{harrell2014hmisc}. 
 
 Since the regularity scores of the GCM and the MGL for the nonce verbs are correlated  (r $=$ 0.478), we use residualization to see whether the two models make separate significant contributions to explaining variation in the baseline dataset (Section 6.3 in the main text.)
 
 We fit two simple linear regression models; no random effects are explored in these models, since we are merely predicting algorithmic scores for each item. We rescale and center GCM and MGL scores for the model fits. 
 
 
-% latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 09:32:37 2020
+% latex table generated in R 3.6.0 by xtable 1.8-4 package
+% Tue Feb 18 16:57:30 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -328,15 +328,15 @@ We fit two simple linear regression models; no random effects are explored in th
  & Estimate & Std. Error & z value & Pr($>$$|$z$|$) \\ 
   \hline
 (Intercept) & -0.525 & 0.124 & -4.219 & 0.000 \\ 
-  r\_baseline\_mgl\_features & 1.347 & 0.093 & 14.482 & 0.000 \\ 
-  r\_baseline\_gcm\_features\_residual & 1.423 & 0.128 & 11.100 & 0.000 \\ 
+  rescaled\_CELEX\_mgl\_feature\_distance & 1.347 & 0.093 & 14.482 & 0.000 \\ 
+  rescaled\_CELEX\_gcm\_feature\_distance\_residual & 1.423 & 0.128 & 11.100 & 0.000 \\ 
    \hline
 \end{tabular}
-\caption{MGL scores and GCM residuals, baseline data} 
+\caption{Model 3: MGL scores and GCM residuals, baseline data} 
 \label{resid1}
 \end{table}
-% latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 09:32:37 2020
+% latex table generated in R 3.6.0 by xtable 1.8-4 package
+% Tue Feb 18 16:57:31 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -344,11 +344,11 @@ We fit two simple linear regression models; no random effects are explored in th
  & Estimate & Std. Error & z value & Pr($>$$|$z$|$) \\ 
   \hline
 (Intercept) & -1.225 & 0.160 & -7.682 & 0.000 \\ 
-  r\_baseline\_gcm\_features & 2.391 & 0.149 & 16.063 & 0.000 \\ 
-  r\_baseline\_mgl\_features\_residual & 1.008 & 0.090 & 11.154 & 0.000 \\ 
+  rescaled\_CELEX\_gcm\_feature\_distance & 2.391 & 0.149 & 16.063 & 0.000 \\ 
+  rescaled\_CELEX\_mgl\_feature\_distance\_residual & 1.008 & 0.090 & 11.154 & 0.000 \\ 
    \hline
 \end{tabular}
-\caption{GCM scores and MGL residuals, baseline data} 
+\caption{Model 4: GCM scores and MGL residuals, baseline data} 
 \label{resid2}
 \end{table}
 Model 1 predicts the GCM scores from the MGL scores (M1: GCM regular score  $\sim$ MGL regular score). Model 2 predicts the MGL scores from the GCM scores (M2: MGL regular score  $\sim$ GCM regular score). In two additional models, we then use the residuals from each model (M1, M2) as an estimate of the variation present in one score that cannot be attributed to the other.  First, we use the residuals of Model 1 in another, mixed-effects logistic regression model along with the MGL scores to predict regular responses in the baseline task (M3: regular response  $\sim$ MGL score + GCM residual + (1 + MGL score + GCM residual$|$participant) + (1 $|$ verb)). We then residualize for the MGL. We use the residuals of Model 2 along with the GCM scores in a similar logistic regression model (M4: regular response  $\sim$ GCM score + MGL residual + (1 + GCM score + MGL residual $|$participant)). 
@@ -360,16 +360,16 @@ Although residualization is sometimes critiqued when used as a stopgap for colli
 
 \section{Model fits on the post-test data}\label{mglgcmposttest}
 
-We fit the Celex-GCM,the Celex-MGL, as well as the Individual-GCM and the Individual-MGL on the post-test data. Recall that the Celex-based models were trained on verbs in Celex. The individual-based models were trained for each participant, on Celex verbs as well as the co-player's responses in the ESP test. They were tested on the post-test for each participant, individually.
+We fit the \textsc{Celex-GCM},the \textsc{Celex-MGL}, as well as the Individual-GCM and the Individual-MGL on the post-test data. Recall that the \textsc{Celex}-based models were trained on verbs in \textsc{Celex}. The individual-based models were trained for each participant, on \textsc{Celex} verbs as well as the co-player's responses in the ESP test. They were tested on the post-test for each participant, individually.
 
 In the paper, we list four techniques of evaluating model fit. We go through these in turn.
 
 \subsection{Comparing concordance indices}
 
-First, we calculated concordance indices for the Celex- and individual-models on the post-test data of the ESP experiment.
+First, we calculated concordance indices for the \textsc{Celex}- and individual-models on the post-test data of the ESP experiment.
 
 
-Table \ref{modellingsummary} summarizes the concordance indices between our data and the various categorization models. The \textsc{Celex}-MGL, outperforms the \textsc{Celex}-GCM on the post-test data to some extent, much like in the case of our baseline data. The individual-GCM considerably improves on the \textsc{Celex}-GCM in terms of explaining the post-test data. The individual-MGL also improves on the \textsc{Celex}-MGL, but to a lesser extent.
+Table \ref{modellingsummary} summarizes the concordance indices between our data and the various categorization models. The \textsc{Celex}-MGL outperforms the \textsc{Celex}-GCM on the post-test data to some extent, much like in the case of our baseline data. The individual-GCM considerably improves on the \textsc{Celex}-GCM in terms of explaining the post-test data. The individual-MGL also improves on the \textsc{Celex}-MGL, but to a lesser extent.
 
 \begin{table}[h]
 
@@ -400,8 +400,8 @@ Second, we considered the amount of extra variation explained by the individual-
 Section 6.4 in the main text explains that we calculate the extra information given by the individual models by subtracting the {\sc Celex} model prediction from the individual model prediction for each item for each participant.
 
 
-% latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 09:32:37 2020
+% latex table generated in R 3.6.0 by xtable 1.8-4 package
+% Tue Feb 18 16:57:31 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -409,16 +409,16 @@ Section 6.4 in the main text explains that we calculate the extra information gi
  & Estimate & Std. Error & z value & Pr($>$$|$z$|$) \\ 
   \hline
 (Intercept) & -2.951 & 0.295 & -10.007 & 0.000 \\ 
-  r\_baseline\_gcm\_features & 4.369 & 0.425 & 10.284 & 0.000 \\ 
+  rescaled\_CELEX\_gcm\_feature\_distance & 4.369 & 0.425 & 10.284 & 0.000 \\ 
   gcm\_score\_diff & 2.612 & 0.470 & 5.563 & 0.000 \\ 
   participant\_prereg\_average & 5.289 & 0.602 & 8.788 & 0.000 \\ 
    \hline
 \end{tabular}
-\caption{Celex-GCM and individual score difference, post-test data} 
+\caption{Model 5: Celex-GCM and individual score difference, post-test data} 
 \label{indiv1}
 \end{table}
-% latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 09:32:37 2020
+% latex table generated in R 3.6.0 by xtable 1.8-4 package
+% Tue Feb 18 16:57:31 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -426,12 +426,12 @@ Section 6.4 in the main text explains that we calculate the extra information gi
  & Estimate & Std. Error & z value & Pr($>$$|$z$|$) \\ 
   \hline
 (Intercept) & -1.318 & 0.152 & -8.663 & 0.000 \\ 
-  r\_baseline\_mgl\_features & 1.944 & 0.176 & 11.045 & 0.000 \\ 
+  rescaled\_CELEX\_mgl\_feature\_distance & 1.944 & 0.176 & 11.045 & 0.000 \\ 
   mgl\_score\_diff & 0.304 & 0.139 & 2.181 & 0.029 \\ 
   participant\_prereg\_average & 7.203 & 0.591 & 12.190 & 0.000 \\ 
    \hline
 \end{tabular}
-\caption{Celex-MGL and individual score difference, post-test data} 
+\caption{Model 6: Celex-MGL and individual score difference, post-test data} 
 \label{indiv2}
 \end{table}
 We do this for both the GCM  (Model 5: regular response  $\sim$ \textsc{Celex} GCM score + extra GCM information + participant pre-test mean + (1 + \textsc{Celex} GCM + extra GCM information$|$participant) + (1$|$verb) and the MGL (Model 6: regular response  $\sim$ \textsc{Celex} MGL score + extra MGL information + participant pre-test mean + (1 + \textsc{Celex} MGL + extra MGL information$|$participant)+ (1$|$verb)).
@@ -446,8 +446,8 @@ These techniques are indicative of the relative strengths of the individual-MGL 
 We used the {\sc Celex}-GCM, {\sc Celex}-MGL, individual-GCM, and individual-MGL together to predict participant post-test responses. The best model, reported in the paper, contains the {\sc Celex}-MGL and the individal-GCM. The summary can be seen in Table \ref{comp3}. 
 
 
-% latex table generated in R 3.6.2 by xtable 1.8-4 package
-% Thu Jan 30 09:32:38 2020
+% latex table generated in R 3.6.0 by xtable 1.8-4 package
+% Tue Feb 18 16:57:31 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -467,18 +467,18 @@ Goodness-of-fit tests show that model fit is significantly worse if we exclude {
 
 \subsection{Visualising model contributions to explaining variation in post-test responses}
 
-Figure \ref{bigfigure} shows how baseline and post-test regularisation means of words compare for participant responses, the GCM, and the MGL.
+Figure \ref{bigfigure} shows how baseline and post-test regularization means of words compare for participant responses, the GCM, and the MGL.
 
 
 \begin{figure}
 \includegraphics{si-model_figure2}
-\caption{Baseline and individual regularisation weights: participants, GCM, MGL}
+\caption{Baseline and individual regularization weights: participants, GCM, MGL}
 \label{bigfigure}
 \end{figure}
 
 The Figure shows the average baseline regularity (x axis) and the post-test regularity (y axis) of the verbs in the ESP experiment. The post-test values vary across the dimension of co-player lexical typicality. Loess smooths show the general trajectory of the effects of typicality. In the first panel, regularity translates to aggregate participant responses in the baseline and in the ESP post-test. In the second and third panels, regularity translates to regularity scores provided by the {\sc Celex}- and individual-GCM and -MGL. Values are rescaled for better comparison.
 
-While the loess smooths are likely slightly overfit, they show the general trend in the raw data, which is echoed in the regression analysis in the main text: the "typical" trend of baseline-post-test difference is stronger than either the "random" or "reversed" trends. These are not very much different from each other. The differences are gradual. The GCM, while generally overestimating regularity, captures this gradual shift, since verb behaviour is shifted individually in the post-test. The MGL also overestimates regularisation. Since rules affect groups of verbs, rather than individual verbs, the post-test shifts are abrupt. The "typical" trend continues climbing after a longer plateau. However, the "random" and "reversed" trends trail off, where the "reversed" trend turns negative towards the higher tail of the distribution.
+While the loess smooths are likely slightly overfit, they show the general trend in the raw data, which is echoed in the regression analysis in the main text: the `typical' trend of baseline-post-test difference is stronger than either the "random" or "reversed" trends. These are not very much different from each other. The differences are gradual. The GCM, while generally overestimating regularity, captures this gradual shift, since verb behavior is shifted individually in the post-test. The MGL also overestimates regularization. Since rules affect groups of verbs, rather than individual verbs, the post-test shifts are abrupt. The "typical" trend continues climbing after a longer plateau. However, the `random' and `reversed' trends trail off, where the "reversed" trend turns negative towards the higher tail of the distribution.
 
 
 \newpage
