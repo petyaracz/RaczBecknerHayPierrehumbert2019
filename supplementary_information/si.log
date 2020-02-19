@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.7.15)  18 FEB 2020 16:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.7.15)  19 FEB 2020 11:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -554,33 +554,33 @@ mgl.html\T1/aer/m/n/12 (-20) .
 [5] [6]
 
 LaTeX Font Warning: Font shape `T3/aer/m/it' undefined
-(Font)              using `T3/aer/m/n' instead on input line 216.
+(Font)              using `T3/aer/m/n' instead on input line 217.
 
 [7]
-Underfull \hbox (badness 10000) in paragraph at lines 273--274
+Underfull \hbox (badness 10000) in paragraph at lines 275--276
 
  []
 
 
-Overfull \hbox (47.4893pt too wide) in paragraph at lines 283--298
+Overfull \hbox (47.4893pt too wide) in paragraph at lines 285--300
  [][] 
  []
 
 [8]
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 305.
+(Font)              <5> on input line 307.
  [9]
-Overfull \hbox (27.8097pt too wide) in paragraph at lines 326--335
+Overfull \hbox (27.8097pt too wide) in paragraph at lines 328--337
  [][] 
  []
 
 
-Overfull \hbox (25.84167pt too wide) in paragraph at lines 342--351
+Overfull \hbox (25.84167pt too wide) in paragraph at lines 344--353
  [][] 
  []
 
 [10]
-Overfull \hbox (11.3207pt too wide) in paragraph at lines 377--389
+Overfull \hbox (11.3207pt too wide) in paragraph at lines 379--391
  [][] 
  []
 
@@ -591,7 +591,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 <si-model_figure2.pdf, id=60, 903.375pt x 289.08pt>
 File: si-model_figure2.pdf Graphic file (type pdf)
 <use si-model_figure2.pdf>
-Package pdftex.def Info: si-model_figure2.pdf  used on input line 474.
+Package pdftex.def Info: si-model_figure2.pdf  used on input line 476.
 (pdftex.def)             Requested size: 362.37569pt x 115.96077pt.
  [13 <./si-model_figure2.pdf>] [14] (./si.bbl [15]) [16] (./si.aux)
 
@@ -627,7 +627,7 @@ ic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/201
 ive/2019basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/
 texlive/2019basic/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/loc
 al/texlive/2019basic/texmf-dist/fonts/type1/public/tipa/tipa12.pfb>
-Output written on si.pdf (16 pages, 312323 bytes).
+Output written on si.pdf (16 pages, 312348 bytes).
 PDF statistics:
  140 PDF objects out of 1000 (max. 8388607)
  99 compressed objects within 1 object stream

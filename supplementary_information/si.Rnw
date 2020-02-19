@@ -59,7 +59,8 @@ test2 = test2 %>%
 mgl_baseline_rules_raw = readr::read_tsv('~/Github/RaczBecknerHayPierrehumbert2019/models/mgl/baseline_mgl/CELEXFull3.sum') %>% 
   dplyr::mutate(
     form1 = stringr::str_replace_all(form1, '»', ''), # get rid of syllable boundary markers
-    form2 = stringr::str_replace_all(form2, '»', '')
+    form2 = stringr::str_replace_all(form2, '»', ''),
+    form2 = stringr::str_replace_all(form2, 'o', '5') # transcription thing
   )
 
 ## get verb handles
@@ -286,6 +287,8 @@ disc_category = test2 %>% # get words and categories from test2. match colnames 
   dplyr::mutate(
     form1 = disc
   )
+
+# verb_handles
 
 disc_reg_past_irreg_past = verb_handles %>% # get reg and irreg transcriptions from verb handles. match colnames with above.
   dplyr::select(base.form,regular.form,irregular.form) %>% 
