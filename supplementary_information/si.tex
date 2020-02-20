@@ -82,7 +82,7 @@ Table \ref{gcmsetsize} shows the number of verbs in \textsc{Celex} that were use
 The model calculates the similarity of a given nonce verb to the regular and the irregular set. Comparisons to stems in other classes are not calculated, as past tense markings for these classes were not available to participants in the forced-choice tasks.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Feb 19 11:30:14 2020
+% Thu Feb 20 11:18:10 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rllll}
@@ -161,7 +161,7 @@ Note that the sets of exceptions and related forms of each rule can overlap, bot
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Feb 19 11:30:14 2020
+% Thu Feb 20 11:18:10 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rllrr}
@@ -214,7 +214,7 @@ This relative adjusted confidence represents the MGL regularity score for an ite
 
 
 
-The two past forms of {\em splive} in the experiment are regular {\em splived} and irregular {\em splove}. The {\em relevant regular rule} that generates the regular past tense is `$\emptyset{} \rightarrow{}$ \textipa{[d]} / \{\textipa{D}, \textipa{S}, \textipa{T}, \textipa{Z}, f, s, v, z\} \underline{\hspace{0.5cm}}'. The {\em structural description} indicates that this is a suffixation rule that can apply to forms that {\em end in an anterior fricative} (a natural class in our feature system).  The {\em raw confidence} of this rule is 0.98. This is because this rule applies to most forms in its scope (698/712). The {\em adjusted confidence} is very similar: 0.968. This is because this rule applies to a large number of forms overall. The {\em relevant irregular rule} that generates the irregular form is `\textipa{[aI]} $\rightarrow{}$ \textipa{[oU]} / \{\textipa{D}, \textipa{Z}, \textipa{dZ}, d, l, n, r, z\} \underline{\hspace{0.5cm}}v'. It applies to \textipa{[aI]} in the nucleus {\em preceded by voiced anterior consonant and followed by \textipa{[v]}}. In \textsc{Celex},the rule applies to three forms ({\em drive, strive, dive}) and fails to apply to five ({\em arrive, thrive, contrive, rive, connive}). Its {\em raw confidence} is 0.375. Its {\em adjusted confidence} is slightly lower (0.366). This is because it applies to a smaller number of forms overall. The {\em relative (adjusted) confidence} of the predicted regularity of {\em splive} is $0.98/(0.98+0.37)=0.73$. The respective rescaled value is 0.363.
+The two past forms of {\em splive} in the experiment are regular {\em splived} and irregular {\em splove}. The {\em relevant regular rule} that generates the regular past tense is `$\emptyset{} \rightarrow{}$ \textipa{[d]} / \{\textipa{D}, \textipa{S}, \textipa{T}, \textipa{Z}, f, s, v, z\} \underline{\hspace{0.5cm}}'. The {\em structural description} indicates that this is a suffixation rule that can apply to forms that {\em end in an anterior fricative} (a natural class in our feature system).  The {\em raw confidence} of this rule is 0.98. This is because this rule applies to most forms in its scope (698/712). The {\em adjusted confidence} is very similar: 0.968. This is because this rule applies to a large number of forms overall. The {\em relevant irregular rule} that generates the irregular form is `\textipa{[aI]} $\rightarrow{}$ \textipa{[oU]} / \{\textipa{D}, \textipa{Z}, \textipa{dZ}, d, l, n, r, z\} \underline{\hspace{0.5cm}}v'. It applies to \textipa{[aI]} in the nucleus {\em preceded by voiced anterior consonant and followed by \textipa{[v]}}. In \textsc{Celex},the rule applies to three forms ({\em drive, strive, dive}) and fails to apply to five ({\em arrive, thrive, contrive, rive, connive}). Its {\em raw confidence} is 0.375. Its {\em adjusted confidence} is slightly lower (0.366). This is because it applies to a smaller number of forms overall. The {\em relative (adjusted) confidence} of the predicted regularity of {\em splive} is $0.98/(0.98+0.37)=0.73$. (The respective rescaled value is 0.363 -- which, in itself, is not very informative.)
 
 \section{Further notes on the GCM and the MGL \label{appendixgcmvsmgl}}
 
@@ -225,7 +225,7 @@ As we see, however, the MGL also focuses the training set. The structural descri
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Feb 19 11:30:14 2020
+% Thu Feb 20 11:18:10 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{rllrr}
@@ -277,24 +277,23 @@ The rule structure of the MGL likely follows from its parameter settings, which 
 \section{Regression modeling procedures}\label{appendixregression}
 
 
-
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Feb 19 11:30:14 2020
+% Thu Feb 20 11:18:10 2020
 \begin{table}[ht]
 \centering
-\begin{tabular}{rrrrr}
+\begin{tabular}{rlrrrl}
   \hline
- & Estimate & Std. Error & z value & Pr($>$$|$z$|$) \\ 
+ & term & estimate & std.error & statistic & sig \\ 
   \hline
-(Intercept) & -0.108 & 0.161 & -0.672 & 0.501 \\ 
-  verb\_baseline\_average & 8.259 & 0.686 & 12.040 & 0.000 \\ 
-  bot\_lexical\_typicalityrandom & 0.043 & 0.169 & 0.253 & 0.800 \\ 
-  bot\_lexical\_typicalityreversed & 0.035 & 0.173 & 0.204 & 0.839 \\ 
-  participant\_prereg\_average & 7.125 & 0.563 & 12.667 & 0.000 \\ 
-  bot\_regularisation\_rate-40\% & -0.456 & 0.185 & -2.468 & 0.014 \\ 
-  bot\_regularisation\_rate+40\% & 0.549 & 0.166 & 3.307 & 0.001 \\ 
-  verb\_baseline\_average:bot\_lexical\_typicalityrandom & -2.402 & 0.927 & -2.591 & 0.010 \\ 
-  verb\_baseline\_average:bot\_lexical\_typicalityreversed & -2.127 & 0.955 & -2.226 & 0.026 \\ 
+1 & (Intercept) & -0.11 & 0.16 & -0.67 & n.s. \\ 
+  2 & verb\_baseline\_average & 8.26 & 0.69 & 12.04 & *** \\ 
+  3 & bot\_lexical\_typicalityrandom & 0.04 & 0.17 & 0.25 & n.s. \\ 
+  4 & bot\_lexical\_typicalityreversed & 0.04 & 0.17 & 0.20 & n.s. \\ 
+  5 & participant\_prereg\_average & 7.13 & 0.56 & 12.67 & *** \\ 
+  6 & bot\_regularisation\_rate-40\% & -0.46 & 0.18 & -2.47 & * \\ 
+  7 & bot\_regularisation\_rate+40\% & 0.55 & 0.17 & 3.31 & *** \\ 
+  8 & verb\_baseline\_average:bot\_lexical\_typicalityrandom & -2.40 & 0.93 & -2.59 & ** \\ 
+  9 & verb\_baseline\_average:bot\_lexical\_typicalityreversed & -2.13 & 0.96 & -2.23 & * \\ 
    \hline
 \end{tabular}
 \caption{Experimental Data, Post-test Regression Model Summary. Model formula: post-test regular response ~ verb baseline mean x lexical typicality + participant pretest mean + regularization shift + (1 + verb.baseline.mean | participant) + (1 | verb)} 
@@ -322,32 +321,32 @@ We fit two simple linear regression models; no random effects are explored in th
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Feb 19 11:30:16 2020
+% Thu Feb 20 11:18:11 2020
 \begin{table}[ht]
 \centering
-\begin{tabular}{rrrrr}
+\begin{tabular}{rlrrrl}
   \hline
- & Estimate & Std. Error & z value & Pr($>$$|$z$|$) \\ 
+ & term & estimate & std.error & statistic & sig \\ 
   \hline
-(Intercept) & -0.525 & 0.124 & -4.219 & 0.000 \\ 
-  rescaled\_CELEX\_mgl\_feature\_distance & 1.347 & 0.093 & 14.482 & 0.000 \\ 
-  rescaled\_CELEX\_gcm\_feature\_distance\_residual & 1.423 & 0.128 & 11.100 & 0.000 \\ 
+1 & (Intercept) & -0.53 & 0.12 & -4.22 & *** \\ 
+  2 & rescaled\_CELEX\_mgl\_feature\_distance & 1.35 & 0.09 & 14.48 & *** \\ 
+  3 & rescaled\_CELEX\_gcm\_feature\_distance\_residual & 1.42 & 0.13 & 11.10 & *** \\ 
    \hline
 \end{tabular}
 \caption{Model 3: MGL scores and GCM residuals, baseline data} 
 \label{resid1}
 \end{table}
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Feb 19 11:30:16 2020
+% Thu Feb 20 11:18:12 2020
 \begin{table}[ht]
 \centering
-\begin{tabular}{rrrrr}
+\begin{tabular}{rlrrrl}
   \hline
- & Estimate & Std. Error & z value & Pr($>$$|$z$|$) \\ 
+ & term & estimate & std.error & statistic & sig \\ 
   \hline
-(Intercept) & -1.225 & 0.160 & -7.682 & 0.000 \\ 
-  rescaled\_CELEX\_gcm\_feature\_distance & 2.391 & 0.149 & 16.063 & 0.000 \\ 
-  rescaled\_CELEX\_mgl\_feature\_distance\_residual & 1.008 & 0.090 & 11.154 & 0.000 \\ 
+1 & (Intercept) & -1.23 & 0.16 & -7.68 & *** \\ 
+  2 & rescaled\_CELEX\_gcm\_feature\_distance & 2.39 & 0.15 & 16.06 & *** \\ 
+  3 & rescaled\_CELEX\_mgl\_feature\_distance\_residual & 1.01 & 0.09 & 11.15 & *** \\ 
    \hline
 \end{tabular}
 \caption{Model 4: GCM scores and MGL residuals, baseline data} 
@@ -403,34 +402,34 @@ Section 6.4 in the main text explains that we calculate the extra information gi
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Feb 19 11:30:16 2020
+% Thu Feb 20 11:18:12 2020
 \begin{table}[ht]
 \centering
-\begin{tabular}{rrrrr}
+\begin{tabular}{rlrrrl}
   \hline
- & Estimate & Std. Error & z value & Pr($>$$|$z$|$) \\ 
+ & term & estimate & std.error & statistic & sig \\ 
   \hline
-(Intercept) & -2.951 & 0.295 & -10.007 & 0.000 \\ 
-  rescaled\_CELEX\_gcm\_feature\_distance & 4.369 & 0.425 & 10.284 & 0.000 \\ 
-  gcm\_score\_diff & 2.612 & 0.470 & 5.563 & 0.000 \\ 
-  participant\_prereg\_average & 5.289 & 0.602 & 8.788 & 0.000 \\ 
+1 & (Intercept) & -2.95 & 0.29 & -10.01 & *** \\ 
+  2 & rescaled\_CELEX\_gcm\_feature\_distance & 4.37 & 0.42 & 10.28 & *** \\ 
+  3 & gcm\_score\_diff & 2.61 & 0.47 & 5.56 & *** \\ 
+  4 & participant\_prereg\_average & 5.29 & 0.60 & 8.79 & *** \\ 
    \hline
 \end{tabular}
 \caption{Model 5: Celex-GCM and individual score difference, post-test data} 
 \label{indiv1}
 \end{table}
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Feb 19 11:30:17 2020
+% Thu Feb 20 11:18:12 2020
 \begin{table}[ht]
 \centering
-\begin{tabular}{rrrrr}
+\begin{tabular}{rlrrrl}
   \hline
- & Estimate & Std. Error & z value & Pr($>$$|$z$|$) \\ 
+ & term & estimate & std.error & statistic & sig \\ 
   \hline
-(Intercept) & -1.318 & 0.152 & -8.663 & 0.000 \\ 
-  rescaled\_CELEX\_mgl\_feature\_distance & 1.944 & 0.176 & 11.045 & 0.000 \\ 
-  mgl\_score\_diff & 0.304 & 0.139 & 2.181 & 0.029 \\ 
-  participant\_prereg\_average & 7.203 & 0.591 & 12.190 & 0.000 \\ 
+1 & (Intercept) & -1.318 & 0.152 & -8.663 & *** \\ 
+  2 & rescaled\_CELEX\_mgl\_feature\_distance & 1.944 & 0.176 & 11.045 & *** \\ 
+  3 & mgl\_score\_diff & 0.304 & 0.139 & 2.181 & * \\ 
+  4 & participant\_prereg\_average & 7.203 & 0.591 & 12.190 & *** \\ 
    \hline
 \end{tabular}
 \caption{Model 6: Celex-MGL and individual score difference, post-test data} 
@@ -449,17 +448,17 @@ We used the {\sc Celex}-GCM, {\sc Celex}-MGL, individual-GCM, and individual-MGL
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Wed Feb 19 11:30:17 2020
+% Thu Feb 20 11:18:12 2020
 \begin{table}[ht]
 \centering
-\begin{tabular}{rrrrr}
+\begin{tabular}{rlrrrl}
   \hline
- & Estimate & Std. Error & z value & Pr($>$$|$z$|$) \\ 
+ & term & estimate & std.error & statistic & sig \\ 
   \hline
-(Intercept) & -2.942 & 0.270 & -10.896 & 0.000 \\ 
-  r\_baseline\_mgl\_features & 1.600 & 0.171 & 9.361 & 0.000 \\ 
-  r\_individual\_gcm\_features & 2.786 & 0.378 & 7.369 & 0.000 \\ 
-  participant\_prereg\_average & 5.437 & 0.585 & 9.298 & 0.000 \\ 
+1 & (Intercept) & -2.94 & 0.27 & -10.90 & *** \\ 
+  2 & r\_baseline\_mgl\_features & 1.60 & 0.17 & 9.36 & *** \\ 
+  3 & r\_individual\_gcm\_features & 2.79 & 0.38 & 7.37 & *** \\ 
+  4 & participant\_prereg\_average & 5.44 & 0.58 & 9.30 & *** \\ 
    \hline
 \end{tabular}
 \caption{Celex-MGL and Individual-GCM predict variation in the post-test} 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.7.15)  19 FEB 2020 11:30
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.7.15)  20 FEB 2020 11:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -562,25 +562,25 @@ Underfull \hbox (badness 10000) in paragraph at lines 275--276
  []
 
 
-Overfull \hbox (47.4893pt too wide) in paragraph at lines 285--300
+Overfull \hbox (32.67987pt too wide) in paragraph at lines 284--299
  [][] 
  []
 
 [8]
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 307.
+(Font)              <5> on input line 306.
  [9]
-Overfull \hbox (27.8097pt too wide) in paragraph at lines 328--337
+Overfull \hbox (12.95216pt too wide) in paragraph at lines 327--336
  [][] 
  []
 
 
-Overfull \hbox (25.84167pt too wide) in paragraph at lines 344--353
+Overfull \hbox (10.98415pt too wide) in paragraph at lines 343--352
  [][] 
  []
 
 [10]
-Overfull \hbox (11.3207pt too wide) in paragraph at lines 379--391
+Overfull \hbox (11.3207pt too wide) in paragraph at lines 378--390
  [][] 
  []
 
@@ -591,7 +591,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 <si-model_figure2.pdf, id=60, 903.375pt x 289.08pt>
 File: si-model_figure2.pdf Graphic file (type pdf)
 <use si-model_figure2.pdf>
-Package pdftex.def Info: si-model_figure2.pdf  used on input line 476.
+Package pdftex.def Info: si-model_figure2.pdf  used on input line 475.
 (pdftex.def)             Requested size: 362.37569pt x 115.96077pt.
  [13 <./si-model_figure2.pdf>] [14] (./si.bbl [15]) [16] (./si.aux)
 
@@ -599,13 +599,13 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 6910 strings out of 494060
- 101461 string characters out of 6163035
+ 6921 strings out of 494060
+ 101546 string characters out of 6163035
  197403 words of memory out of 5000000
  9794 multiletter control sequences out of 15000+600000
- 94065 words of font info for 622 fonts, out of 8000000 for 9000
+ 94925 words of font info for 630 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
- 41i,9n,38p,1568b,260s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,9n,38p,1615b,260s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2019basic/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts
 1.enc}</usr/local/texlive/2019basic/texmf-dist/fonts/type1/public/amsfonts/cm/c
 mbx12.pfb></usr/local/texlive/2019basic/texmf-dist/fonts/type1/public/amsfonts/
@@ -627,7 +627,7 @@ ic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/201
 ive/2019basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/
 texlive/2019basic/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/loc
 al/texlive/2019basic/texmf-dist/fonts/type1/public/tipa/tipa12.pfb>
-Output written on si.pdf (16 pages, 312348 bytes).
+Output written on si.pdf (16 pages, 312286 bytes).
 PDF statistics:
  140 PDF objects out of 1000 (max. 8388607)
  99 compressed objects within 1 object stream

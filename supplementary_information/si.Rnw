@@ -22,6 +22,47 @@ library(readr) # for reading
 library(scales) # for rescaling
 library(xtable) # for latex tables
 library(lme4) # for GLMM-s
+library(broom) # for tidy summaries
+
+# functions
+
+niceCoefTable = function(fit){
+  my_table = fit %>% 
+    tidy %>% 
+    filter(
+      group == 'fixed'
+    ) %>% 
+    mutate(
+      sig = case_when(
+        p.value >= 0.05 ~ 'n.s.',
+        p.value < 0.05 & p.value >= 0.01 ~ '*',
+        p.value < 0.01 & p.value >= 0.001 ~ '**',
+        p.value < 0.001 ~ '***'
+      )
+    ) %>% 
+    select(
+      - p.value,
+      - group
+    )
+return(my_table)  
+}
+
+# VIF for GLMM-s, from Florian Jaeger
+
+vif.mer <- function (fit) {
+  ## adapted from rms::vif
+  v <- vcov(fit)
+  nam <- names(fixef(fit))
+  ## exclude intercepts
+  ns <- sum(1 * (nam == "Intercept" | nam == "(Intercept)"))
+  if (ns > 0) {
+    v <- v[-(1:ns), -(1:ns), drop = FALSE]
+    nam <- nam[-(1:ns)] }
+  d <- diag(v)^0.5
+  v <- diag(solve(v/(d %o% d)))
+  names(v) <- nam 
+  v 
+  }
 
 # data
 source('~/Github/RaczBecknerHayPierrehumbert2019/functions/grabdata.R')
@@ -409,20 +450,20 @@ splive_mgl_rules = mgl_baseline_rules_raw %>%
     form1 == 'spl2v'
   )
 # regular
-splive_mgl_rules[3,]$Pfeat
-splive_mgl_rules[3,]$hits
-splive_mgl_rules[3,]$scope
-splive_mgl_rules[3,]$reliability
-splive_mgl_rules[3,]$confidence
+splive_mgl_rules[splive_mgl_rules$B == 'd',]$Pfeat
+splive_mgl_rules[splive_mgl_rules$B == 'd',]$hits
+splive_mgl_rules[splive_mgl_rules$B == 'd',]$scope
+splive_mgl_rules[splive_mgl_rules$B == 'd',]$reliability
+splive_mgl_rules[splive_mgl_rules$B == 'd',]$confidence
 
 # irregular
-splive_mgl_rules[1,]$Pfeat
-splive_mgl_rules[1,]$hits
-splive_mgl_rules[1,]$scope
-splive_mgl_rules[1,]$`related forms`
-splive_mgl_rules[1,]$exceptions
-splive_mgl_rules[1,]$reliability
-splive_mgl_rules[1,]$confidence
+splive_mgl_rules[splive_mgl_rules$B == 'o',]$Pfeat # this kept the original transcription that we change to DISC 5 in form2
+splive_mgl_rules[splive_mgl_rules$B == 'o',]$hits
+splive_mgl_rules[splive_mgl_rules$B == 'o',]$scope
+splive_mgl_rules[splive_mgl_rules$B == 'o',]$`related forms`
+splive_mgl_rules[splive_mgl_rules$B == 'o',]$exceptions
+splive_mgl_rules[splive_mgl_rules$B == 'o',]$reliability
+splive_mgl_rules[splive_mgl_rules$B == 'o',]$confidence
 
 
 test2 %>% 
@@ -432,7 +473,7 @@ test2 %>%
 
 @
 
-The two past forms of {\em splive} in the experiment are regular {\em splived} and irregular {\em splove}. The {\em relevant regular rule} that generates the regular past tense is `$\emptyset{} \rightarrow{}$ \textipa{[d]} / \{\textipa{D}, \textipa{S}, \textipa{T}, \textipa{Z}, f, s, v, z\} \underline{\hspace{0.5cm}}'. The {\em structural description} indicates that this is a suffixation rule that can apply to forms that {\em end in an anterior fricative} (a natural class in our feature system).  The {\em raw confidence} of this rule is 0.98. This is because this rule applies to most forms in its scope (698/712). The {\em adjusted confidence} is very similar: 0.968. This is because this rule applies to a large number of forms overall. The {\em relevant irregular rule} that generates the irregular form is `\textipa{[aI]} $\rightarrow{}$ \textipa{[oU]} / \{\textipa{D}, \textipa{Z}, \textipa{dZ}, d, l, n, r, z\} \underline{\hspace{0.5cm}}v'. It applies to \textipa{[aI]} in the nucleus {\em preceded by voiced anterior consonant and followed by \textipa{[v]}}. In \textsc{Celex},the rule applies to three forms ({\em drive, strive, dive}) and fails to apply to five ({\em arrive, thrive, contrive, rive, connive}). Its {\em raw confidence} is 0.375. Its {\em adjusted confidence} is slightly lower (0.366). This is because it applies to a smaller number of forms overall. The {\em relative (adjusted) confidence} of the predicted regularity of {\em splive} is $0.98/(0.98+0.37)=0.73$. The respective rescaled value is 0.363.
+The two past forms of {\em splive} in the experiment are regular {\em splived} and irregular {\em splove}. The {\em relevant regular rule} that generates the regular past tense is `$\emptyset{} \rightarrow{}$ \textipa{[d]} / \{\textipa{D}, \textipa{S}, \textipa{T}, \textipa{Z}, f, s, v, z\} \underline{\hspace{0.5cm}}'. The {\em structural description} indicates that this is a suffixation rule that can apply to forms that {\em end in an anterior fricative} (a natural class in our feature system).  The {\em raw confidence} of this rule is 0.98. This is because this rule applies to most forms in its scope (698/712). The {\em adjusted confidence} is very similar: 0.968. This is because this rule applies to a large number of forms overall. The {\em relevant irregular rule} that generates the irregular form is `\textipa{[aI]} $\rightarrow{}$ \textipa{[oU]} / \{\textipa{D}, \textipa{Z}, \textipa{dZ}, d, l, n, r, z\} \underline{\hspace{0.5cm}}v'. It applies to \textipa{[aI]} in the nucleus {\em preceded by voiced anterior consonant and followed by \textipa{[v]}}. In \textsc{Celex},the rule applies to three forms ({\em drive, strive, dive}) and fails to apply to five ({\em arrive, thrive, contrive, rive, connive}). Its {\em raw confidence} is 0.375. Its {\em adjusted confidence} is slightly lower (0.366). This is because it applies to a smaller number of forms overall. The {\em relative (adjusted) confidence} of the predicted regularity of {\em splive} is $0.98/(0.98+0.37)=0.73$. (The respective rescaled value is 0.363 -- which, in itself, is not very informative.)
 
 \section{Further notes on the GCM and the MGL \label{appendixgcmvsmgl}}
 
@@ -504,27 +545,6 @@ The rule structure of the MGL likely follows from its parameter settings, which 
 
 \section{Regression modeling procedures}\label{appendixregression}
 
-<<main_model1, echo=F,eval=T>>=
-
-##########################################
-# VIF for GLMM-s, from Florian Jaeger
-
-vif.mer <- function (fit) {
-  ## adapted from rms::vif
-  v <- vcov(fit)
-  nam <- names(fixef(fit))
-  ## exclude intercepts
-  ns <- sum(1 * (nam == "Intercept" | nam == "(Intercept)"))
-  if (ns > 0) {
-    v <- v[-(1:ns), -(1:ns), drop = FALSE]
-    nam <- nam[-(1:ns)] }
-  d <- diag(v)^0.5
-  v <- diag(solve(v/(d %o% d)))
-  names(v) <- nam 
-  v 
-  }
-@
-
 <<main_model2, echo=F,eval=F>>=
 
 # the model reported in the paper
@@ -578,7 +598,9 @@ anova(lme.fit1,lme.fit1b,lme.fit1c)
 
 <<main_model3, echo=F,eval=T, results=tex>>=
 load('models/si_fit1.rda')
-print(xtable::xtable(summary(lme.fit1)$coef, digits = 3, label = 'regressiontable1', caption = 'Experimental Data, Post-test Regression Model Summary. Model formula: post-test regular response ~ verb baseline mean x lexical typicality + participant pretest mean + regularization shift + (1 + verb.baseline.mean | participant) + (1 | verb)'))
+lme.fit1.sum = niceCoefTable(lme.fit1)
+
+print(xtable::xtable(lme.fit1.sum, digits = 2, label = 'regressiontable1', caption = 'Experimental Data, Post-test Regression Model Summary. Model formula: post-test regular response ~ verb baseline mean x lexical typicality + participant pretest mean + regularization shift + (1 + verb.baseline.mean | participant) + (1 | verb)'))
 @
 
 Our regression model selection in this article proceeded as follows. Except where stated otherwise, we fit logistic mixed-effects regression models, using R's lme4 package \citep{bateslme4}. Non-significant predictors are removed from our models, as determined by a series of comparisons of nested models, using likelihood ratio tests in R's anova function. However, our model tables (e.g., Tables 5 and 6 in the main text) include the significance levels generated by lme4 summaries.  
@@ -698,12 +720,14 @@ save(celex_m4, file = 'models/si_celex_m4.rda')
 
 <<celex_resid1, echo=F,eval=T, results=tex>>=
 load('models/si_celex_m3.rda')
-print(xtable::xtable(summary(celex_m3)$coef, digits = 3, label = 'resid1', caption = 'Model 3: MGL scores and GCM residuals, baseline data'))
+celex_m3_summary = niceCoefTable(celex_m3)
+print(xtable::xtable(celex_m3_summary, digits = 2, label = 'resid1', caption = 'Model 3: MGL scores and GCM residuals, baseline data'))
 @
 
 <<celex_resid2, echo=F,eval=T, results=tex>>=
 load('models/si_celex_m4.rda')
-print(xtable::xtable(summary(celex_m4)$coef, digits = 3, label = 'resid2', caption = 'Model 4: GCM scores and MGL residuals, baseline data'))
+celex_m4_summary = niceCoefTable(celex_m4)
+print(xtable::xtable(celex_m4_summary, digits = 2, label = 'resid2', caption = 'Model 4: GCM scores and MGL residuals, baseline data'))
 @
 
 Model 1 predicts the GCM scores from the MGL scores (M1: GCM regular score  $\sim$ MGL regular score). Model 2 predicts the MGL scores from the GCM scores (M2: MGL regular score  $\sim$ GCM regular score). In two additional models, we then use the residuals from each model (M1, M2) as an estimate of the variation present in one score that cannot be attributed to the other.  First, we use the residuals of Model 1 in another, mixed-effects logistic regression model along with the MGL scores to predict regular responses in the baseline task (M3: regular response  $\sim$ MGL score + GCM residual + (1 + MGL score + GCM residual$|$participant) + (1 $|$ verb)). We then residualize for the MGL. We use the residuals of Model 2 along with the GCM scores in a similar logistic regression model (M4: regular response  $\sim$ GCM score + MGL residual + (1 + GCM score + MGL residual $|$participant)). 
@@ -792,15 +816,16 @@ save(indiv_m6, file = 'models/si_indiv_m6.rda')
 @
 
 <<indiv_diff1, echo=F, eval=T, results=tex>>=
-
 load('models/si_indiv_m5.rda')
-print(xtable::xtable(summary(indiv_m5)$coef, digits = 3, label = 'indiv1', caption = 'Model 5: Celex-GCM and individual score difference, post-test data'))
+indiv_m5_sum = niceCoefTable(indiv_m5)
+print(xtable::xtable(indiv_m5_sum, digits = 2, label = 'indiv1', caption = 'Model 5: Celex-GCM and individual score difference, post-test data'))
 
 @
 
 <<indiv_diff2, echo=F,eval=T, results=tex>>=
 load('models/si_indiv_m6.rda')
-print(xtable::xtable(summary(indiv_m6)$coef, digits = 3, label = 'indiv2', caption = 'Model 6: Celex-MGL and individual score difference, post-test data'))
+indiv_m6_sum = niceCoefTable(indiv_m6)
+print(xtable::xtable(indiv_m6_sum, digits = 3, label = 'indiv2', caption = 'Model 6: Celex-MGL and individual score difference, post-test data'))
 @
 
 We do this for both the GCM  (Model 5: regular response  $\sim$ \textsc{Celex} GCM score + extra GCM information + participant pre-test mean + (1 + \textsc{Celex} GCM + extra GCM information$|$participant) + (1$|$verb) and the MGL (Model 6: regular response  $\sim$ \textsc{Celex} MGL score + extra MGL information + participant pre-test mean + (1 + \textsc{Celex} MGL + extra MGL information$|$participant)+ (1$|$verb)).
@@ -881,7 +906,8 @@ chisq4 = anova(comp_fit1, comp_fit1e)[2,6] %>% round(2) # with celex gcm
 @
 
 <<comparison_model3, echo=F,eval=T, results=tex>>=
-print(xtable::xtable(summary(comp_fit1)$coef, digits = 3, label = 'comp3', caption = 'Celex-MGL and Individual-GCM predict variation in the post-test'))
+comp_fit1_sum = niceCoefTable(comp_fit1)
+print(xtable::xtable(comp_fit1_sum, digits = 2, label = 'comp3', caption = 'Celex-MGL and Individual-GCM predict variation in the post-test'))
 @
 
 Goodness-of-fit tests show that model fit is significantly worse if we exclude {\sc Celex}-MGL ($\chi^2 = $ \Sexpr{chisq1}) or individual-GCM ($\chi^2 = $ \Sexpr{chisq2}) as predictors. It is not significantly better if we include individual-MGL ($\chi^2 = $ \Sexpr{chisq3}) or {\sc Celex}-GCM ($\chi^2 = $ \Sexpr{chisq4}).
