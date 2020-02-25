@@ -16,8 +16,7 @@
 
 \noindent This is an Sweave file. The Rnw source file contains the code used to compile the pdf output file. It also contains additional code sections that help replicate the results. The files also contain pointers to further detail in the supplementary depository that accompanies the paper. 
 
-\noindent In this supplementary information, we detail (\ref{appendixverbs}) the structure of our nonce verb stimuli, the setup of (\ref{appendixgcm}) the Generalized Context Model (GCM) and (\ref{appendixmgl}) the Minimal Generalization Learner (MGL), and (\ref{appendixgcmvsmgl}) how these models compare. 
-We illustrate the models using fits on our \emph {baseline} data. 
+In this supplementary information, we detail (\ref{appendixverbs}) the structure of our nonce verb stimuli, the setup of (\ref{appendixgcm}) the Generalized Context Model (GCM) and (\ref{appendixmgl}) the Minimal Generalization Learner (MGL), and (\ref{appendixgcmvsmgl}) how these models compare. We illustrate the models using fits on our \emph {baseline} data. 
 
 We also discuss model selection in analysing our regression data (\ref{appendixregression}), how the two learning models compare on our baseline data (\ref{appendixgcmmglresidualization}), and how they compare on our ESP post-test data (\ref{mglgcmposttest}). 
 
@@ -82,22 +81,21 @@ Table \ref{gcmsetsize} shows the number of verbs in \textsc{Celex} that were use
 The model calculates the similarity of a given nonce verb to the regular and the irregular set. Comparisons to stems in other classes are not calculated, as past tense markings for these classes were not available to participants in the forced-choice tasks.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Feb 20 11:18:10 2020
+% Tue Feb 25 14:32:38 2020
 \begin{table}[ht]
 \centering
-\begin{tabular}{rllll}
+\begin{tabular}{llll}
   \hline
- & verb class & irregular set & regular set & miscellaneous regular verbs \\ 
+verb class & irregular set & regular set & miscellaneous regular verbs \\ 
   \hline
-1 & BURNT & 6 & 42 & 1218 \\ 
-  2 & DROVE & 14 & 83 & 1218 \\ 
-  3 & KEPT & 12 & 31 & 1218 \\ 
-  4 & SANG & 8 & 13 & 1218 \\ 
-  5 & sum & 40 & 169 & 1218 \\ 
+BURNT & 6 & 42 & 1218 \\ 
+  DROVE & 14 & 83 & 1218 \\ 
+  KEPT & 12 & 31 & 1218 \\ 
+  SANG & 8 & 13 & 1218 \\ 
+  sum & 40 & 169 & 1218 \\ 
    \hline
 \end{tabular}
 \caption{Number of forms in each verb class, GCM training data} 
-\label{gcmsetsize}
 \end{table}
 \subsection{Estimation}
 
@@ -161,21 +159,21 @@ Note that the sets of exceptions and related forms of each rule can overlap, bot
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Feb 20 11:18:10 2020
+% Tue Feb 25 14:32:38 2020
 \begin{table}[ht]
 \centering
-\begin{tabular}{rllrr}
+\begin{tabular}{llrr}
   \hline
- & category & rule.type & related forms & exceptions \\ 
+category & rule.type & related forms & exceptions \\ 
   \hline
-1 & burnt & irregular &  24 &  41 \\ 
-  2 & drove & irregular &  21 & 114 \\ 
-  3 & kept & irregular &  10 &   9 \\ 
-  4 & sang & irregular &  11 &  77 \\ 
-  5 & burnt & regular &  38 &  21 \\ 
-  6 & drove & regular &  29 &  27 \\ 
-  7 & kept & regular &  67 &  41 \\ 
-  8 & sang & regular &  47 &  38 \\ 
+BURNT & irregular &  24 &  41 \\ 
+  DROVE & irregular &  21 & 114 \\ 
+  KEPT & irregular &  10 &   9 \\ 
+  SANG & irregular &  11 &  77 \\ 
+  BURNT & regular &  38 &  21 \\ 
+  DROVE & regular &  29 &  27 \\ 
+  KEPT & regular &  67 &  41 \\ 
+  SANG & regular &  47 &  38 \\ 
    \hline
 \end{tabular}
 \caption{Number of forms in each verb class, MGL training data} 
@@ -220,31 +218,9 @@ The two past forms of {\em splive} in the experiment are regular {\em splived} a
 
 The training set for the GCM is focused initially; it is grouped into four verb classes and based on formal similarity with base forms of existing irregular verbs playing a role within each class. This, in effect, assumes lexical gangs as a starting point \citep{alegre1999rule}. In contrast, the MGL starts establishing rules across all forms in the starting dictionary.
 
-As we see, however, the MGL also focuses the training set. The structural descriptions of the forms only cover a fraction of all verbs in the starting dictionary, organized by shared groups of segments. While disjunction increases the power of a theory (increasing the set of acceptable classes), disjunct classes frequently serve as input for phonological processes \citep{mielke2008emergence} . In the MGL, the disjunction emerges despite the lack of an initial specification: while one rule accounts for the specific behavior of a given form, multiple rules cover a given class. The number of regular and irregular rules posited by the MGL for each verb class can be seen in Table \ref{mglruleses}. 
+As we see, however, the MGL also focuses the training set. The structural descriptions of the forms only cover a fraction of all verbs in the starting dictionary, organized by shared groups of segments. While disjunction increases the power of a theory (increasing the set of acceptable classes), disjunct classes frequently serve as input for phonological processes \citep{mielke2008emergence} . In the MGL, the disjunction emerges despite the lack of an initial specification: while one rule accounts for the specific behavior of a given form, multiple rules cover a given class. The number of regular and irregular rules posited by the MGL for each verb class can be seen in Table \ref{mgltable}. 
 
 
-
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Feb 20 11:18:10 2020
-\begin{table}[ht]
-\centering
-\begin{tabular}{rllrr}
-  \hline
- & category & rule.type & related forms & exceptions \\ 
-  \hline
-1 & burnt & irregular &  24 &  41 \\ 
-  2 & drove & irregular &  21 & 114 \\ 
-  3 & kept & irregular &  10 &   9 \\ 
-  4 & sang & irregular &  11 &  77 \\ 
-  5 & burnt & regular &  38 &  21 \\ 
-  6 & drove & regular &  29 &  27 \\ 
-  7 & kept & regular &  67 &  41 \\ 
-  8 & sang & regular &  47 &  38 \\ 
-   \hline
-\end{tabular}
-\caption{The number of unique rules posited by the MGL in each verb class} 
-\label{mglruleses}
-\end{table}
 Table \ref{mglruleseskept} shows the list of (irregular and regular) rules for one of the classes, the KEPT class. We choose this class as it provides a good illustration of the estimation process. An MGL rule describes an $A \rightarrow{} B$ {\em alternation} in an $XAY$ {\em environment}. Since the KEPT rules are all suffixing, the following environment ($Y$) is empty. For the preceding environment ($X$), we give a list of segments that are matched by the structural description if it applies to four segments or fewer. Otherwise, we give a phonological description. So, for instance, the first rule turns \textipa{[il]} to \textipa{[Elt]} following any obstruent. Note that in some cases, the MGL generates multiple rules for the same alternation (such as \textipa{ip} $\rightarrow{}$ \textipa{Ept}). As discussed in Section \ref{mgloutput}, in such instances, we choose the candidate rule with the highest adjusted confidence in order to calculate the MGL regularity score. (Fricatives and nasal consonants constitute a natural class in the segmental feature system used by \citealt{albright2003rules}.) 
 
 Inspection of the table shows that the MGL fails to generate some expected irregular rules; in the KEPT class, the MGL omits rules for any stems ending in \textipa{[in]} or \textipa{[im]}. Under the MGL, there is not enough lexical support for irregular rules of these types, and yet participants do irregularize nonce forms like {\em cheen} and {\em kleem}  in the forced choice task. In this respect, the variegated similarity of the non-natural GCM class (which can be used to categorize {\em cheen}) allows for a better approximation of participant behavior. Note also that in some cases, the MGL generates an overly-specific rule; the rule for stems ending in [il] applies only after obstruents, whereas participants also irregularize KEPT stems with a sonorant in the onset ({\em greel}/{\em grelt}).    
@@ -278,22 +254,22 @@ The rule structure of the MGL likely follows from its parameter settings, which 
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Feb 20 11:18:10 2020
+% Tue Feb 25 14:32:38 2020
 \begin{table}[ht]
 \centering
-\begin{tabular}{rlrrrl}
+\begin{tabular}{lrrrl}
   \hline
- & term & estimate & std.error & statistic & sig \\ 
+term & estimate & std.error & statistic & sig \\ 
   \hline
-1 & (Intercept) & -0.11 & 0.16 & -0.67 & n.s. \\ 
-  2 & verb\_baseline\_average & 8.26 & 0.69 & 12.04 & *** \\ 
-  3 & bot\_lexical\_typicalityrandom & 0.04 & 0.17 & 0.25 & n.s. \\ 
-  4 & bot\_lexical\_typicalityreversed & 0.04 & 0.17 & 0.20 & n.s. \\ 
-  5 & participant\_prereg\_average & 7.13 & 0.56 & 12.67 & *** \\ 
-  6 & bot\_regularisation\_rate-40\% & -0.46 & 0.18 & -2.47 & * \\ 
-  7 & bot\_regularisation\_rate+40\% & 0.55 & 0.17 & 3.31 & *** \\ 
-  8 & verb\_baseline\_average:bot\_lexical\_typicalityrandom & -2.40 & 0.93 & -2.59 & ** \\ 
-  9 & verb\_baseline\_average:bot\_lexical\_typicalityreversed & -2.13 & 0.96 & -2.23 & * \\ 
+(Intercept) & -0.11 & 0.16 & -0.67 & n.s. \\ 
+  verb\_baseline\_average & 8.26 & 0.69 & 12.04 & *** \\ 
+  co\_player\_lexical\_typicalityrandom & 0.04 & 0.17 & 0.25 & n.s. \\ 
+  co\_player\_lexical\_typicalityreversed & 0.04 & 0.17 & 0.20 & n.s. \\ 
+  participant\_prereg\_average & 7.13 & 0.56 & 12.67 & *** \\ 
+  co\_player\_regularisation\_rate-40\% & -0.46 & 0.18 & -2.47 & * \\ 
+  co\_player\_regularisation\_rate+40\% & 0.55 & 0.17 & 3.31 & *** \\ 
+  verb\_baseline\_average:co\_player\_lexical\_typicalityrandom & -2.40 & 0.93 & -2.59 & ** \\ 
+  verb\_baseline\_average:co\_player\_lexical\_typicalityreversed & -2.13 & 0.96 & -2.23 & * \\ 
    \hline
 \end{tabular}
 \caption{Experimental Data, Post-test Regression Model Summary. Model formula: post-test regular response ~ verb baseline mean x lexical typicality + participant pretest mean + regularization shift + (1 + verb.baseline.mean | participant) + (1 | verb)} 
@@ -321,32 +297,32 @@ We fit two simple linear regression models; no random effects are explored in th
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Feb 20 11:18:11 2020
+% Tue Feb 25 14:32:39 2020
 \begin{table}[ht]
 \centering
-\begin{tabular}{rlrrrl}
+\begin{tabular}{lrrrl}
   \hline
- & term & estimate & std.error & statistic & sig \\ 
+term & estimate & std.error & statistic & sig \\ 
   \hline
-1 & (Intercept) & -0.53 & 0.12 & -4.22 & *** \\ 
-  2 & rescaled\_CELEX\_mgl\_feature\_distance & 1.35 & 0.09 & 14.48 & *** \\ 
-  3 & rescaled\_CELEX\_gcm\_feature\_distance\_residual & 1.42 & 0.13 & 11.10 & *** \\ 
+(Intercept) & -0.53 & 0.12 & -4.22 & *** \\ 
+  rescaled\_CELEX\_mgl\_feature\_distance & 1.35 & 0.09 & 14.48 & *** \\ 
+  rescaled\_CELEX\_gcm\_feature\_distance\_residual & 1.42 & 0.13 & 11.10 & *** \\ 
    \hline
 \end{tabular}
 \caption{Model 3: MGL scores and GCM residuals, baseline data} 
 \label{resid1}
 \end{table}
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Feb 20 11:18:12 2020
+% Tue Feb 25 14:32:40 2020
 \begin{table}[ht]
 \centering
-\begin{tabular}{rlrrrl}
+\begin{tabular}{lrrrl}
   \hline
- & term & estimate & std.error & statistic & sig \\ 
+term & estimate & std.error & statistic & sig \\ 
   \hline
-1 & (Intercept) & -1.23 & 0.16 & -7.68 & *** \\ 
-  2 & rescaled\_CELEX\_gcm\_feature\_distance & 2.39 & 0.15 & 16.06 & *** \\ 
-  3 & rescaled\_CELEX\_mgl\_feature\_distance\_residual & 1.01 & 0.09 & 11.15 & *** \\ 
+(Intercept) & -1.23 & 0.16 & -7.68 & *** \\ 
+  rescaled\_CELEX\_gcm\_feature\_distance & 2.39 & 0.15 & 16.06 & *** \\ 
+  rescaled\_CELEX\_mgl\_feature\_distance\_residual & 1.01 & 0.09 & 11.15 & *** \\ 
    \hline
 \end{tabular}
 \caption{Model 4: GCM scores and MGL residuals, baseline data} 
@@ -402,34 +378,34 @@ Section 6.4 in the main text explains that we calculate the extra information gi
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Feb 20 11:18:12 2020
+% Tue Feb 25 14:32:40 2020
 \begin{table}[ht]
 \centering
-\begin{tabular}{rlrrrl}
+\begin{tabular}{lrrrl}
   \hline
- & term & estimate & std.error & statistic & sig \\ 
+term & estimate & std.error & statistic & sig \\ 
   \hline
-1 & (Intercept) & -2.95 & 0.29 & -10.01 & *** \\ 
-  2 & rescaled\_CELEX\_gcm\_feature\_distance & 4.37 & 0.42 & 10.28 & *** \\ 
-  3 & gcm\_score\_diff & 2.61 & 0.47 & 5.56 & *** \\ 
-  4 & participant\_prereg\_average & 5.29 & 0.60 & 8.79 & *** \\ 
+(Intercept) & -2.95 & 0.29 & -10.01 & *** \\ 
+  rescaled\_CELEX\_gcm\_feature\_distance & 4.37 & 0.42 & 10.28 & *** \\ 
+  gcm\_score\_diff & 2.61 & 0.47 & 5.56 & *** \\ 
+  participant\_prereg\_average & 5.29 & 0.60 & 8.79 & *** \\ 
    \hline
 \end{tabular}
 \caption{Model 5: Celex-GCM and individual score difference, post-test data} 
 \label{indiv1}
 \end{table}
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Feb 20 11:18:12 2020
+% Tue Feb 25 14:32:40 2020
 \begin{table}[ht]
 \centering
-\begin{tabular}{rlrrrl}
+\begin{tabular}{lrrrl}
   \hline
- & term & estimate & std.error & statistic & sig \\ 
+term & estimate & std.error & statistic & sig \\ 
   \hline
-1 & (Intercept) & -1.318 & 0.152 & -8.663 & *** \\ 
-  2 & rescaled\_CELEX\_mgl\_feature\_distance & 1.944 & 0.176 & 11.045 & *** \\ 
-  3 & mgl\_score\_diff & 0.304 & 0.139 & 2.181 & * \\ 
-  4 & participant\_prereg\_average & 7.203 & 0.591 & 12.190 & *** \\ 
+(Intercept) & -1.318 & 0.152 & -8.663 & *** \\ 
+  rescaled\_CELEX\_mgl\_feature\_distance & 1.944 & 0.176 & 11.045 & *** \\ 
+  mgl\_score\_diff & 0.304 & 0.139 & 2.181 & * \\ 
+  participant\_prereg\_average & 7.203 & 0.591 & 12.190 & *** \\ 
    \hline
 \end{tabular}
 \caption{Model 6: Celex-MGL and individual score difference, post-test data} 
@@ -448,17 +424,17 @@ We used the {\sc Celex}-GCM, {\sc Celex}-MGL, individual-GCM, and individual-MGL
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Feb 20 11:18:12 2020
+% Tue Feb 25 14:32:40 2020
 \begin{table}[ht]
 \centering
-\begin{tabular}{rlrrrl}
+\begin{tabular}{lrrrl}
   \hline
- & term & estimate & std.error & statistic & sig \\ 
+term & estimate & std.error & statistic & sig \\ 
   \hline
-1 & (Intercept) & -2.94 & 0.27 & -10.90 & *** \\ 
-  2 & r\_baseline\_mgl\_features & 1.60 & 0.17 & 9.36 & *** \\ 
-  3 & r\_individual\_gcm\_features & 2.79 & 0.38 & 7.37 & *** \\ 
-  4 & participant\_prereg\_average & 5.44 & 0.58 & 9.30 & *** \\ 
+(Intercept) & -2.94 & 0.27 & -10.90 & *** \\ 
+  r\_baseline\_mgl\_features & 1.60 & 0.17 & 9.36 & *** \\ 
+  r\_individual\_gcm\_features & 2.79 & 0.38 & 7.37 & *** \\ 
+  participant\_prereg\_average & 5.44 & 0.58 & 9.30 & *** \\ 
    \hline
 \end{tabular}
 \caption{Celex-MGL and Individual-GCM predict variation in the post-test} 

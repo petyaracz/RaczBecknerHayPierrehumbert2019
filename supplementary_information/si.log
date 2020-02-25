@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.7.15)  20 FEB 2020 11:18
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.7.15)  25 FEB 2020 14:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -507,30 +507,30 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <14.4> on input line 15.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 15.
-LaTeX Font Info:    Try loading font information for TS1+aer on input line 31.
+LaTeX Font Info:    Try loading font information for TS1+aer on input line 30.
 
 (/Library/Frameworks/R.framework/Resources/share/texmf/tex/latex/ts1aer.fd
 File: ts1aer.fd 
 )
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <12> not available
-(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 31.
-LaTeX Font Info:    Try loading font information for T3+aer on input line 31.
-LaTeX Font Info:    No file T3aer.fd. on input line 31.
+(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 30.
+LaTeX Font Info:    Try loading font information for T3+aer on input line 30.
+LaTeX Font Info:    No file T3aer.fd. on input line 30.
 
 
 LaTeX Font Warning: Font shape `T3/aer/m/n' undefined
-(Font)              using `T3/cmr/m/n' instead on input line 31.
+(Font)              using `T3/cmr/m/n' instead on input line 30.
 
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 31.
+(Font)              <12> on input line 30.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 31.
+(Font)              <8> on input line 30.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 31.
+(Font)              <6> on input line 30.
 [1
 
 {/usr/local/texlive/2019basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Try loading font information for T1+aett on input line 49.
+LaTeX Font Info:    Try loading font information for T1+aett on input line 48.
 
 (/usr/local/texlive/2019basic/texmf-dist/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
@@ -540,13 +540,16 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Overfull \hbox (1.43834pt too wide) in paragraph at lines 49--50
+Overfull \hbox (1.43834pt too wide) in paragraph at lines 48--49
 []\T1/aett/m/n/12 The im-ple-men-ta-tion of the GCM is laid out in mod-els/gcm/
 gcm.html\T1/aer/m/n/12 (-20) . 
  []
 
+
+LaTeX Warning: Reference `gcmsetsize' on page 2 undefined on input line 79.
+
 [2] [3] [4]
-Overfull \hbox (1.43834pt too wide) in paragraph at lines 149--150
+Overfull \hbox (1.43834pt too wide) in paragraph at lines 147--148
 []\T1/aett/m/n/12 The im-ple-men-ta-tion of the MGL is laid out in mod-els/mgl/
 mgl.html\T1/aer/m/n/12 (-20) . 
  []
@@ -554,56 +557,49 @@ mgl.html\T1/aer/m/n/12 (-20) .
 [5] [6]
 
 LaTeX Font Warning: Font shape `T3/aer/m/it' undefined
-(Font)              using `T3/aer/m/n' instead on input line 217.
+(Font)              using `T3/aer/m/n' instead on input line 215.
 
 [7]
-Underfull \hbox (badness 10000) in paragraph at lines 275--276
 
- []
+LaTeX Warning: Reference `mgltable' on page 8 undefined on input line 221.
 
 
-Overfull \hbox (32.67987pt too wide) in paragraph at lines 284--299
- [][] 
+Underfull \hbox (badness 10000) in paragraph at lines 251--252
+
  []
 
 [8]
+Overfull \hbox (44.39166pt too wide) in paragraph at lines 260--275
+ [][] 
+ []
+
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 306.
- [9]
-Overfull \hbox (12.95216pt too wide) in paragraph at lines 327--336
+(Font)              <5> on input line 282.
+[9] [10]
+Overfull \hbox (11.3207pt too wide) in paragraph at lines 354--366
  [][] 
  []
 
-
-Overfull \hbox (10.98415pt too wide) in paragraph at lines 343--352
- [][] 
- []
-
-[10]
-Overfull \hbox (11.3207pt too wide) in paragraph at lines 378--390
- [][] 
- []
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[11] [12]
-<si-model_figure2.pdf, id=60, 903.375pt x 289.08pt>
+[11]
+<si-model_figure2.pdf, id=57, 903.375pt x 289.08pt>
 File: si-model_figure2.pdf Graphic file (type pdf)
 <use si-model_figure2.pdf>
-Package pdftex.def Info: si-model_figure2.pdf  used on input line 475.
+Package pdftex.def Info: si-model_figure2.pdf  used on input line 451.
 (pdftex.def)             Requested size: 362.37569pt x 115.96077pt.
- [13 <./si-model_figure2.pdf>] [14] (./si.bbl [15]) [16] (./si.aux)
+ [12] [13 <./si-model_figure2.pdf>] (./si.bbl [14]) [15] (./si.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
+
+LaTeX Warning: There were undefined references.
+
  ) 
 Here is how much of TeX's memory you used:
- 6921 strings out of 494060
- 101546 string characters out of 6163035
- 197403 words of memory out of 5000000
- 9794 multiletter control sequences out of 15000+600000
- 94925 words of font info for 630 fonts, out of 8000000 for 9000
+ 6926 strings out of 494060
+ 101593 string characters out of 6163035
+ 194386 words of memory out of 5000000
+ 9796 multiletter control sequences out of 15000+600000
+ 97406 words of font info for 634 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
  41i,9n,38p,1615b,260s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2019basic/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts
@@ -627,10 +623,10 @@ ic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/201
 ive/2019basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/
 texlive/2019basic/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/loc
 al/texlive/2019basic/texmf-dist/fonts/type1/public/tipa/tipa12.pfb>
-Output written on si.pdf (16 pages, 312286 bytes).
+Output written on si.pdf (15 pages, 311508 bytes).
 PDF statistics:
- 140 PDF objects out of 1000 (max. 8388607)
- 99 compressed objects within 1 object stream
+ 137 PDF objects out of 1000 (max. 8388607)
+ 97 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 66058 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 66570 words of extra memory for PDF output out of 74296 (max. 10000000)
 

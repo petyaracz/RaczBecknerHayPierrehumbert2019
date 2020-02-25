@@ -78,13 +78,13 @@ test2 = test2 %>%
   dplyr::mutate(
     verb_baseline_average = baseline_av - mean(baseline_av, na.rm = T), # center verb average
     participant_prereg_average = pre_reg_av - mean(pre_reg_av, na.rm = T), # center participant average
-    bot_lexical_typicality = dplyr::case_when( # set factor levels used in paper, order factor
+    co_player_lexical_typicality = dplyr::case_when( # set factor levels used in paper, order factor
         lex_typicality == 'typical' ~ 'typical',
         lex_typicality == 'random' ~ 'random',
         lex_typicality == 'atypical' ~ 'reversed'
       ) %>% 
       factor(levels = c('typical', 'random', 'reversed')),
-    bot_regularisation_rate = reg_rate %>% # order factor
+    co_player_regularisation_rate = reg_rate %>% # order factor
       factor(levels = c('nc', '-40%', '+40%')),
     rescaled_CELEX_mgl_feature_distance = scales::rescale(baseline_mgl_features), # scale regular weights
     rescaled_CELEX_gcm_feature_distance = scales::rescale(baseline_gcm_features),
@@ -113,8 +113,7 @@ verb_handles = readr::read_csv('~/Github/RaczBecknerHayPierrehumbert2019/data/25
 
 \noindent This is an Sweave file. The Rnw source file contains the code used to compile the pdf output file. It also contains additional code sections that help replicate the results. The files also contain pointers to further detail in the supplementary depository that accompanies the paper. 
 
-\noindent In this supplementary information, we detail (\ref{appendixverbs}) the structure of our nonce verb stimuli, the setup of (\ref{appendixgcm}) the Generalized Context Model (GCM) and (\ref{appendixmgl}) the Minimal Generalization Learner (MGL), and (\ref{appendixgcmvsmgl}) how these models compare. 
-We illustrate the models using fits on our \emph {baseline} data. 
+In this supplementary information, we detail (\ref{appendixverbs}) the structure of our nonce verb stimuli, the setup of (\ref{appendixgcm}) the Generalized Context Model (GCM) and (\ref{appendixmgl}) the Minimal Generalization Learner (MGL), and (\ref{appendixgcmvsmgl}) how these models compare. We illustrate the models using fits on our \emph {baseline} data. 
 
 We also discuss model selection in analysing our regression data (\ref{appendixregression}), how the two learning models compare on our baseline data (\ref{appendixgcmmglresidualization}), and how they compare on our ESP post-test data (\ref{mglgcmposttest}). 
 
@@ -235,7 +234,7 @@ Table \ref{gcmsetsize} shows the number of verbs in \textsc{Celex} that were use
 The model calculates the similarity of a given nonce verb to the regular and the irregular set. Comparisons to stems in other classes are not calculated, as past tense markings for these classes were not available to participants in the forced-choice tasks.
 
 <<gcmtable, echo=F, eval=T, results=tex>>=
-print(xtable::xtable(gcm_table, digits=2, label="gcmsetsize", caption="Number of forms in each verb class, GCM training data"))
+print(xtable::xtable(gcm_table, digits=2, include.rownames = FALSE, rowlabel="gcmsetsize", caption="Number of forms in each verb class, GCM training data"), include.rownames = F)
       
 @
 
@@ -402,11 +401,16 @@ mgl_table = rbind(mgl_count1,mgl_count2) %>%  # we combine the two
     names_from = type, values_from = n
   ) %>% 
   dplyr::arrange(rule.type, category)
+
+mgl_table = mgl_table %>% 
+  mutate(
+    category = toupper(category)
+  )
   
 @
 
 <<mgltable, echo=F, eval=T, results=tex>>=
-print(xtable::xtable(mgl_table, digits=2, label="mglsetsize", caption="Number of forms in each verb class, MGL training data"))
+print(xtable::xtable(mgl_table, digits=2, label="mglsetsize", caption="Number of forms in each verb class, MGL training data"), include.rownames = F)
       
 @
 
@@ -479,7 +483,7 @@ The two past forms of {\em splive} in the experiment are regular {\em splived} a
 
 The training set for the GCM is focused initially; it is grouped into four verb classes and based on formal similarity with base forms of existing irregular verbs playing a role within each class. This, in effect, assumes lexical gangs as a starting point \citep{alegre1999rule}. In contrast, the MGL starts establishing rules across all forms in the starting dictionary.
 
-As we see, however, the MGL also focuses the training set. The structural descriptions of the forms only cover a fraction of all verbs in the starting dictionary, organized by shared groups of segments. While disjunction increases the power of a theory (increasing the set of acceptable classes), disjunct classes frequently serve as input for phonological processes \citep{mielke2008emergence} . In the MGL, the disjunction emerges despite the lack of an initial specification: while one rule accounts for the specific behavior of a given form, multiple rules cover a given class. The number of regular and irregular rules posited by the MGL for each verb class can be seen in Table \ref{mglruleses}. 
+As we see, however, the MGL also focuses the training set. The structural descriptions of the forms only cover a fraction of all verbs in the starting dictionary, organized by shared groups of segments. While disjunction increases the power of a theory (increasing the set of acceptable classes), disjunct classes frequently serve as input for phonological processes \citep{mielke2008emergence} . In the MGL, the disjunction emerges despite the lack of an initial specification: while one rule accounts for the specific behavior of a given form, multiple rules cover a given class. The number of regular and irregular rules posited by the MGL for each verb class can be seen in Table \ref{mgltable}. 
 
 <<mgl_rule_counter, eval=T, echo=F>>=
 
@@ -506,12 +510,6 @@ mgl_rule_count = mgl_baseline_rules_raw %>% # take raw rules
 # glue on column sums
 mgl_rule_count = rbind(mgl_rule_count, c('sum', sum(mgl_rule_count$`irregular rule`), sum(mgl_rule_count$`regular rule`), sum(mgl_rule_count$sum)))
 
-@
-
-
-<<mgltable, echo=F, eval=T, results=tex>>=
-print(xtable::xtable(mgl_table, digits=2, label="mglruleses", caption="The number of unique rules posited by the MGL in each verb class"))
-      
 @
 
 Table \ref{mglruleseskept} shows the list of (irregular and regular) rules for one of the classes, the KEPT class. We choose this class as it provides a good illustration of the estimation process. An MGL rule describes an $A \rightarrow{} B$ {\em alternation} in an $XAY$ {\em environment}. Since the KEPT rules are all suffixing, the following environment ($Y$) is empty. For the preceding environment ($X$), we give a list of segments that are matched by the structural description if it applies to four segments or fewer. Otherwise, we give a phonological description. So, for instance, the first rule turns \textipa{[il]} to \textipa{[Elt]} following any obstruent. Note that in some cases, the MGL generates multiple rules for the same alternation (such as \textipa{ip} $\rightarrow{}$ \textipa{Ept}). As discussed in Section \ref{mgloutput}, in such instances, we choose the candidate rule with the highest adjusted confidence in order to calculate the MGL regularity score. (Fricatives and nasal consonants constitute a natural class in the segmental feature system used by \citealt{albright2003rules}.) 
@@ -554,7 +552,7 @@ The rule structure of the MGL likely follows from its parameter settings, which 
 # all fits use the bobyqa optimiser which tends to have fewer convergence issues in my experience
 
 lme.fit1 = glmer(resp_post_reg ~ 
-    1 + verb_baseline_average * bot_lexical_typicality + participant_prereg_average + bot_regularisation_rate +
+    1 + verb_baseline_average * co_player_lexical_typicality + participant_prereg_average + co_player_regularisation_rate +
     (1 + verb_baseline_average | participant_id) + 
     (1  | word), 
   data = test2, 
@@ -565,7 +563,7 @@ lme.fit1 = glmer(resp_post_reg ~
 # the first comparison that comes to mind (no interaction):
 
 lme.fit1b = glmer(resp_post_reg ~ 
-    1 + verb_baseline_average + bot_lexical_typicality + participant_prereg_average + bot_regularisation_rate +
+    1 + verb_baseline_average + co_player_lexical_typicality + participant_prereg_average + co_player_regularisation_rate +
     (1 + verb_baseline_average | participant_id) + 
     (1  | word), 
   data = test2, 
@@ -576,7 +574,7 @@ lme.fit1b = glmer(resp_post_reg ~
 # the second comparison that comes to mind (three-way interaction):
 
 lme.fit1c = glmer(resp_post_reg ~ 
-    1 + verb_baseline_average * bot_lexical_typicality * bot_regularisation_rate + participant_prereg_average + 
+    1 + verb_baseline_average * co_player_lexical_typicality * co_player_regularisation_rate + participant_prereg_average + 
     (1 + verb_baseline_average | participant_id) + 
     (1  | word), 
   data = test2, 
@@ -600,7 +598,7 @@ anova(lme.fit1,lme.fit1b,lme.fit1c)
 load('models/si_fit1.rda')
 lme.fit1.sum = niceCoefTable(lme.fit1)
 
-print(xtable::xtable(lme.fit1.sum, digits = 2, label = 'regressiontable1', caption = 'Experimental Data, Post-test Regression Model Summary. Model formula: post-test regular response ~ verb baseline mean x lexical typicality + participant pretest mean + regularization shift + (1 + verb.baseline.mean | participant) + (1 | verb)'))
+print(xtable::xtable(lme.fit1.sum, digits = 2, label = 'regressiontable1', caption = 'Experimental Data, Post-test Regression Model Summary. Model formula: post-test regular response ~ verb baseline mean x lexical typicality + participant pretest mean + regularization shift + (1 + verb.baseline.mean | participant) + (1 | verb)'), include.rownames = F)
 @
 
 Our regression model selection in this article proceeded as follows. Except where stated otherwise, we fit logistic mixed-effects regression models, using R's lme4 package \citep{bateslme4}. Non-significant predictors are removed from our models, as determined by a series of comparisons of nested models, using likelihood ratio tests in R's anova function. However, our model tables (e.g., Tables 5 and 6 in the main text) include the significance levels generated by lme4 summaries.  
@@ -615,11 +613,11 @@ In the model in Table 5 in the main text, repeated here as Table \ref{regression
 
 test2b = test2 %>% 
   dplyr::filter(
-    bot_lexical_typicality != 'typical'
+    co_player_lexical_typicality != 'typical'
   )
 
 fit_power1 = glmer(resp_post_reg ~ 
-    1 + verb_baseline_average * bot_lexical_typicality + participant_prereg_average + bot_regularisation_rate +
+    1 + verb_baseline_average * co_player_lexical_typicality + participant_prereg_average + co_player_regularisation_rate +
     (1 + verb_baseline_average | participant_id) + 
     (1  | word), 
   data = test2b, 
@@ -628,7 +626,7 @@ fit_power1 = glmer(resp_post_reg ~
   )
 
 fit_power2 = glmer(resp_post_reg ~ 
-    1 + verb_baseline_average + bot_lexical_typicality + participant_prereg_average + bot_regularisation_rate +
+    1 + verb_baseline_average + co_player_lexical_typicality + participant_prereg_average + co_player_regularisation_rate +
     (1 + verb_baseline_average | participant_id) + 
     (1  | word), 
   data = test2b, 
@@ -721,13 +719,13 @@ save(celex_m4, file = 'models/si_celex_m4.rda')
 <<celex_resid1, echo=F,eval=T, results=tex>>=
 load('models/si_celex_m3.rda')
 celex_m3_summary = niceCoefTable(celex_m3)
-print(xtable::xtable(celex_m3_summary, digits = 2, label = 'resid1', caption = 'Model 3: MGL scores and GCM residuals, baseline data'))
+print(xtable::xtable(celex_m3_summary, digits = 2, label = 'resid1', caption = 'Model 3: MGL scores and GCM residuals, baseline data'), include.rownames = F)
 @
 
 <<celex_resid2, echo=F,eval=T, results=tex>>=
 load('models/si_celex_m4.rda')
 celex_m4_summary = niceCoefTable(celex_m4)
-print(xtable::xtable(celex_m4_summary, digits = 2, label = 'resid2', caption = 'Model 4: GCM scores and MGL residuals, baseline data'))
+print(xtable::xtable(celex_m4_summary, digits = 2, label = 'resid2', caption = 'Model 4: GCM scores and MGL residuals, baseline data'), include.rownames = F)
 @
 
 Model 1 predicts the GCM scores from the MGL scores (M1: GCM regular score  $\sim$ MGL regular score). Model 2 predicts the MGL scores from the GCM scores (M2: MGL regular score  $\sim$ GCM regular score). In two additional models, we then use the residuals from each model (M1, M2) as an estimate of the variation present in one score that cannot be attributed to the other.  First, we use the residuals of Model 1 in another, mixed-effects logistic regression model along with the MGL scores to predict regular responses in the baseline task (M3: regular response  $\sim$ MGL score + GCM residual + (1 + MGL score + GCM residual$|$participant) + (1 $|$ verb)). We then residualize for the MGL. We use the residuals of Model 2 along with the GCM scores in a similar logistic regression model (M4: regular response  $\sim$ GCM score + MGL residual + (1 + GCM score + MGL residual $|$participant)). 
@@ -818,14 +816,14 @@ save(indiv_m6, file = 'models/si_indiv_m6.rda')
 <<indiv_diff1, echo=F, eval=T, results=tex>>=
 load('models/si_indiv_m5.rda')
 indiv_m5_sum = niceCoefTable(indiv_m5)
-print(xtable::xtable(indiv_m5_sum, digits = 2, label = 'indiv1', caption = 'Model 5: Celex-GCM and individual score difference, post-test data'))
+print(xtable::xtable(indiv_m5_sum, digits = 2, label = 'indiv1', caption = 'Model 5: Celex-GCM and individual score difference, post-test data'), include.rownames = F)
 
 @
 
 <<indiv_diff2, echo=F,eval=T, results=tex>>=
 load('models/si_indiv_m6.rda')
 indiv_m6_sum = niceCoefTable(indiv_m6)
-print(xtable::xtable(indiv_m6_sum, digits = 3, label = 'indiv2', caption = 'Model 6: Celex-MGL and individual score difference, post-test data'))
+print(xtable::xtable(indiv_m6_sum, digits = 3, label = 'indiv2', caption = 'Model 6: Celex-MGL and individual score difference, post-test data'), include.rownames = F)
 @
 
 We do this for both the GCM  (Model 5: regular response  $\sim$ \textsc{Celex} GCM score + extra GCM information + participant pre-test mean + (1 + \textsc{Celex} GCM + extra GCM information$|$participant) + (1$|$verb) and the MGL (Model 6: regular response  $\sim$ \textsc{Celex} MGL score + extra MGL information + participant pre-test mean + (1 + \textsc{Celex} MGL + extra MGL information$|$participant)+ (1$|$verb)).
@@ -907,7 +905,7 @@ chisq4 = anova(comp_fit1, comp_fit1e)[2,6] %>% round(2) # with celex gcm
 
 <<comparison_model3, echo=F,eval=T, results=tex>>=
 comp_fit1_sum = niceCoefTable(comp_fit1)
-print(xtable::xtable(comp_fit1_sum, digits = 2, label = 'comp3', caption = 'Celex-MGL and Individual-GCM predict variation in the post-test'))
+print(xtable::xtable(comp_fit1_sum, digits = 2, label = 'comp3', caption = 'Celex-MGL and Individual-GCM predict variation in the post-test'), include.rownames = F)
 @
 
 Goodness-of-fit tests show that model fit is significantly worse if we exclude {\sc Celex}-MGL ($\chi^2 = $ \Sexpr{chisq1}) or individual-GCM ($\chi^2 = $ \Sexpr{chisq2}) as predictors. It is not significantly better if we include individual-MGL ($\chi^2 = $ \Sexpr{chisq3}) or {\sc Celex}-GCM ($\chi^2 = $ \Sexpr{chisq4}).
@@ -924,7 +922,7 @@ Figure \ref{bigfigure} shows how baseline and post-test regularization means of 
 first_panel = test2 %>% 
   dplyr::group_by(
     word,
-    bot_lexical_typicality,
+    co_player_lexical_typicality,
     baseline_av # baseline average is there already
   ) %>%
   dplyr::summarise(
@@ -942,7 +940,7 @@ first_panel = test2 %>%
 second_panel = test2 %>% 
   dplyr::group_by(
     word,
-    bot_lexical_typicality,
+    co_player_lexical_typicality,
     rescaled_CELEX_gcm_feature_distance
   ) %>% 
   dplyr::rename(
@@ -959,7 +957,7 @@ second_panel = test2 %>%
 third_panel = test2 %>% 
   dplyr::group_by(
     word,
-    bot_lexical_typicality,
+    co_player_lexical_typicality,
     rescaled_CELEX_mgl_feature_distance
   ) %>% 
   dplyr::rename(
@@ -982,7 +980,7 @@ three_studies = bind_rows(first_panel,second_panel,third_panel) %>%
 # colour AND shape are lexical typicality.
 # split panels across raw data / gcm / mgl.
 # add loess smooths.
-p1 = ggplot(three_studies, aes(x = baseline, y = posttest, colour = bot_lexical_typicality, shape = bot_lexical_typicality, linetype = bot_lexical_typicality)) +
+p1 = ggplot(three_studies, aes(x = baseline, y = posttest, colour = co_player_lexical_typicality, shape = co_player_lexical_typicality, linetype = co_player_lexical_typicality)) +
   guides(size = F) +
   geom_point() +
   geom_smooth(se = F, method = 'loess', formula = 'y ~ x') +
