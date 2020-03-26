@@ -23,6 +23,7 @@ library(scales) # for rescaling
 library(xtable) # for latex tables
 library(lme4) # for GLMM-s
 library(broom) # for tidy summaries
+library(ggthemes) # for colourblind scale
 
 # functions
 
@@ -1031,25 +1032,31 @@ third_panel = test2 %>%
 # bind the three data frames, set factor order for type so pretty plot
 three_studies = bind_rows(first_panel,second_panel,third_panel) %>% 
   dplyr::mutate(
-    type = factor(type, levels = c('Participant responses', 'GCM', 'MGL'))
+    type = factor(type, levels = c('Participant responses', 'GCM', 'MGL')),
+    linetype = case_when(
+      co_player_lexical_typicality == 'typical' ~ 'solid',
+      co_player_lexical_typicality == 'random' ~ 'dotdash',
+      co_player_lexical_typicality == 'reversed' ~ 'twodash'
+    )
   )
 
 # plot this, x is baseline, y is posttest.
 # colour AND shape are lexical typicality.
 # split panels across raw data / gcm / mgl.
 # add loess smooths.
-p1 = ggplot(three_studies, aes(x = baseline, y = posttest, colour = co_player_lexical_typicality, shape = co_player_lexical_typicality, linetype = co_player_lexical_typicality)) +
+p1 = ggplot(three_studies, aes(x = baseline, y = posttest, colour = co_player_lexical_typicality, shape = co_player_lexical_typicality, linetype = linetype)) +
   guides(size = F) +
-  geom_point() +
+  geom_point(alpha = .25) +
   geom_smooth(se = F, method = 'loess', formula = 'y ~ x') +
   facet_wrap( ~ type, ncol = 2) +
-  scale_shape_discrete(name="Lexical\ntypicality") +
+  scale_shape_discrete(name="Lexical\ntypicality", solid = FALSE) +
   # scale_colour_discrete(name="Lexical\ntypicality") +
   xlab('verb baseline regularization') +
   ylab('verb ESP regularization') +
   guides(linetype = F) +
   theme_bw() +
-  scale_colour_brewer(palette = 'Set2', name="Lexical\ntypicality")
+  scale_colour_colorblind() +
+  scale_linetype_identity()
 
 ggsave('si_figure.pdf', plot = p1, width = 9, height = 7)
 
