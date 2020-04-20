@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.7.15)  26 MAR 2020 15:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.7.15)  20 APR 2020 20:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -507,30 +507,30 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <14.4> on input line 15.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 15.
-LaTeX Font Info:    Try loading font information for TS1+aer on input line 32.
+LaTeX Font Info:    Try loading font information for TS1+aer on input line 30.
 
 (/Library/Frameworks/R.framework/Resources/share/texmf/tex/latex/ts1aer.fd
 File: ts1aer.fd 
 )
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <12> not available
-(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 32.
-LaTeX Font Info:    Try loading font information for T3+aer on input line 32.
-LaTeX Font Info:    No file T3aer.fd. on input line 32.
+(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 30.
+LaTeX Font Info:    Try loading font information for T3+aer on input line 30.
+LaTeX Font Info:    No file T3aer.fd. on input line 30.
 
 
 LaTeX Font Warning: Font shape `T3/aer/m/n' undefined
-(Font)              using `T3/cmr/m/n' instead on input line 32.
+(Font)              using `T3/cmr/m/n' instead on input line 30.
 
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 32.
+(Font)              <12> on input line 30.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 32.
+(Font)              <8> on input line 30.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 32.
+(Font)              <6> on input line 30.
 [1
 
 {/usr/local/texlive/2019basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Try loading font information for T1+aett on input line 67.
+LaTeX Font Info:    Try loading font information for T1+aett on input line 65.
 
 (/usr/local/texlive/2019basic/texmf-dist/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
@@ -545,13 +545,13 @@ Package microtype Info: Loading generic protrusion settings for font family
 LaTeX Font Warning: Font shape `T3/aer/m/it' undefined
 (Font)              using `T3/aer/m/n' instead on input line 218.
 
-[7]
+[7] [8]
 Underfull \hbox (badness 10000) in paragraph at lines 273--274
 
  []
 
-[8]
-Overfull \hbox (44.39166pt too wide) in paragraph at lines 282--297
+
+Overfull \hbox (44.39166pt too wide) in paragraph at lines 285--300
  [][] 
  []
 
@@ -560,28 +560,25 @@ Overfull \hbox (11.3207pt too wide) in paragraph at lines 375--387
  [][] 
  []
 
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
 [11] [12]
 <si_figure.pdf, id=57, 650.43pt x 505.89pt>
 File: si_figure.pdf Graphic file (type pdf)
 <use si_figure.pdf>
 Package pdftex.def Info: si_figure.pdf  used on input line 473.
 (pdftex.def)             Requested size: 452.9679pt x 352.31427pt.
- [13] [14 <./si_figure.pdf>] (./si.bbl [15]) [16] (./si.aux)
+ [13] [14 <./si_figure.pdf>] [15] (./si.bbl [16]) [17] (./si.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 6860 strings out of 494060
- 100919 string characters out of 6163035
- 194413 words of memory out of 5000000
+ 6902 strings out of 494060
+ 101298 string characters out of 6163035
+ 195414 words of memory out of 5000000
  9784 multiletter control sequences out of 15000+600000
- 86142 words of font info for 595 fonts, out of 8000000 for 9000
+ 89954 words of font info for 631 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
- 41i,9n,38p,1708b,261s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,9n,38p,1702b,261s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2019basic/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts
 1.enc}</usr/local/texlive/2019basic/texmf-dist/fonts/type1/public/amsfonts/cm/c
 mbx12.pfb></usr/local/texlive/2019basic/texmf-dist/fonts/type1/public/amsfonts/
@@ -600,10 +597,10 @@ xmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2019basic
 asic/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/2
 019basic/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texliv
 e/2019basic/texmf-dist/fonts/type1/public/tipa/tipa12.pfb>
-Output written on si.pdf (16 pages, 278683 bytes).
+Output written on si.pdf (17 pages, 278974 bytes).
 PDF statistics:
- 132 PDF objects out of 1000 (max. 8388607)
- 94 compressed objects within 1 object stream
+ 135 PDF objects out of 1000 (max. 8388607)
+ 96 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  52746 words of extra memory for PDF output out of 61914 (max. 10000000)
 

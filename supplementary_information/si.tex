@@ -14,15 +14,13 @@
 
 \maketitle
 
-\noindent In this supplementary information, we detail (\ref{appendixverbs}) the structure of our nonce verb stimuli, the setup of (\ref{appendixgcm}) the Generalized Context Model (GCM) and (\ref{appendixmgl}) the Minimal Generalization Learner (MGL), and (\ref{appendixgcmvsmgl}) how these models compare. We illustrate the models using fits on our \emph {baseline} data. 
+\noindent In this supplementary information, we detail (\ref{appendixverbs}) the structure of our nonce verb stimuli, (\ref{appendixgcm}) the setup of the Generalized Context Model (GCM) and (\ref{appendixmgl}) the Minimal Generalization Learner (MGL), and (\ref{appendixgcmvsmgl}) how these models compare. We illustrate the models using fits on our \emph {baseline} data. 
 
 We also discuss model selection in analysing our regression data (\ref{appendixregression}), how the two learning models compare on our baseline data (\ref{appendixgcmmglresidualization}), and how they compare on our ESP post-test data (\ref{mglgcmposttest}). 
 
 Sections (\ref{appendixgcm}) and (\ref{appendixmgl}) also appear in the main text of  R\'acz et al. (2020), as Appendices A and B. However, this material is included here so that this Supplement can serve as a standalone document for readers who are interested in the technical details of our study. Additional material is reproduced from the main text, revisiting specific regression model summaries and additional methods we used to investigate contributions from the GCM and MGL.
 
-\begin{quote}
 This is an Sweave file. The Rnw source file contains the code used to compile the pdf output file. It also contains additional code sections that help replicate the results. The file also contains pointers to further detail in the supplementary repository that accompanies the paper. 
-\end{quote}
 
 \section{Regular and irregular verbs in English \label{appendixverbs}}
 
@@ -55,7 +53,7 @@ Our implementation of the GCM evaluates the competition between two categories, 
 Participants are presented with a sequence of nonce verb base forms, and have to pick either a regular or an irregular past tense form for each. The irregular past tense form is pre-determined by the class for the stem, so that, for a given verb, the participants can only choose between the regular past tense form and the irregular past tense form we assigned to the verb. (So, for instance, for {\em splive}, a verb in the DROVE class, they can choose either {\em splived} or {\em splove}, but not {\em splift} or {\em sploven}, etc.) For a given class (such as DROVE verbs), the GCM has a choice between two sets of verb types. 
 
 The irregular set consists of verb types in \textsc{Celex} that form their past tense according to the pattern captured by the class (such as an \{\textipa{[aI]},\textipa{[i]}\} $\rightarrow{}$ \textipa{[oU]} alternation). 
-The regular set consists of verb types that have base forms that are similar to these irregular forms but have a regular {\em -ed} past tense form as well as miscellaneous regular verbs -- those that do not belong to any of our schemata. We narrow the regular set to monosyllabic forms. However, all polysyllabic irregular forms that could serve as a point of comparison are compounds based on monosyllabic forms (an example is {\em overwrite}, a compound form of irregular {\em write}. A compound form might be more regular than a simplex form, but \textsc{Celex} will list both the regular and the irregular variant in both cases.) Table \ref{regexesforgcm} shows the descriptions of the verb classes using regular expressions. 
+The regular set consists of verb types that have base forms that are similar to these irregular forms but have a regular {\em -ed} past tense form as well as miscellaneous regular verbs -- those that do not belong to any of our schemata. We narrow the regular set to monosyllabic forms. However, all polysyllabic irregular forms that could serve as a point of comparison are compounds based on monosyllabic forms (an example is {\em overwrite}, a compound form of irregular {\em write}. A compound form might be more regular than a simplex form, but \textsc{Celex} will list both the regular and the irregular variant in both cases. Table \ref{regexesforgcm} shows the descriptions of the verb classes using regular expressions. 
 
 \begin{table}[ht]
 \centering
@@ -83,7 +81,7 @@ Table \ref{gcmsetsize} shows the number of verbs in \textsc{Celex} that were use
 The model calculates the similarity of a given nonce verb to the regular and the irregular set. Comparisons to stems in other classes are not calculated, as past tense markings for these classes were not available to participants in the forced-choice tasks.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Mar 26 15:01:21 2020
+% Mon Apr 20 20:04:26 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{llll}
@@ -104,7 +102,7 @@ BURNT & 6 & 42 & 1218 \\
 
 To calculate the similarity between two words, we first compute their dissimilarity. This is achieved using the string-edit (Levenshtein) distance, which is the smallest number of changes needed to transform one word into the other. Costs range from 0 (the corresponding segments are identical) to 1 (inserting or deleting an entire segment). Following \cite{albright2003rules} and \cite{dawdy2014learnability}, costs between 0 and 1 are assigned to corresponding segments that are not identical, based on how much the segments differ. 
 
-All parts of the word are weighted equally, because although there is evidence that past tense formation in English is predominantly driven by overlaps in word endings, onsets also play a role. (cf. the predominance of \emph {s}(+stop) onsets in irregular verbs forming the past tense with a vowel change, e.g.\ {\em stink}, {\em sink}, etc. -- see \citealt{bybee1983morphological}). 
+All parts of the word are weighted equally, because despite evidence that past tense formation in English is predominantly driven by overlaps in word endings, onsets also play a role. (cf. the predominance of \emph {s}(-cont) onsets in irregular verbs forming the past tense with a vowel change, e.g.\ {\em stink}, {\em sink}, etc. -- see \citealt{bybee1983morphological}). 
 
 The following transformation, originating with \cite{nosofsky1990relations}, is used to convert dissimilarity into similarity:
 
@@ -129,7 +127,7 @@ $S_{iC_J} = \frac{{\sum_{j \in C_J } \eta_{ij} } }{{\sum_{k\in C_K } \eta_{ik} }
 
 \subsection{Output format \label{gcm_scale}}
 
-The overall score used in our analyses is the {\em regularity score}, which is the complement to the {\em irregularity score} and reaches a maximum of 1.0 when the output is most likely to be regular. Unlike \cite{dawdy2014learnability}, there is no decision rule on top of the scoring, such that any form that is more likely than not to be regular is predicted to surface as regular all the time. This specific decision rule is statistically optimal, and was imposed in \cite{dawdy2014learnability} in order to determine the ceiling performance for a computational model. The present paper, in contrast, analyzes data aggregated across human participants with differing decision thresholds. As discussed in \cite{schumacher2014reconciling} and \cite{schumacher2017prior}, the input-output relationship in such aggregated data are typically reported to be nearly probability-matching. 
+The overall score used in our analyses is the {\em regularity score}, which is the complement to the {\em irregularity score} and reaches a maximum of 1.0 when the output is certain to be regular. Unlike \cite{dawdy2014learnability}, there is no decision rule on top of the scoring, such that any form that is more likely than not to be regular is predicted to surface as regular all the time. This specific decision rule is statistically optimal, and was imposed in \cite{dawdy2014learnability} in order to determine the ceiling performance for a computational model. The present paper, in contrast, analyzes data aggregated across human participants with differing decision thresholds. As discussed in \cite{schumacher2014reconciling} and \cite{schumacher2017prior}, the input-output relationship in such aggregated data are typically reported to be nearly probability-matching. 
 
 We rescale the regularity score to match the range of participant responses: [0,1]. The modified score is interpretable as the probability that the outcome will be regular in aggregated data. It is also appropriate to attribute this type of gradience to people's initial expectations about other people's behavior, on the assumption that people realistically encode the variability they have encountered.
 
@@ -156,13 +154,13 @@ For our model fitted on our baseline nonce word stimuli, the MGL is trained on r
 
 The MGL builds rules based on all verb forms in \textsc{Celex} with a token frequency of 10 or above. However the structural descriptions of the resulting rules do not cover all these forms. Table \ref{mglsetsize} shows the number of unique forms covered by the structural descriptions of the `regular' and `irregular' rules that are relevant to each class. 
 
-The MGL generates multiple possible past tense forms for each nonce verb. We only consider those rules {\em relevant} that generate the past tense forms that appear in the experiment (e.g.\ {\em splive} : {\em splived} / {\em splove}). There is at most one relevant regular rule and one relevant irregular rule for one verb, but multiple rules can generate the (ir)regular forms for each verb class. We return to this in the next section.
+The MGL generates multiple possible past tense forms for each nonce verb. We only consider to be {\em relevant} those rules that generate the past tense forms that appear in the experiment (e.g.\ {\em splive} : {\em splived} / {\em splove}). There is at most one relevant regular rule and one relevant irregular rule for one verb, but multiple rules can generate the (ir)regular forms for each verb class. We return to this in the next section.
 
 
-Note that the sets of exceptions and related forms of each rule can overlap, both respectively and with each other. As a consequence, the MGL rules apply to fewer forms than apparent from the table: 401 in total.
+Note that the sets of exceptions and related forms of each rule can overlap.  As a consequence, the MGL rules apply to fewer forms than apparent from the table: 401 in total.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Mar 26 15:01:21 2020
+% Mon Apr 20 20:04:26 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{llrr}
@@ -184,7 +182,7 @@ BURNT & irregular &  24 &  41 \\
 \end{table}
 \subsection{Estimation}
 
-The MGL begins by considering the relationship between each verb and its past tense as a `rule'. For each pair of verbs in the training data, it then attempts to create a more general rule. It does so by aligning the wordforms and analyzing shared phonetic features. For example,  merging the word-specific rules for {\em ring/rang} and for {\em stink/stank} yields a more general rule that expresses the information that they share: \textipa{[I]} $\rightarrow{}$\textipa{[\ae]} / [+coronal, - cont] \underline{\hspace{0.5cm}} \textipa{[N]}. Each rule inferred in this way is then further generalized on the basis of more comparisons; for instance, taking note of {\em swim/swam} expands the \textipa{[I]} $\rightarrow{}$\textipa{[\ae]} rule to specify that it occurs before all [+nasal] consonants. 
+The MGL begins by considering the relationship between each verb and its past tense as a `rule'. For each pair of verbs in the training data, it then attempts to create a more general rule. It does so by aligning the wordforms and analyzing shared phonetic features. For example,  merging the word-specific rules for {\em ring/rang} and for {\em stink/stank} yields a more general rule that expresses the information that they share: \textipa{[I]} $\rightarrow{}$\textipa{[\ae]} / [+coronal] \underline{\hspace{0.5cm}} \textipa{[N]}. Each rule inferred in this way is then further generalized on the basis of more comparisons; for instance, taking note of {\em swim/swam} expands the \textipa{[I]} $\rightarrow{}$\textipa{[\ae]} rule to specify that it occurs before all [+nasal] consonants. 
 
 The structural description for each rule has a {\em scope}, which is the number of verbs conforming to the description, to which the rule might apply. The number of {\em hits} is the number of such verbs where the rule generates the correct output. In our example, {\em think} and {\em blink} fall in the scope of the rule, but they are not hits, because their past tenses display other patterns ({\em thought} and {\em blinked})
 The {\it raw confidence} of the rule is the ratio of hits to scope: 
@@ -203,7 +201,9 @@ Note that the MGL algorithm automatically groups together verbs on the basis of 
 
 Recall that in both our baseline and ESP experiment the trial task is prompted by a stem and offers a choice between a regular form and a specific irregular form, presented orthographically. In order to model this choice, we take the MGL rule for the stem that outputs the regular form (the {\em relevant regular rule}) and the rule that outputs the specific irregular form (the {\em relevant irregular rule}). If several regular / irregular rules generate the same form, we take the one with the highest {\em adjusted confidence}, following \cite{albright2003rules}. We use these rules to calculate the form's {\em relative (adjusted) confidence}.
 
-Out of 156 test verbs in the ESP post-test, the \textsc{Celex}-trained MGL generates a {\em relevant regular rule} for every verb. It does not generate a {\em relevant irregular rule} for 28 verbs. These are all nonce verbs in the \textsc{KEPT} category (see\ Section 4.1 in the main text). In this category, irregular forms are derived from the stem through a vowel change (e.g. {\em greel} $\rightarrow{}$ {\em grelt}). The verbs missing the relevant irregular rule all have bases ending in $<$m$>$, $<$n$>$, or $<$l$>$. This is because, in our implementation, there is an insufficient number of verb types in the training set to support these irregular rules. Decreasing the cutoff criterion for the model leads to the generation of more of the currently `missing' irregular rules, but the overall model fit becomes worse (cf.\ below). Therefore, we keep the cutoff criterion and assume that the adjusted confidence of the irregular rule for these 28 verbs is zero. We then take the relative confidence of the regular rule as compared to the regular {\em and} the irregular rule for each verb and take this as the adjusted regular confidence of the given verb. (If the irregular rule is missing, the value of this adjusted regular confidence is 1.) This is given by the following equation:
+Out of 156 test verbs in the ESP post-test, the \textsc{Celex}-trained MGL generates a {\em relevant regular rule} for every verb. It does not generate a {\em relevant irregular rule} for 28 verbs. These are all nonce verbs in the \textsc{KEPT} category (see\ Section 4.1 in the main text). In this category, irregular forms are derived from the stem through a vowel change (e.g. {\em greel} $\rightarrow{}$ {\em grelt}). The verbs missing the relevant irregular rule all have bases ending in $<$m$>$, $<$n$>$, or $<$l$>$. This is because, in our implementation, there is an insufficient number of verb types in the training set to support these irregular rules. Decreasing the cutoff criterion for the model leads to the generation of more of the currently `missing' irregular rules, but the overall model fit becomes worse (cf.\ below). Therefore, we keep the cutoff criterion and assume that the adjusted confidence of the irregular rule for these 28 verbs is zero. 
+
+For all forms, we then take the relative confidence of the regular rule as compared to the regular {\em and} the irregular rule for each verb and take this as the adjusted regular confidence of the given verb. (If the irregular rule is missing, the value of this adjusted regular confidence is 1.) This is given by the following equation:
 
 \vspace{1cm}
 $\mbox{\it Relative (adjusted) confidence} = \frac{\mbox{\it  adjusted confidence of relevant regular rule}} {\mbox{\it  adj.\ conf.\ reg.\ rule } + \mbox{ \it adj.\ conf.\ relevant irreg.\ rule}}$
@@ -215,18 +215,18 @@ This relative adjusted confidence represents the MGL regularity score for an ite
 
 
 
-The two past forms of {\em splive} in the experiment are regular {\em splived} and irregular {\em splove}. The {\em relevant regular rule} that generates the regular past tense is `$\emptyset{} \rightarrow{}$ \textipa{[d]} / \{\textipa{D}, \textipa{S}, \textipa{T}, \textipa{Z}, f, s, v, z\} \underline{\hspace{0.5cm}}'. The {\em structural description} indicates that this is a suffixation rule that can apply to forms that {\em end in an anterior fricative} (a natural class in our feature system).  The {\em raw confidence} of this rule is 0.98. This is because this rule applies to most forms in its scope (698/712). The {\em adjusted confidence} is very similar: 0.968. This is because this rule applies to a large number of forms overall. The {\em relevant irregular rule} that generates the irregular form is `\textipa{[aI]} $\rightarrow{}$ \textipa{[oU]} / \{\textipa{D}, \textipa{Z}, \textipa{dZ}, d, l, n, r, z\} \underline{\hspace{0.5cm}}v'. It applies to \textipa{[aI]} in the nucleus {\em preceded by voiced anterior consonant and followed by \textipa{[v]}}. In \textsc{Celex},the rule applies to three forms ({\em drive, strive, dive}) and fails to apply to five ({\em arrive, thrive, contrive, rive, connive}). Its {\em raw confidence} is 0.375. Its {\em adjusted confidence} is slightly lower (0.366). This is because it applies to a smaller number of forms overall. The {\em relative (adjusted) confidence} of the predicted regularity of {\em splive} is $0.98/(0.98+0.37)=0.73$. (As with the GCM predictions -- see Section \ref{gcm_scale} of this SI -- we rescale the MGL predictions as well for statistical analysis. The respective rescaled value is 0.363.)
+The two past forms of {\em splive} in the experiment are regular {\em splived} and irregular {\em splove}. The {\em relevant regular rule} that generates the regular past tense is `$\emptyset{} \rightarrow{}$ \textipa{[d]} / \{\textipa{D}, \textipa{S}, \textipa{T}, \textipa{Z}, f, s, v, z\} \underline{\hspace{0.5cm}}'. The {\em structural description} indicates that this is a suffixation rule that can apply to forms that {\em end in an anterior fricative} (a natural class in our feature system).  The {\em raw confidence} of this rule is 0.98. This is because this rule applies to most forms in its scope (698/712). The {\em adjusted confidence} is very similar: 0.968. This is because this rule applies to a large number of forms overall. The {\em relevant irregular rule} that generates the irregular form is `\textipa{[aI]} $\rightarrow{}$ \textipa{[oU]} / \{\textipa{D}, \textipa{Z}, \textipa{dZ}, d, l, n, r, z\} \underline{\hspace{0.5cm}}v'. It applies to \textipa{[aI]} in the nucleus {\em preceded by a voiced anterior consonant and followed by \textipa{[v]}}. In \textsc{Celex},the rule applies to three forms ({\em drive, strive, dive}) and fails to apply to five ({\em arrive, thrive, contrive, rive, connive}). Its {\em raw confidence} is 0.375. Its {\em adjusted confidence} is slightly lower (0.366). This is because it applies to a smaller number of forms overall. The {\em relative (adjusted) confidence} of the predicted regularity of {\em splive} is $0.98/(0.98+0.37)=0.73$. (As with the GCM predictions -- see Section \ref{gcm_scale} of this SI -- we rescale the MGL predictions for statistical analysis. The respective rescaled value is 0.363.)
 
 \section{Further notes on the GCM and the MGL \label{appendixgcmvsmgl}}
 
-The training set for the GCM is focused initially; it is grouped into four verb classes and based on formal similarity with base forms of existing irregular verbs playing a role within each class. This, in effect, assumes lexical gangs as a starting point \citep{alegre1999rule}. In contrast, the MGL starts establishing rules across all forms in the starting dictionary.
+The training set for the GCM is focused from the start; it is grouped into four verb classes and based on formal similarity with base forms of existing irregular verbs playing a role within each class. This, in effect, assumes lexical gangs as a starting point \citep{alegre1999rule}. In contrast, the MGL starts establishing rules across all forms in the starting dictionary.
 
 
 As we see, however, the MGL also focuses the training set. The structural descriptions of the forms only cover a fraction of all verbs in the starting dictionary, organized by shared groups of segments. While disjunction increases the power of a theory (increasing the set of acceptable classes), disjunct classes frequently serve as input for phonological processes \citep{mielke2008emergence}. In the MGL, the disjunction emerges despite the lack of an initial specification: while one rule accounts for the specific behavior of a given form, multiple rules cover a given class. The number of regular and irregular rules posited by the MGL for each verb class can be seen in Table \ref{mglruletable}. Note that the regular rules themselves overlap: A regular rule that accounts for \emph{weep-weeped} can also account for \emph{burn-burned}. In total, there are 32 irregular rules and 12 regular rules posited by the MGL on the {\sc Celex} verbs.
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Mar 26 15:01:21 2020
+% Mon Apr 20 20:04:26 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrr}
@@ -275,8 +275,11 @@ The rule structure of the MGL likely follows from its parameter settings, which 
 \section{Regression modeling procedures}\label{appendixregression}
 
 
+Our regression model selection in this article proceeded as follows. Except where stated otherwise, we fit logistic mixed-effects regression models, using R's lme4 package \citep{bateslme4}. Non-significant predictors are removed from our models, as determined by a series of comparisons of nested models, using likelihood ratio tests in R's anova function. However, our model tables (e.g., Tables 5 and 6 in the main text) include the Wald significance levels generated by lme4 summaries (* p$<$0.05; ** p$<$0.01; *** p$<$0.001).  
+We investigate maximal random effects structures, allowing for random intercepts for participants and stimulus items (verbs), as well as random slopes for all within-unit factors. We compare nested random effects structures as above, and retain any random slopes and intercepts which are supported by likelihood ratio tests \citep{baayen2008mixed}.
+
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Mar 26 15:01:21 2020
+% Mon Apr 20 20:04:26 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
@@ -297,13 +300,10 @@ term & estimate & std.error & statistic & sig \\
 \caption{Experimental Data, Post-test Regression Model Summary. Model formula: post-test regular response ~ verb baseline mean x lexical typicality + participant pretest mean + regularization shift + (1 + verb.baseline.mean | participant) + (1 | verb)} 
 \label{regressiontable1}
 \end{table}
-Our regression model selection in this article proceeded as follows. Except where stated otherwise, we fit logistic mixed-effects regression models, using R's lme4 package \citep{bateslme4}. Non-significant predictors are removed from our models, as determined by a series of comparisons of nested models, using likelihood ratio tests in R's anova function. However, our model tables (e.g., Tables 5 and 6 in the main text) include the Wald significance levels generated by lme4 summaries (* p$<$0.05; ** p$<$0.01; *** p$<$0.001).  
-We investigate maximal random effects structures, allowing for random intercepts for participants and stimulus items (verbs), as well as random slopes for all within-unit factors. We compare nested random effects structures as above, and retain any random slopes and intercepts which are supported by likelihood ratio tests \citep{baayen2008mixed}.
-
-In the model in Table 5 in the main text, repeated here as Table \ref{regressiontable1}, we elect to mean center continuous variables to counteract collinearity that becomes evident when including the interaction between and {\em lexical typicality}.  Although some debate exists regarding the practice of transforming variables \citep{belsley1991conditioning,echambadi2007mean}, centering variables is common practice to remove nonessential ill conditioning, that is, relationships that inevitably exist between main and product terms \citep{aiken1991multiple,jaccard2003interaction, jaeger2008categorical}. We note that if {\em verb baseline mean} is {\em not} centered, collinearity is high (VIF=15.79) in this model. A non-centered model also yields a significant main effect for {\em lexical typicality}, with increased post-test regularization in the random and reversed conditions. However, we elect to take a more conservative approach by not including a potentially spurious main effect. Note that other than this main effect difference, models with and without centering yield results that are qualitatively indistinguishable; all other main effects and interactions are present in either case. The collinearity for the centered model (Table 5 in the main text) is acceptable, with a maximum VIF score of 2.9.
+In the model in Table 5 in the main text, repeated here as Table \ref{regressiontable1}, we elect to mean center continuous variables to counteract collinearity that becomes evident when including the interaction between {\em verb baseline average} and {\em lexical typicality}.  Although some debate exists regarding the practice of transforming variables \citep{belsley1991conditioning,echambadi2007mean}, centering variables is common practice to remove nonessential ill conditioning, that is, relationships that inevitably exist between main and product terms \citep{aiken1991multiple,jaccard2003interaction, jaeger2008categorical}. We note that if {\em verb baseline mean} is {\em not} centered, collinearity is high (VIF=15.79) in this model. A non-centered model also yields a significant main effect for {\em lexical typicality}, with increased post-test regularization in the random and reversed conditions. However, we elect to take a more conservative approach by not including a potentially spurious main effect. Note that other than this main effect difference, models with and without centering yield results that are qualitatively indistinguishable; all other main effects and interactions are present in either case. The collinearity for the centered model (Table 5 in the main text) is acceptable, with a maximum VIF score of 2.9.
 
 
-Since it is unclear whether the absence of a difference between random and reversed conditions is due to a lack of data, we refit the model with the baseline average : typicality interaction on the random and reversed conditions only. Then we calculated the Bayes Factor of the null model (with no interaction) over the full model (with interaction) using Bayesian Information Criteria calculated by lme4. The result strongly supports the null model over the full model, indicating that the preference for the null model is {\em not} due to the lack of evidence to reject it.
+Since it is unclear whether the absence of a difference between random and reversed conditions is due to a lack of data, we refit the model with the {\em verb baseline average : lexical typicality} interaction on the random and reversed conditions only. Then we calculated the Bayes Factor of the null model (with no interaction) over the full model (with interaction) using Bayesian Information Criteria calculated by lme4. The result strongly supports the null model over the full model, indicating that the preference for the null model is {\em not} due to the lack of evidence to reject it.
 
 \section{Fits of the two categorization models on the baseline data}\label{appendixgcmmglresidualization}
 
@@ -318,7 +318,7 @@ We fit two simple linear regression models; no random effects are explored in th
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Mar 26 15:01:22 2020
+% Mon Apr 20 20:04:27 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
@@ -334,7 +334,7 @@ term & estimate & std.error & statistic & sig \\
 \label{resid1}
 \end{table}
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Mar 26 15:01:22 2020
+% Mon Apr 20 20:04:27 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
@@ -399,7 +399,7 @@ Section 6.4 in the main text explains that we calculate the extra information gi
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Mar 26 15:01:22 2020
+% Mon Apr 20 20:04:27 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
@@ -416,7 +416,7 @@ term & estimate & std.error & statistic & sig \\
 \label{indiv1}
 \end{table}
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Mar 26 15:01:22 2020
+% Mon Apr 20 20:04:27 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
@@ -441,11 +441,11 @@ These techniques are indicative of the relative strengths of the individual-MGL 
 \subsection{Using combined model predictions to explain variation in participant post-test responses}
 
 
-We used the {\sc Celex}-GCM, {\sc Celex}-MGL, individual-GCM, and individual-MGL together to predict participant post-test responses. The best model, reported in the paper, contains the {\sc Celex}-MGL and the individal-GCM. The summary can be seen in Table \ref{comp3}. 
+We used the {\sc Celex}-GCM, {\sc Celex}-MGL, individual-GCM, and individual-MGL together to predict participant post-test responses. The best model, reported in the paper, contains the {\sc Celex}-MGL and the individal-GCM. The summary can be seen in Table \ref{comp3}. This is the model we report in detail in the main text. 
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Thu Mar 26 15:01:23 2020
+% Mon Apr 20 20:04:28 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
@@ -477,7 +477,7 @@ Figure \ref{bigfigure} shows how baseline and post-test regularization means of 
 
 The Figure shows the average baseline regularity (x axis) and the post-test regularity (y axis) of the verbs in the ESP experiment. The post-test values vary across the dimension of co-player lexical typicality. Loess smooths show the general trajectory of the effects of typicality. In the first panel, regularity translates to aggregate participant responses in the baseline and in the ESP post-test. In the second and third panels, regularity translates to regularity scores provided by the {\sc Celex}- and individual-GCM and -MGL. Values are rescaled for better comparison.
 
-While the loess smooths are likely slightly overfit, they show the general trend in the raw data, which is echoed in the regression analysis in the main text: the `typical' trend of baseline-post-test difference is stronger than either the `random' or `reversed' trends. These are not very much different from each other. The differences are gradual. The GCM, while generally overestimating regularity, captures this gradual shift, since verb behavior is shifted individually in the post-test. The MGL also overestimates regularization. Since rules affect groups of verbs, rather than individual verbs, the post-test shifts are abrupt. The `typical' trend continues climbing after a longer plateau. However, the `random' and `reversed' trends trail off, where the `reversed' trend turns negative towards the higher tail of the distribution.
+The loess smooths show the general trend in the raw data, which is echoed in the regression analysis in the main text: the `typical' trend of baseline-post-test difference is stronger than either the `random' or `reversed' trends. These are not very much different from each other. The differences in participant behaviour across conditions are gradual. The GCM, while generally overestimating regularity, captures this gradual shift, since verb behavior is shifted individually in the post-test. The MGL also overestimates regularization. Since rules affect groups of verbs, rather than individual verbs, the MGL predicts more clustered variation across conditions. The `typical' trend continues climbing after a longer plateau. However, the `random' and `reversed' trends trail off, where the `reversed' trend turns negative towards the higher tail of the distribution.
 
 
 \newpage
