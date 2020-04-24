@@ -41,7 +41,8 @@ niceCoefTable = function(fit){
         p.value < 0.01 & p.value >= 0.001 ~ '**',
         p.value < 0.001 ~ '***'
       )
-    ) %>% 
+    ) %>%
+    rename(`Z score` = statistic) %>% 
     select(
       - p.value,
       - group
@@ -242,7 +243,7 @@ print(xtable::xtable(gcm_table, digits=2, include.rownames = FALSE, label="gcmse
 
 \subsection{Estimation}
 
-To calculate the similarity between two words, we first compute their dissimilarity. This is achieved using the string-edit (Levenshtein) distance, which is the smallest number of changes needed to transform one word into the other. Costs range from 0 (the corresponding segments are identical) to 1 (inserting or deleting an entire segment). Following \cite{albright2003rules} and \cite{dawdy2014learnability}, costs between 0 and 1 are assigned to corresponding segments that are not identical, based on how much the segments differ. 
+To calculate the similarity between two words, we first compute their dissimilarity. This is achieved using the string-edit (Levenshtein) distance, which is the smallest number of changes needed to transform one word into the other. For one unit of edit distance, these costs range from 0 (the corresponding segments are identical) to 1 (inserting or deleting an entire segment). Following \cite{albright2003rules} and \cite{dawdy2014learnability}, costs between 0 and 1 are assigned to corresponding segments that are not identical, based on how much the segments differ. 
 
 All parts of the word are weighted equally, because despite evidence that past tense formation in English is predominantly driven by overlaps in word endings, onsets also play a role. (cf. the predominance of \emph {s}(-cont) onsets in irregular verbs forming the past tense with a vowel change, e.g.\ {\em stink}, {\em sink}, etc. -- see \citealt{bybee1983morphological}). 
 

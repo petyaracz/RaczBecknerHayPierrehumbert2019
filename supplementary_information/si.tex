@@ -81,7 +81,7 @@ Table \ref{gcmsetsize} shows the number of verbs in \textsc{Celex} that were use
 The model calculates the similarity of a given nonce verb to the regular and the irregular set. Comparisons to stems in other classes are not calculated, as past tense markings for these classes were not available to participants in the forced-choice tasks.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Mon Apr 20 20:04:26 2020
+% Fri Apr 24 11:40:29 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{llll}
@@ -160,7 +160,7 @@ The MGL generates multiple possible past tense forms for each nonce verb. We onl
 Note that the sets of exceptions and related forms of each rule can overlap.  As a consequence, the MGL rules apply to fewer forms than apparent from the table: 401 in total.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Mon Apr 20 20:04:26 2020
+% Fri Apr 24 11:40:29 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{llrr}
@@ -226,7 +226,7 @@ As we see, however, the MGL also focuses the training set. The structural descri
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Mon Apr 20 20:04:26 2020
+% Fri Apr 24 11:40:29 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrr}
@@ -279,12 +279,12 @@ Our regression model selection in this article proceeded as follows. Except wher
 We investigate maximal random effects structures, allowing for random intercepts for participants and stimulus items (verbs), as well as random slopes for all within-unit factors. We compare nested random effects structures as above, and retain any random slopes and intercepts which are supported by likelihood ratio tests \citep{baayen2008mixed}.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Mon Apr 20 20:04:26 2020
+% Fri Apr 24 11:40:30 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
   \hline
-term & estimate & std.error & statistic & sig \\ 
+term & estimate & std.error & Z score & sig \\ 
   \hline
 (Intercept) & -0.11 & 0.16 & -0.67 & n.s. \\ 
   verb\_baseline\_average & 8.26 & 0.69 & 12.04 & *** \\ 
@@ -318,12 +318,12 @@ We fit two simple linear regression models; no random effects are explored in th
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Mon Apr 20 20:04:27 2020
+% Fri Apr 24 11:40:30 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
   \hline
-term & estimate & std.error & statistic & sig \\ 
+term & estimate & std.error & Z score & sig \\ 
   \hline
 (Intercept) & -0.53 & 0.12 & -4.22 & *** \\ 
   rescaled\_CELEX\_mgl\_feature\_distance & 1.35 & 0.09 & 14.48 & *** \\ 
@@ -334,12 +334,12 @@ term & estimate & std.error & statistic & sig \\
 \label{resid1}
 \end{table}
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Mon Apr 20 20:04:27 2020
+% Fri Apr 24 11:40:30 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
   \hline
-term & estimate & std.error & statistic & sig \\ 
+term & estimate & std.error & Z score & sig \\ 
   \hline
 (Intercept) & -1.23 & 0.16 & -7.68 & *** \\ 
   rescaled\_CELEX\_gcm\_feature\_distance & 2.39 & 0.15 & 16.06 & *** \\ 
@@ -399,12 +399,12 @@ Section 6.4 in the main text explains that we calculate the extra information gi
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Mon Apr 20 20:04:27 2020
+% Fri Apr 24 11:40:30 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
   \hline
-term & estimate & std.error & statistic & sig \\ 
+term & estimate & std.error & Z score & sig \\ 
   \hline
 (Intercept) & -2.95 & 0.29 & -10.01 & *** \\ 
   rescaled\_CELEX\_gcm\_feature\_distance & 4.37 & 0.42 & 10.28 & *** \\ 
@@ -416,12 +416,12 @@ term & estimate & std.error & statistic & sig \\
 \label{indiv1}
 \end{table}
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Mon Apr 20 20:04:27 2020
+% Fri Apr 24 11:40:30 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
   \hline
-term & estimate & std.error & statistic & sig \\ 
+term & estimate & std.error & Z score & sig \\ 
   \hline
 (Intercept) & -1.32 & 0.15 & -8.66 & *** \\ 
   rescaled\_CELEX\_mgl\_feature\_distance & 1.94 & 0.18 & 11.04 & *** \\ 
@@ -445,12 +445,12 @@ We used the {\sc Celex}-GCM, {\sc Celex}-MGL, individual-GCM, and individual-MGL
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Mon Apr 20 20:04:28 2020
+% Fri Apr 24 11:40:31 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
   \hline
-term & estimate & std.error & statistic & sig \\ 
+term & estimate & std.error & Z score & sig \\ 
   \hline
 (Intercept) & -2.94 & 0.27 & -10.90 & *** \\ 
   rescaled\_CELEX\_mgl\_feature\_distance & 1.60 & 0.17 & 9.36 & *** \\ 
