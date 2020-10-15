@@ -20,7 +20,8 @@ We also discuss model selection in analysing our regression data (\ref{appendixr
 
 Sections (\ref{appendixgcm}) and (\ref{appendixmgl}) also appear in the main text of  R\'acz et al. (2020), as Appendices A and B. However, this material is included here so that this Supplement can serve as a standalone document for readers who are interested in the technical details of our study. Additional material is reproduced from the main text, revisiting specific regression model summaries and additional methods we used to investigate contributions from the GCM and MGL.
 
-This is an Sweave file. The Rnw source file contains the code used to compile the pdf output file. It also contains additional code sections that help replicate the results. The file also contains pointers to further detail in the supplementary repository that accompanies the paper. 
+The source file for this SI, along with the data and the code for the paper, are hosted at https://github.com/petyaracz/RaczHayPierrehumbert2019.
+% This is an Sweave file. The Rnw source file contains the code used to compile the pdf output file. It also contains additional code sections that help replicate the results. The file also contains pointers to further detail in the supplementary repository that accompanies the paper. 
 
 \section{Regular and irregular verbs in English \label{appendixverbs}}
 
@@ -80,8 +81,8 @@ Table \ref{gcmsetsize} shows the number of verbs in \textsc{Celex} that were use
 
 The model calculates the similarity of a given nonce verb to the regular and the irregular set. Comparisons to stems in other classes are not calculated, as past tense markings for these classes were not available to participants in the forced-choice tasks.
 
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Fri Apr 24 11:40:29 2020
+% latex table generated in R 4.0.2 by xtable 1.8-4 package
+% Thu Oct 15 15:19:32 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{llll}
@@ -100,7 +101,7 @@ BURNT & 6 & 42 & 1218 \\
 \end{table}
 \subsection{Estimation}
 
-To calculate the similarity between two words, we first compute their dissimilarity. This is achieved using the string-edit (Levenshtein) distance, which is the smallest number of changes needed to transform one word into the other. Costs range from 0 (the corresponding segments are identical) to 1 (inserting or deleting an entire segment). Following \cite{albright2003rules} and \cite{dawdy2014learnability}, costs between 0 and 1 are assigned to corresponding segments that are not identical, based on how much the segments differ. 
+To calculate the similarity between two words, we first compute their dissimilarity. This is achieved using the string-edit (Levenshtein) distance, which is the smallest number of changes needed to transform one word into the other. For one unit of edit distance, these costs range from 0 (the corresponding segments are identical) to 1 (inserting or deleting an entire segment). Following \cite{albright2003rules} and \cite{dawdy2014learnability}, costs between 0 and 1 are assigned to corresponding segments that are not identical, based on how much the segments differ. 
 
 All parts of the word are weighted equally, because despite evidence that past tense formation in English is predominantly driven by overlaps in word endings, onsets also play a role. (cf. the predominance of \emph {s}(-cont) onsets in irregular verbs forming the past tense with a vowel change, e.g.\ {\em stink}, {\em sink}, etc. -- see \citealt{bybee1983morphological}). 
 
@@ -159,8 +160,8 @@ The MGL generates multiple possible past tense forms for each nonce verb. We onl
 
 Note that the sets of exceptions and related forms of each rule can overlap.  As a consequence, the MGL rules apply to fewer forms than apparent from the table: 401 in total.
 
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Fri Apr 24 11:40:29 2020
+% latex table generated in R 4.0.2 by xtable 1.8-4 package
+% Thu Oct 15 15:19:33 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{llrr}
@@ -225,8 +226,8 @@ The training set for the GCM is focused from the start; it is grouped into four 
 As we see, however, the MGL also focuses the training set. The structural descriptions of the forms only cover a fraction of all verbs in the starting dictionary, organized by shared groups of segments. While disjunction increases the power of a theory (increasing the set of acceptable classes), disjunct classes frequently serve as input for phonological processes \citep{mielke2008emergence}. In the MGL, the disjunction emerges despite the lack of an initial specification: while one rule accounts for the specific behavior of a given form, multiple rules cover a given class. The number of regular and irregular rules posited by the MGL for each verb class can be seen in Table \ref{mglruletable}. Note that the regular rules themselves overlap: A regular rule that accounts for \emph{weep-weeped} can also account for \emph{burn-burned}. In total, there are 32 irregular rules and 12 regular rules posited by the MGL on the {\sc Celex} verbs.
 
 
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Fri Apr 24 11:40:29 2020
+% latex table generated in R 4.0.2 by xtable 1.8-4 package
+% Thu Oct 15 15:19:33 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrr}
@@ -278,8 +279,8 @@ The rule structure of the MGL likely follows from its parameter settings, which 
 Our regression model selection in this article proceeded as follows. Except where stated otherwise, we fit logistic mixed-effects regression models, using R's lme4 package \citep{bateslme4}. Non-significant predictors are removed from our models, as determined by a series of comparisons of nested models, using likelihood ratio tests in R's anova function. However, our model tables (e.g., Tables 5 and 6 in the main text) include the Wald significance levels generated by lme4 summaries (* p$<$0.05; ** p$<$0.01; *** p$<$0.001).  
 We investigate maximal random effects structures, allowing for random intercepts for participants and stimulus items (verbs), as well as random slopes for all within-unit factors. We compare nested random effects structures as above, and retain any random slopes and intercepts which are supported by likelihood ratio tests \citep{baayen2008mixed}.
 
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Fri Apr 24 11:40:30 2020
+% latex table generated in R 4.0.2 by xtable 1.8-4 package
+% Thu Oct 15 15:19:33 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
@@ -317,8 +318,8 @@ Since the regularity scores of the GCM and the MGL for the nonce verbs are corre
 We fit two simple linear regression models; no random effects are explored in these models, since we are merely predicting algorithmic scores for each item. We rescale and center GCM and MGL scores for the model fits. 
 
 
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Fri Apr 24 11:40:30 2020
+% latex table generated in R 4.0.2 by xtable 1.8-4 package
+% Thu Oct 15 15:19:34 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
@@ -333,8 +334,8 @@ term & estimate & std.error & Z score & sig \\
 \caption{Model 3: MGL scores and GCM residuals, baseline data} 
 \label{resid1}
 \end{table}
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Fri Apr 24 11:40:30 2020
+% latex table generated in R 4.0.2 by xtable 1.8-4 package
+% Thu Oct 15 15:19:34 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
@@ -398,8 +399,8 @@ Second, we considered the amount of extra variation explained by the individual-
 Section 6.4 in the main text explains that we calculate the extra information given by the individual models by subtracting the {\sc Celex} model prediction from the individual model prediction for each item for each participant.
 
 
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Fri Apr 24 11:40:30 2020
+% latex table generated in R 4.0.2 by xtable 1.8-4 package
+% Thu Oct 15 15:19:34 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
@@ -415,8 +416,8 @@ term & estimate & std.error & Z score & sig \\
 \caption{Model 5: Celex-GCM and individual score difference, post-test data} 
 \label{indiv1}
 \end{table}
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Fri Apr 24 11:40:30 2020
+% latex table generated in R 4.0.2 by xtable 1.8-4 package
+% Thu Oct 15 15:19:35 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}
@@ -444,8 +445,8 @@ These techniques are indicative of the relative strengths of the individual-MGL 
 We used the {\sc Celex}-GCM, {\sc Celex}-MGL, individual-GCM, and individual-MGL together to predict participant post-test responses. The best model, reported in the paper, contains the {\sc Celex}-MGL and the individal-GCM. The summary can be seen in Table \ref{comp3}. This is the model we report in detail in the main text. 
 
 
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Fri Apr 24 11:40:31 2020
+% latex table generated in R 4.0.2 by xtable 1.8-4 package
+% Thu Oct 15 15:19:35 2020
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrl}

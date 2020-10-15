@@ -23,6 +23,7 @@ library(scales) # for rescaling
 library(xtable) # for latex tables
 library(lme4) # for GLMM-s
 library(broom) # for tidy summaries
+library(broom.mixed) # for tidy summaries, lmer
 library(ggthemes) # for colourblind scale
 
 # functions
@@ -31,10 +32,10 @@ library(ggthemes) # for colourblind scale
 niceCoefTable = function(fit){
   my_table = fit %>% 
     tidy %>% 
-    filter(
-      group == 'fixed'
+    dplyr::filter(
+      effect == 'fixed'
     ) %>% 
-    mutate(
+    dplyr::mutate(
       sig = case_when(
         p.value >= 0.05 ~ 'n.s.',
         p.value < 0.05 & p.value >= 0.01 ~ '*',
@@ -42,8 +43,9 @@ niceCoefTable = function(fit){
         p.value < 0.001 ~ '***'
       )
     ) %>%
-    rename(`Z score` = statistic) %>% 
+    dplyr::rename(`Z score` = statistic) %>% 
     select(
+      - effect,
       - p.value,
       - group
     )
@@ -120,7 +122,8 @@ We also discuss model selection in analysing our regression data (\ref{appendixr
 
 Sections (\ref{appendixgcm}) and (\ref{appendixmgl}) also appear in the main text of  R\'acz et al. (2020), as Appendices A and B. However, this material is included here so that this Supplement can serve as a standalone document for readers who are interested in the technical details of our study. Additional material is reproduced from the main text, revisiting specific regression model summaries and additional methods we used to investigate contributions from the GCM and MGL.
 
-This is an Sweave file. The Rnw source file contains the code used to compile the pdf output file. It also contains additional code sections that help replicate the results. The file also contains pointers to further detail in the supplementary repository that accompanies the paper. 
+The source file for this SI, along with the data and the code for the paper, are hosted at https://github.com/petyaracz/RaczHayPierrehumbert2019.
+% This is an Sweave file. The Rnw source file contains the code used to compile the pdf output file. It also contains additional code sections that help replicate the results. The file also contains pointers to further detail in the supplementary repository that accompanies the paper. 
 
 \section{Regular and irregular verbs in English \label{appendixverbs}}
 
@@ -644,9 +647,9 @@ anova(lme.fit1,lme.fit1b,lme.fit1c)
 # we don't report this comparison here or in the main text, but the models are stored for reference
 
 # here are the effect estimate figures from the paper:
-# plot(effects::effect('co_player_regularisation_rate', lme.fit1), xlab = 'co-player regularization shift', ylab = 'player post-test regularization', main = 'Effect of co-player rate of regularization on pos-test responses')
+plot(effects::effect('co_player_regularisation_rate', lme.fit1), xlab = 'co-player regularization shift', ylab = 'player post-test regularization', main = 'Effect of co-player rate of regularization on post-test responses', lwd = 2)
 
-# plot(effects::effect('verb_baseline_average:co_player_lexical_typicality', lme.fit1), multiline = T, lines=list(lty=c(1,2,3)), xlab = 'verb baseline average', ylab = 'player post-test regularization', main = 'Effect of co-player lexical typicality on pos-test responses')
+plot(effects::effect('verb_baseline_average:co_player_lexical_typicality', lme.fit1), multiline = T, lines=list(lty=c(1,2,3)), lwd = 2, xlab = 'verb baseline average', ylab = 'player post-test regularization', main = 'Effect of co-player lexical typicality on post-test responses')
 
 
 
@@ -656,7 +659,7 @@ Our regression model selection in this article proceeded as follows. Except wher
 We investigate maximal random effects structures, allowing for random intercepts for participants and stimulus items (verbs), as well as random slopes for all within-unit factors. We compare nested random effects structures as above, and retain any random slopes and intercepts which are supported by likelihood ratio tests \citep{baayen2008mixed}.
 
 <<main_model3, echo=F,eval=T, results=tex>>=
-load('models/si_fit1.rda')
+load('~/Github/RaczBecknerHayPierrehumbert2019/supplementary_information/models/si_fit1.rda')
 lme.fit1.sum = niceCoefTable(lme.fit1)
 
 print(xtable::xtable(lme.fit1.sum, digits = 2, label = 'regressiontable1', caption = 'Experimental Data, Post-test Regression Model Summary. Model formula: post-test regular response ~ verb baseline mean x lexical typicality + participant pretest mean + regularization shift + (1 + verb.baseline.mean | participant) + (1 | verb)'), include.rownames = F)

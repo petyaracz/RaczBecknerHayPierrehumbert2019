@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.7.15)  24 APR 2020 11:40
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.7.15)  15 OCT 2020 15:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -507,30 +507,30 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <14.4> on input line 15.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 15.
-LaTeX Font Info:    Try loading font information for TS1+aer on input line 30.
+LaTeX Font Info:    Try loading font information for TS1+aer on input line 31.
 
 (/Library/Frameworks/R.framework/Resources/share/texmf/tex/latex/ts1aer.fd
 File: ts1aer.fd 
 )
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <12> not available
-(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 30.
-LaTeX Font Info:    Try loading font information for T3+aer on input line 30.
-LaTeX Font Info:    No file T3aer.fd. on input line 30.
+(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 31.
+LaTeX Font Info:    Try loading font information for T3+aer on input line 31.
+LaTeX Font Info:    No file T3aer.fd. on input line 31.
 
 
 LaTeX Font Warning: Font shape `T3/aer/m/n' undefined
-(Font)              using `T3/cmr/m/n' instead on input line 30.
+(Font)              using `T3/cmr/m/n' instead on input line 31.
 
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 30.
+(Font)              <12> on input line 31.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 30.
+(Font)              <8> on input line 31.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 30.
+(Font)              <6> on input line 31.
 [1
 
 {/usr/local/texlive/2019basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Try loading font information for T1+aett on input line 65.
+LaTeX Font Info:    Try loading font information for T1+aett on input line 66.
 
 (/usr/local/texlive/2019basic/texmf-dist/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
@@ -543,20 +543,20 @@ Package microtype Info: Loading generic protrusion settings for font family
 [4] [5] [6]
 
 LaTeX Font Warning: Font shape `T3/aer/m/it' undefined
-(Font)              using `T3/aer/m/n' instead on input line 218.
+(Font)              using `T3/aer/m/n' instead on input line 219.
 
 [7] [8]
-Underfull \hbox (badness 10000) in paragraph at lines 273--274
+Underfull \hbox (badness 10000) in paragraph at lines 274--275
 
  []
 
 
-Overfull \hbox (40.44379pt too wide) in paragraph at lines 285--300
+Overfull \hbox (40.44379pt too wide) in paragraph at lines 286--301
  [][] 
  []
 
 [9] [10]
-Overfull \hbox (11.3207pt too wide) in paragraph at lines 375--387
+Overfull \hbox (11.3207pt too wide) in paragraph at lines 376--388
  [][] 
  []
 
@@ -564,7 +564,7 @@ Overfull \hbox (11.3207pt too wide) in paragraph at lines 375--387
 <si_figure.pdf, id=57, 650.43pt x 505.89pt>
 File: si_figure.pdf Graphic file (type pdf)
 <use si_figure.pdf>
-Package pdftex.def Info: si_figure.pdf  used on input line 473.
+Package pdftex.def Info: si_figure.pdf  used on input line 474.
 (pdftex.def)             Requested size: 452.9679pt x 352.31427pt.
  [13] [14 <./si_figure.pdf>] [15] (./si.bbl [16]) [17] (./si.aux)
 
@@ -597,7 +597,7 @@ xmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2019basic
 asic/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/2
 019basic/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texliv
 e/2019basic/texmf-dist/fonts/type1/public/tipa/tipa12.pfb>
-Output written on si.pdf (17 pages, 279129 bytes).
+Output written on si.pdf (17 pages, 279092 bytes).
 PDF statistics:
  135 PDF objects out of 1000 (max. 8388607)
  96 compressed objects within 1 object stream
