@@ -1,5 +1,8 @@
 # Rácz, Beckner, Hay & Pierrehumbert 2019
 
+[![DOI](https://zenodo.org/badge/182800928.svg)](https://zenodo.org/badge/latestdoi/182800928)
+
+
 Data and code for the paper "morphological convergence as on-line lexical analogy" 2019
 
 ## Contents
